@@ -9,6 +9,9 @@ const userSchema = new Schema({
     },
     token: {
         type: String
+    },
+    validated: {
+        type: Boolean
     }
 });
 
@@ -16,7 +19,8 @@ const userSchema = new Schema({
 export interface IUser extends Document {
     email: string;
     password: string;
-    token:String
+    token: string;
+    validated: boolean;
 }
 
 //Exportamos modelo para poder usarlo 
