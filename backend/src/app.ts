@@ -5,9 +5,8 @@ import morgan from 'morgan';
 import bodyParser from'body-parser';
 
 //Importamos fichero de rutas
-//import studentRoutes from './routes/student.routes'
-import studentRoutes from "./routes/student.routes";
-
+import accessRoutes from './routes/access.routes'
+import studentRoutes from './routes/student.routes'
 //Inicializamos express
 const app = express();
 
@@ -23,8 +22,8 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 //API Routes
-
-app.use("/student", studentRoutes);
+app.use('/access', accessRoutes);
+app.use('/student', studentRoutes);
 
 //Exportamos fichero como 'app'
 export default app;
