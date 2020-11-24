@@ -1,14 +1,14 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Minimo 1 2020 EA",
+  "description": "Meet Your Mates",
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
     "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
     "build": "tsc"
   },
-  "author": "Krunal Badsiwal",
+  "author": "EA Grupo 2",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
