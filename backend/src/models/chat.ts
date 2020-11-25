@@ -21,6 +21,7 @@ const chatSchema = new Schema({
 export interface IChat extends Document {
     name: string;
     description: string;
+    messages: IMessage['_id'];
     picture: string;
 }
 
