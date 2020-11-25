@@ -1,32 +1,34 @@
 import mongoose, { Schema, Document} from 'mongoose';
-import User, { IUser } from './user';
+import Team, { ITeam } from './team';
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-const studentSchema = new Schema({
+const projectSchema = new Schema({
     name: {
         type: String,
         index: true
     },
-    teamNames: {
-        type: Array,
-    },
+    teamNames: [{
+        type: String,
+    }],
     numberStudents: {
         type: Number,
     },
-    hashtags: {
-        type: Array,
-    }
+    hashtags: [{
+        type: String,
+    }],
+    teams: {
+        type: Schema.Types.ObjectId,
+        ref: Team
+    },
 });
 
 //Interfaz para tratar respuesta como documento
-export interface IStudent extends Document {
+export interface IProject extends Document {
     name: string;
-    university: string;
-    degree: string;
-    user: IUser['_id']; //Relacion con la coleccion students
-    picture: string;
-    validated: boolean;
+    teamNames: string;
+    numberStudents: number;
+    teams: ITeam['_id']; //Relacion con la coleccion students
 }
 
 //Exportamos modelo para poder usarlo
-export default mongoose.model<IStudent>('Student', studentSchema,'students');
+export default mongoose.model<IProject>('Project', projectSchema,'project');
