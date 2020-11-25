@@ -4,8 +4,14 @@ const insigniaSchema = new Schema({
     id: {
         type: String
     },
-    difficulty: {
+    hashtag:{
         type: String
+    },
+    requirement: {
+        type: String
+    },
+    date: {
+        type: Date
     },
     logo: {
         type: String
@@ -15,7 +21,9 @@ const insigniaSchema = new Schema({
 //Interfaz para tratar respuesta como documento
 export interface IInsignia extends Document {
     id: string;
-    difficulty: string;
+    hashtag: string;
+    requirement: string;
+    date: string;
     logo: string;
 }
 
