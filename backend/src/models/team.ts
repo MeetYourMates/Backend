@@ -18,6 +18,7 @@ const teamSchema = new Schema({
 export interface ITeam extends Document {
     name: String;
     availability: Number;
+    chat: IChat['_id'];
 }
 
 //Exportamos modelo para poder usarlo 
