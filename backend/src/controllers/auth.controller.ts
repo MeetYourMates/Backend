@@ -3,7 +3,7 @@ import User from "../models/user";
 import Validation from "../models/validation";
 import {Request, Response} from "express";
 import {hashSync, compareSync} from "bcrypt";
-import {generate} from "randomstring"
+import {generate} from "randomstring";
 
 const registerUser: any = async (req: Request, res: Response) => {
     let newUser = new User({

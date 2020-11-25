@@ -1,5 +1,8 @@
 import mongoose, { Schema, Document} from 'mongoose';
 import User, { IUser } from './user';
+import Trophy, {ITrophy} from './trophy';
+import Insignia, {IInsignia} from './insignia';
+
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const studentSchema = new Schema({
@@ -20,9 +23,17 @@ const studentSchema = new Schema({
     picture: {
         type: String
     },
-    validated: {
-        type: Boolean
-    }
+    punctuation: {
+        type: Number
+    },
+    trophies: [{
+        type: Schema.Types.ObjectId,
+        ref: Trophy
+    }],
+    insignias: [{
+        type: Schema.Types.ObjectId,
+        ref: Insignia
+    }]
 });
 
 //Interfaz para tratar respuesta como documento
@@ -32,7 +43,9 @@ export interface IStudent extends Document {
     degree: string;
     user: IUser['_id']; //Relacion con la coleccion students
     picture: string;
-    validated: boolean;
+    punctuation: number;
+    trophies: ITrophy['id'];
+    insignias: IInsignia['id'];
 }
 
 //Exportamos modelo para poder usarlo

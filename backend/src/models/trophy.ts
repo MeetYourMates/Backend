@@ -1,24 +1,24 @@
 import mongoose, { Schema, Document} from 'mongoose';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-const userSchema = new Schema({
-    email: {
+const trophySchema = new Schema({
+    id: {
         type: String
     },
-    password: {
+    difficulty: {
         type: String
     },
-    validated: {
-        type: Boolean
+    logo: {
+        type: String
     }
 });
 
 //Interfaz para tratar respuesta como documento
-export interface IUser extends Document {
-    email: string;
-    password: string;
-    validated: boolean;
+export interface ITrophy extends Document {
+    id: string;
+    difficulty: string;
+    logo: string;
 }
 
 //Exportamos modelo para poder usarlo 
 //Mongoose#model(name, [schema], [collectionName], [skipInit])
-export default mongoose.model<IUser>('User', userSchema,'users');
+export default mongoose.model<ITrophy>('Trophy', trophySchema,'trophies');
