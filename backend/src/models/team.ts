@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document} from 'mongoose';
+import Chat, { IChat } from './chat';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const teamSchema = new Schema({
     name: {
@@ -7,7 +8,10 @@ const teamSchema = new Schema({
     availability: {
         type: Number
     },
-
+    chat: {
+        type: Schema.Types.ObjectId,
+        ref: Chat
+    }
 });
 
 //Interfaz para tratar respuesta como documento
