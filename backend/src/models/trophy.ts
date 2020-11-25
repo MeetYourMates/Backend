@@ -2,7 +2,7 @@ import mongoose, { Schema, Document} from 'mongoose';
 import Professor, {IProfessor} from './professor';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const trophySchema = new Schema({
-    id: {
+    title: {
         type: String
     },
     difficulty: {
@@ -22,7 +22,7 @@ const trophySchema = new Schema({
 
 //Interfaz para tratar respuesta como documento
 export interface ITrophy extends Document {
-    id: string;
+    title: string;
     difficulty: string;
     professor: IProfessor['_id'];
     date: Date;

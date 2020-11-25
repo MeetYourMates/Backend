@@ -1,9 +1,6 @@
 import mongoose, { Schema, Document} from 'mongoose';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const insigniaSchema = new Schema({
-    id: {
-        type: String
-    },
     hashtag:{
         type: String
     },
@@ -20,7 +17,6 @@ const insigniaSchema = new Schema({
 
 //Interfaz para tratar respuesta como documento
 export interface IInsignia extends Document {
-    id: string;
     hashtag: string;
     requirement: string;
     date: string;
