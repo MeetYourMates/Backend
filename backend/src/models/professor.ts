@@ -13,9 +13,6 @@ const professorSchema = new Schema({
     },
     picture: {
         type: String
-    },
-    validated: {
-        type: Boolean
     }
 });
 
@@ -24,7 +21,6 @@ export interface IProfessor extends Document {
     name: string;
     user: IUser['_id']; //Relacion con la coleccion students
     picture: string;
-    validated: boolean;
 }
 
 //Exportamos modelo para poder usarlo
