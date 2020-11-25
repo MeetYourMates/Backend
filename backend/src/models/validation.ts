@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document} from 'mongoose';
 import User, {IUser} from "./user";
-import {IStudent} from "./student";
 
 const validationSchema = new Schema({
     user: {
