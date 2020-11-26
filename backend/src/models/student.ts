@@ -4,7 +4,7 @@ import Trophy, {ITrophy} from './trophy';
 import Insignia, {IInsignia} from './insignia';
 import Course, { ICourse } from './course';
 import Chat, {IChat} from './chat';
-
+import { IRating } from './rating';
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const studentSchema = new Schema({
@@ -25,7 +25,11 @@ const studentSchema = new Schema({
     picture: {
         type: String
     },
-    punctuation: {
+    ratings: [{
+        type: Schema.Types.ObjectId,
+        ref: Rating
+    }],
+    rating:{
         type: Number
     },
     trophies: [{
@@ -36,14 +40,14 @@ const studentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Insignia
     }],
-    courses: {
+    courses: [{
         type: Schema.Types.ObjectId,
         ref: Course
-    },
-    chats: {
+    }],
+    chats: [{
         type: Schema.Types.ObjectId,
         ref: Chat
-    }
+    }]
 });
 
 //Interfaz para tratar respuesta como documento
@@ -53,7 +57,8 @@ export interface IStudent extends Document {
     degree: string;
     user: IUser['_id']; //Relacion con la coleccion students
     picture: string;
-    punctuation: number;
+    rating: number;
+    ratings: IRating['_id'];
     trophies: ITrophy['_id'];
     insignias: IInsignia['_id'];
     courses: ICourse['_id'];

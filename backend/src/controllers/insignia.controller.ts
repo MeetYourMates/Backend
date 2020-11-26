@@ -14,7 +14,7 @@ const getInsignia = async (req: Request, res: Response) => {
 
 const getInsignias = async (req: Request, res: Response) => {
     try{
-        const results = await Insignia.find({"user": {"email":req.body.email,"token":req.body.token}});
+        const results = await Insignia.find({"user": {"_id":req.body._id}});
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);

@@ -8,13 +8,13 @@ const projectSchema = new Schema({
         index: true
     },
     teamNames: [{
-        type: String,
+        type: String
     }],
     numberStudents: {
-        type: Number,
+        type: Number
     },
     hashtags: [{
-        type: String,
+        type: String
     }],
     teams: {
         type: Schema.Types.ObjectId,

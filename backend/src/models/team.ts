@@ -10,18 +10,18 @@ const teamSchema = new Schema({
     availability: {
         type: Number
     },
-    chats: {
+    chat: {
         type: Schema.Types.ObjectId,
         ref: Chat
     },
-    tasks: {
+    tasks: [{
         type: Schema.Types.ObjectId,
         ref: Task
-    },
-    meetings: {
+    }],
+    meetings: [{
         type: Schema.Types.ObjectId,
         ref: Meeting
-    }
+    }]
 });
 
 //Interfaz para tratar respuesta como documento

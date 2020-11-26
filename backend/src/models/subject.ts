@@ -8,14 +8,14 @@ const subjectSchema = new Schema({
         type: String,
         index: true
     },
-    projects: {
+    projects: [{
         type: Schema.Types.ObjectId,
         ref: Project
-    },
-    professors: {
+    }],
+    professors: [{
         type: Schema.Types.ObjectId,
         ref: Professor
-    }
+    }]
 
 
 });

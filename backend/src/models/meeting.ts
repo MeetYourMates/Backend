@@ -10,9 +10,9 @@ const meetingSchema = new Schema({
     date: {
         type: String
     },
-    location: {
+    location: [{
         type: String
-    }
+    }]
 });
 
 //Interfaz para tratar respuesta como documento

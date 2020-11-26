@@ -7,10 +7,10 @@ const courseSchema = new Schema({
         type: Number,
         index:true
     },
-    subjects: {
+    subjects: [{
         type: Schema.Types.ObjectId,
         ref: Subject
-    }
+    }]
 
 
 });

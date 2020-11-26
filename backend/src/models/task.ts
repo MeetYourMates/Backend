@@ -10,7 +10,7 @@ const taskSchema = new Schema({
     deadline: {
         type: Date
     },
-    assignee: [{
+    assignees: [{
         type: String
     }],
     completed: {
@@ -26,7 +26,7 @@ export interface ITask extends Document {
     name: string;
     description: string;
     deadline: Date;
-    assignee: string;
+    assignees: string;
     completed: boolean;
     hashtag: string;
 }

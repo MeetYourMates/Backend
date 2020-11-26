@@ -5,7 +5,7 @@ const insigniaSchema = new Schema({
         type: String
     },
     requirement: {
-        type: String
+        type: Number
     },
     date: {
         type: Date
@@ -18,7 +18,7 @@ const insigniaSchema = new Schema({
 //Interfaz para tratar respuesta como documento
 export interface IInsignia extends Document {
     hashtag: string;
-    requirement: string;
+    requirement: Number;
     date: string;
     logo: string;
 }

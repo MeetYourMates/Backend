@@ -6,7 +6,7 @@ const trophySchema = new Schema({
         type: String
     },
     difficulty: {
-        type: String
+        type: Number
     },
     professor: {
         type: Schema.Types.ObjectId,
@@ -23,7 +23,7 @@ const trophySchema = new Schema({
 //Interfaz para tratar respuesta como documento
 export interface ITrophy extends Document {
     title: string;
-    difficulty: string;
+    difficulty: number;
     professor: IProfessor['_id'];
     date: Date;
     logo: string;

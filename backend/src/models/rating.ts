@@ -2,7 +2,7 @@ import mongoose, { Schema, Document} from 'mongoose';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const ratingSchema = new Schema({
     stars:{
-        type: String
+        type: Number
     },
     ratedBy: {
         type: String
@@ -14,9 +14,9 @@ const ratingSchema = new Schema({
 
 //Interfaz para tratar respuesta como documento
 export interface IRating extends Document {
-    stars: string;
+    stars: number;
     ratedBy: string;
-    date: string;
+    date: Date;
 }
 
 //Exportamos modelo para poder usarlo 
