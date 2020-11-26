@@ -4,6 +4,32 @@ import Validation from "../models/validation";
 import {Request, Response} from "express";
 import {hashSync, compareSync} from "bcrypt";
 import {generate} from "randomstring";
+import {createTransport, Transporter} from "nodemailer";
+import {MailOptions} from "nodemailer/lib/smtp-pool";
+
+
+const sendEmail: any = async (receiver: string, code: string) =>  {
+    const  transporter = createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'meetyourmatesprueba@gmail.com',
+            pass: 'ToniOller'
+        }
+    });
+    let mailOptions: MailOptions = {
+        from: 'meetyourmatesprueba@gmail.com',
+        to: receiver,
+        subject: "Welcome to Meet Your Mates!",
+        text: "Welcome to Meet your Mates! to activate your account, use the next link: http://localhost:3000/auth/validate/" +code+ " Or introduce the next code in the app: "+ code
+    }
+    transporter.sendMail(mailOptions, (error) => {
+        if (error) {
+            console.log(error);
+        }
+    })
+
+
+}
 
 const registerUser: any = async (req: Request, res: Response) => {
     let newUser = new User({
@@ -24,6 +50,7 @@ const registerUser: any = async (req: Request, res: Response) => {
             "user": newUser
         })
         validation.save().then(() => {
+            sendEmail(newUser.email,validation.code);
             return res.status(201).json({"message": "User registered",
             "code": validation.code});
         })
