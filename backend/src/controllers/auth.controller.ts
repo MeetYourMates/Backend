@@ -13,7 +13,7 @@ const sendEmail: any = async (receiver: string, code: string) =>  {
         service: 'gmail',
         auth: {
             user: 'meetyourmatesprueba@gmail.com',
-            pass: 'ToniOller'
+            pass: 'MeetYourMatesTest'
         }
     });
     let mailOptions: MailOptions = {
