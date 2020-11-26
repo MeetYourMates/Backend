@@ -7,6 +7,8 @@ import bodyParser from'body-parser';
 //Importamos fichero de rutas
 import authRoutes from './routes/auth.routes'
 import studentRoutes from './routes/student.routes'
+import trophiesRoutes from './routes/trophies.routes'
+import insigniasRoutes from './routes/insignias.routes'
 //Inicializamos express
 const app = express();
 
@@ -25,6 +27,8 @@ app.use(bodyParser.json());
 //API Routes
 app.use('/auth', authRoutes);
 app.use('/student', studentRoutes);
+app.use('/trophy', trophiesRoutes);
+app.use('/insignia', insigniasRoutes);
 
 //Exportamos fichero como 'app'
 export default app;

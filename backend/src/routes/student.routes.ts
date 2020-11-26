@@ -3,8 +3,9 @@ import studentController from "../controllers/student.controller"
 
 
 const router = Router();
-router.get('/all', studentController.getStudents);
-//router.get('/get/:id', modelController.getModel);
-//router.post('/edit', modelController.editModel);
-
+router.get('/getAll', studentController.getStudents);
+router.get('/get/:id', studentController.getStudent);
+router.put('/SignUp', studentController.newStudent);
+router.post('/EditProfile', studentController.updateStudent);
+router.delete('/DeleteProfile', studentController.deleteStudent);
 export default router;

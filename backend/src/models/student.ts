@@ -4,7 +4,7 @@ import Trophy, {ITrophy} from './trophy';
 import Insignia, {IInsignia} from './insignia';
 import Course, { ICourse } from './course';
 import Chat, {IChat} from './chat';
-import { IRating } from './rating';
+import Rating, { IRating } from './rating';
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const studentSchema = new Schema({
