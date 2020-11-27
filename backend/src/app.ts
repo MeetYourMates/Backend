@@ -10,6 +10,9 @@ import studentRoutes from './routes/student.routes'
 import universityRoutes from './routes/university.routes'
 import facultyRoutes from './routes/faculty.routes'
 import degreeRoutes from './routes/degree.routes'
+import trophiesRoutes from './routes/trophies.routes'
+import insigniasRoutes from './routes/insignias.routes'
+
 //Inicializamos express
 const app = express();
 
@@ -31,6 +34,8 @@ app.use('/student', studentRoutes);
 app.use('/university',universityRoutes);
 app.use('/faculty',facultyRoutes);
 app.use('/degree',degreeRoutes);
+app.use('/trophy', trophiesRoutes);
+app.use('/insignia', insigniasRoutes);
 
 //Exportamos fichero como 'app'
 export default app;
