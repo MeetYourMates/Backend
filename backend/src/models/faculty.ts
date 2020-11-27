@@ -19,5 +19,12 @@ export interface IFaculty extends Document {
     degrees: IDegree['_id'];
 }
 
+/*"_id": {
+    "$oid": "6a73646a7765727472323331"
+},
+"password": "123",
+"email": "123@123.com"
+}*/
+
 //Exportamos modelo para poder usarlo
 export default mongoose.model<IFaculty>('Faculty', facultySchema,'faculty');

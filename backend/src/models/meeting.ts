@@ -8,7 +8,7 @@ const meetingSchema = new Schema({
         type: String
     },
     date: {
-        type: String
+        type: Date
     },
     location: [{
         type: String
@@ -19,7 +19,7 @@ const meetingSchema = new Schema({
 export interface IMeeting extends Document {
     name: string;
     description: string;
-    date: string;
+    date: Date;
     location: string;
 }
 

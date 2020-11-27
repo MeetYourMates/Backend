@@ -19,7 +19,7 @@ const insigniaSchema = new Schema({
 export interface IInsignia extends Document {
     hashtag: string;
     requirement: Number;
-    date: string;
+    date: Date;
     logo: string;
 }
 
