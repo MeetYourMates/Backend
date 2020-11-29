@@ -1,68 +1,68 @@
 [
     {
-        "_id":{"$oid": "EETAC0000009"},
+        "_id":{"$oid": "EETACSUBJ009"},
         "name": "Enginyeria d'Aplicacions",
 	"courses":[
 
-		{"$oid": "EAQT00002020"},
+		{"$oid": "EAQTSUBJ2020"},
 
-		{"$oid": "EAQP00002020"}
+		{"$oid": "EAQPSUBJ2020"}
 	]
     },{
-        "_id":{"$oid": "EETAC0000008"},
+        "_id":{"$oid": "EETACSUBJ008"},
         "name": "Tecnologies d'Informació Quàntica",
 	"courses":[]
     },{
-        "_id":{"$oid": "EETAC0000007"},
+        "_id":{"$oid": "EETACSUBJ007"},
         "name": "Disseny de Serveis i Aplicacions",
 	"courses":[
 ]
     },{
-        "_id":{"$oid": "EETAC0000006"},
+        "_id":{"$oid": "EETACSUBJ006"},
         "name": "Enginyeria de Software Ràdio",
 	"courses":[]
     },{
-        "_id":{"$oid": "EETAC0000005"},
+        "_id":{"$oid": "EETACSUBJ005"},
         "name": "Interconnexió de Xarxes",
 	"courses":[]
     },{
-        "_id":{"$oid": "EETAC0000004"},
+        "_id":{"$oid": "EETACSUBJ004"},
         "name": "Mecànica de Vol",
 	"courses":[]
     },{
-        "_id":{"$oid": "EETAC0000003"},
+        "_id":{"$oid": "EETACSUBJ003"},
         "name": "Aerodinámica",
 	"courses":[]
     },{
-        "_id":{"$oid": "EETAC0000002"},
+        "_id":{"$oid": "EETACSUBJ002"},
         "name": "Quimica",
         "courses":[]
     },{
-        "_id":{"$oid": "EETAC0000001"},
+        "_id":{"$oid": "EETACSUBJ001"},
         "name": "Fisica",
 	"courses":[]
     },{
-        "_id":{"$oid": "ESAB00000001"},
+        "_id":{"$oid": "ESAB0SUBJ001"},
         "name": "Produccion Animal",
 	"courses":[]
     },{
-        "_id":{"$oid": "ESAB00000002"},
+        "_id":{"$oid": "ESAB0SUBJ002"},
         "name": "Sistemas de Cultivo",
 	"courses":[]
     },{
-        "_id":{"$oid": "ESAB00000003"},
+        "_id":{"$oid": "ESAB0SUBJ003"},
         "name": "Dibujo 1",
 	"courses":[]
     },{
-        "_id":{"$oid": "ESAB00000004"},
+        "_id":{"$oid": "ESAB0SUBJ004"},
         "name": "Ecología",
 	"courses":[]
     },{
-        "_id":{"$oid": "ESAB00000005"},
+        "_id":{"$oid": "ESAB0SUBJ005"},
         "name": "Industrias Extractivas y Fermentativas",
 	"courses":[]
     },{
-        "_id":{"$oid": "ESAB00000006"},
+        "_id":{"$oid": "ESAB0SUBJ006"},
         "name": "Industrias Cárnicas y Lácteas",
 	"courses":[]
     },{

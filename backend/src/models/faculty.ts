@@ -7,10 +7,10 @@ const facultySchema = new Schema({
         type: String,
         index: true
     },
-    degrees: {
+    degrees: [{
         type: Schema.Types.ObjectId,
         ref: Degree
-    }
+    }]
 });
 
 //Interfaz para tratar respuesta como documento

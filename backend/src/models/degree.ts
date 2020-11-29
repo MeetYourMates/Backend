@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document} from 'mongoose';
-import  {ISubject} from './subject';
-const Subject = require('./subject');
+import  Subject, {ISubject} from './subject';
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 var degreeSchema = new Schema({
@@ -8,10 +7,10 @@ var degreeSchema = new Schema({
         type: String,
         index: true
     },
-    subjects: {
+    subjects: [{
         type: Schema.Types.ObjectId,
         ref: Subject
-    }
+    }]
 });
 
 //Interfaz para tratar respuesta como documento

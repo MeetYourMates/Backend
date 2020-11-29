@@ -33,32 +33,15 @@ const addStudent = async(req: Request, res: Response) =>{
     console.log(req.body);
 
     //Set variables for the data found in the request body
-    let subject = req.body.subject;
-    let course = req.body.course;
+    let subjectId = req.body.subjectId; 
+    let studentId = req.body.studentId; 
 
-    //Create a new student entity with the data found in request
-    let student = new Student({ 
-        "name": req.body.name,
-        "university": req.body.university,
-        "degree": req.body.degree,
-        "user": req.body.user,
-        "picture": req.body.picture,
-        "punctuation": req.body.punctuation,
-        "trophies": req.body.trophies,
-        "insignias": req.body.insignias
-     }); 
-
-    //Look for the student in the database
-    let studentdata =await Student.findOne({name: student.name})
-
-    //If the student is not in the database then save it
-    if (!studentdata) { 
-        await student.save().then((data) => { 
-            studentdata = data;
-        });
-    }
     //Add student to subject
-    await Course.updateOne({"subject": subject,"start": course}, {$addToSet: {students: studentdata?._id}}).then(result => { 
+    let course= await Course.findOne({subject: [subjectId]}).sort({start: -1});
+    console.log(course);
+    let course1= await Course.find({subject: [subjectId]});
+    console.log(course1);
+    await Course.updateOne({_id:course?._id}, {$addToSet: {students: studentId}}).then(result => { 
         if (result.nModified == 1) { 
             console.log("Student added successfully"); 
             res.status(201).send({message: 'Student added successfully'}); 

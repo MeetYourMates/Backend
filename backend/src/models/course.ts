@@ -9,10 +9,10 @@ const Subject = require('./subject');
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const courseSchema = new Schema({
     
-    subject: {
+    subject: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: Subject
-    },
+    }],
     start: {
         type: Date,
         index:true

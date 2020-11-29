@@ -2,6 +2,22 @@ import {Request, Response} from 'express';
 import Degree from '../models/degree';
 import Subject from '../models/subject';
 
+const getDegree = async (req: Request, res: Response) => {
+    //El await hace que la siguiente linea no se ejecute
+    //hasta que el resultado no se haya obtenido
+    let degree = req.params.degree;
+    console.log(degree);
+    try{
+        const results = await Degree.find({"_id": degree}).populate({
+            path: 'subjects', 
+            model: 'Subject'}).exec();
+        console.log(results);
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
 const addDegree = async (req: Request, res: Response) => {
     const degree = new Degree({
     
@@ -50,4 +66,4 @@ const addSubject = async(req: Request, res: Response) =>{
     }); 
 }
 
-export default {addDegree, addSubject};
+export default {getDegree,addDegree, addSubject};

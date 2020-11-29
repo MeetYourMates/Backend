@@ -8,19 +8,19 @@ const getUniversities = async (req: Request, res: Response) => {
     try{
         const results = await University.find({})
         .populate({
-            path: 'universities',
+            path: 'faculties', 
+            model: 'Faculty',
             populate: {
-                path: 'faculties', 
-                model: 'Faculty',
-                populate: {
-                    path: 'degrees',
-                    model: 'Degree'
-                }}}).exec();
+                path: 'degrees',
+                model: 'Degree'
+            }}).exec();
+        console.log(results);
         return res.status(200).json(results);
         
     } catch (err) {
         return res.status(404).json(err);
     }
+    
 }
 const addUniversity = async (req: Request, res: Response) => {
     const insignia = new University({

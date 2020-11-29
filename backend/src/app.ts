@@ -12,7 +12,7 @@ import facultyRoutes from './routes/faculty.routes'
 import degreeRoutes from './routes/degree.routes'
 import trophiesRoutes from './routes/trophies.routes'
 import insigniasRoutes from './routes/insignias.routes'
-
+import courseRoutes from './routes/course.routes'
 //Inicializamos express
 const app = express();
 
@@ -36,6 +36,7 @@ app.use('/faculty',facultyRoutes);
 app.use('/degree',degreeRoutes);
 app.use('/trophy', trophiesRoutes);
 app.use('/insignia', insigniasRoutes);
+app.use('/course',courseRoutes);
 
 //Exportamos fichero como 'app'
 export default app;
