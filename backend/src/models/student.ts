@@ -4,8 +4,9 @@ import Trophy, {ITrophy} from './trophy';
 import Insignia, {IInsignia} from './insignia';
 import Chat, {IChat} from './chat';
 import Rating, { IRating } from './rating';
-import {ISubject} from './subject';
-const Subject = require('./subject');
+import  {ICourse} from './course';
+const Course = require('./course');
+
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const studentSchema = new Schema({
@@ -45,9 +46,9 @@ const studentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Chat
     }],
-    subjects:[{
+    courses:[{
         type: Schema.Types.ObjectId,
-        ref: Subject
+        ref: Course
 
     }]
 });
@@ -64,7 +65,7 @@ export interface IStudent extends Document {
     trophies: ITrophy['_id'];
     insignias: IInsignia['_id'];
     chats: IChat['_id'];
-    subjects: ISubject['_id'];
+    subjects: ICourse['_id'];
 }
 
 //Exportamos modelo para poder usarlo

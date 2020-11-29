@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document} from 'mongoose';
 import User, { IUser } from './user';
-import {ISubject} from './subject';
-const Subject = require('./subject');
+import { ICourse } from './course';
+const Course = require('./course');
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const professorSchema = new Schema({
@@ -16,9 +16,9 @@ const professorSchema = new Schema({
     picture: {
         type: String
     },
-    subjects:[{
+    courses:[{
         type: Schema.Types.ObjectId,
-        ref: Subject
+        ref: Course
 
     }]
 });
@@ -28,6 +28,7 @@ export interface IProfessor extends Document {
     name: string;
     user: IUser['_id']; //Relacion con la coleccion students
     picture: string;
+    courses: ICourse['_id'];
 }
 
 //Exportamos modelo para poder usarlo

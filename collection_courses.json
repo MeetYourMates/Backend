@@ -1,0 +1,18 @@
+[{
+	"_id": {"$oid": "EAQP00002020"},
+	"subject": {"$oid": "EETAC0000009"},
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "EAQP00002020"},
+	"subject": {"$oid": "EETAC0000009"},
+    	"start": "2019-02-17",
+    	"end": "2021-07-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+}]

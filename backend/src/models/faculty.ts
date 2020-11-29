@@ -27,4 +27,4 @@ export interface IFaculty extends Document {
 }*/
 
 //Exportamos modelo para poder usarlo
-export default mongoose.model<IFaculty>('Faculty', facultySchema,'faculty');
+export default mongoose.model<IFaculty>('Faculty', facultySchema,'faculties');

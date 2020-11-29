@@ -1,8 +1,9 @@
 import mongoose, { Schema, Document} from 'mongoose';
-import Subject,{ ISubject } from './subject';
+import  {ISubject} from './subject';
+const Subject = require('./subject');
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-const degreeSchema = new Schema({
+var degreeSchema = new Schema({
     name: {
         type: String,
         index: true
@@ -20,4 +21,4 @@ export interface IDegree extends Document {
 }
 
 //Exportamos modelo para poder usarlo
-export default mongoose.model<IDegree>('Degree', degreeSchema,'degree');
+export default mongoose.model<IDegree>('Degree', degreeSchema,'degrees');

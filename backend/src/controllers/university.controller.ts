@@ -15,7 +15,7 @@ const getUniversities = async (req: Request, res: Response) => {
                 populate: {
                     path: 'degrees',
                     model: 'Degree'
-                }}});
+                }}}).exec();
         return res.status(200).json(results);
         
     } catch (err) {
