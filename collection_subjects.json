@@ -1,0 +1,103 @@
+[
+    {
+        "_id":{"$oid": "EETAC0000009"},
+        "name": "Enginyeria d'Aplicacions",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "EETAC0000008"},
+        "name": "Tecnologies d'Informació Quàntica",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "EETAC0000007"},
+        "name": "Disseny de Serveis i Aplicacions",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "EETAC0000006"},
+        "name": "Enginyeria de Software Ràdio",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "EETAC0000005"},
+        "name": "Interconnexió de Xarxes",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "EETAC0000004"},
+        "name": "Mecànica de Vol",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "EETAC0000003"},
+        "name": "Aerodinámica",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "EETAC0000002"},
+        "name": "Quimica",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "EETAC0000001"},
+        "name": "Fisica",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESAB00000001"},
+        "name": "Produccion Animal",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESAB00000002"},
+        "name": "Sistemas de Cultivo",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESAB00000003"},
+        "name": "Dibujo 1",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESAB00000004"},
+        "name": "Ecología",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESAB00000005"},
+        "name": "Industrias Extractivas y Fermentativas",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESAB00000006"},
+        "name": "Industrias Cárnicas y Lácteas",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESEIAATSU001"},
+        "name": "Sistemas Eléctricos",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESEIAATSU002"},
+        "name": "Ciencia y Tecnología de los Materiales",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESEIAATSU003"},
+        "name": "Espacio Aéreo, Navegación e Infraestructuras",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESEIAATSU004"},
+        "name": "Vehículos Aeroespaciales",
+        "projects":[],
+        "professors":[]
+    },{
+        "_id":{"$oid": "ESEIAATSU005"},
+        "name": "Aerodinámica Experimental",
+        "projects":[],
+        "professors":[]
+    }
+]

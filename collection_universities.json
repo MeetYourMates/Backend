@@ -1,0 +1,16 @@
+{
+    "_id":{"$oid": "UPC000000001"},
+    "name": "UPC",
+    "faculties":[
+        {
+            "$oid": "EETAC000000A"
+        },
+        {
+            "$oid": "ESAB0000000A"
+        }
+        ,
+        {
+            "$oid": "ESEIAAT0000A"
+        }
+    ]
+}

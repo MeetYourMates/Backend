@@ -45,9 +45,6 @@ const addStudent = async (req: Request, res: Response) => {
     })
 }
 
-<<<<<<< HEAD
-export default {getStudents, getStudent,addStudent,getSubjects};
-=======
 function updateStudent (req: Request, res: Response){
     const id: string = req.body._id;
     const name: string = req.params.name;
@@ -73,5 +70,4 @@ function deleteStudent (req:Request,res:Response){
         res.status(500).json(err);
     })
 }
-export default {getStudents, getStudent,newStudent, updateStudent, deleteStudent};
->>>>>>> b4e5f35a008277ed288e197fed968ac4f8c8f2b8
+export default {getStudents, getStudent,addStudent,getSubjects,updateStudent};

@@ -1,0 +1,170 @@
+[
+    {
+        "_id":{"$oid": "EETAC0000001"},
+        "name":"Ingeniería de Sistemas Aeroespaciales (menciones en Aeronavegación/Aeropuertos)",
+        "subjects":[
+            {
+                "$oid": "EETACSUBJ001"
+            },
+            {
+                "$oid": "EETACSUBJ002"
+            },
+            {
+                "$oid": "EETACSUBJ003"
+            },
+            {
+                "$oid": "EETACSUBJ004"
+            }
+        ]
+    },{
+        "_id":{"$oid": "EETAC0000002"},
+        "name":"Ingeniería de Sistemas de Telecomunicación",
+        "subjects":[
+            {
+                "$oid": "EETACSUBJ001"
+            },
+            {
+                "$oid": "EETACSUBJ005"
+            },
+            {
+                "$oid": "EETACSUBJ006"
+            },
+            {
+                "$oid": "EETACSUBJ007"
+            }
+        ]
+    },{
+        "_id":{"$oid": "EETAC0000003"},
+        "name":"Ingeniería Telemática",
+        "subjects":[
+            {
+                "$oid": "EETACSUBJ001"
+            },
+            {
+                "$oid": "EETACSUBJ008"
+            },
+            {
+                "$oid": "EETACSUBJ007"
+            },
+            {
+                "$oid": "EETACSUBJ009"
+            }
+        ]
+    },{
+        "_id":{"$oid": "EETAC0000004"},
+        "name":"Doble titulación de grado en Ingeniería Aeroespacial e Ingeniería de Sistemas de Telecomunicación",
+        "subjects":[
+            {
+                "$oid": "EETACSUBJ001"
+            },
+            {
+                "$oid": "EETACSUBJ006"
+            },
+            {
+                "$oid": "EETACSUBJ007"
+            },
+            {
+                "$oid": "EETACSUBJ002"
+            },
+            {
+                "$oid": "EETACSUBJ003"
+            },
+            {
+                "$oid": "EETACSUBJ004"
+            }
+        ]
+    },{
+        "_id":{"$oid": "EETAC0000005"},
+        "name":"Doble titulación de grado en Ingeniería Aeroespacial e Ingeniería Telemática",
+        "subjects":[
+            {
+                "$oid": "EETACSUBJ008"
+            },
+            {
+                "$oid": "EETACSUBJ007"
+            },
+            {
+                "$oid": "EETACSUBJ009"
+            },
+            {
+                "$oid": "EETACSUBJ001"
+            },
+            {
+                "$oid": "EETACSUBJ002"
+            },
+            {
+                "$oid": "EETACSUBJ003"
+            },
+            {
+                "$oid": "EETACSUBJ004"
+            }
+        ]
+    },{
+        "_id":{"$oid": "ESAB00000001"},
+        "name":"Ingeniería de Ciencias Agronómicas",
+        "subjects":[
+            {
+                "$oid": "ESAB0SUBJ001"
+            },
+            {
+                "$oid": "ESAB0SUBJ002"
+            }
+        ]
+    },{
+        "_id":{"$oid": "ESAB00000002"},
+        "name":"Paisajismo",
+        "subjects":[
+            {
+                "$oid": "ESAB0SUBJ003"
+            },
+            {
+                "$oid": "ESAB0SUBJ004"
+            }
+        ]
+    },{
+        "_id":{"$oid": "ESAB00000003"},
+        "name":"Ingeniería Alimentaria",
+        "subjects":[
+            {
+                "$oid": "ESAB0SUBJ005"
+            },
+            {
+                "$oid": "ESAB0SUBJ006"
+            }
+        ]
+    },{
+        "_id":{"$oid": "ESEIAAT00001"},
+        "name":"Ingeniería en Tecnologías Industriales",
+        "subjects":[
+            {
+                "$oid": "ESEIAATSU001"
+            },
+            {
+                "$oid": "ESEIAATSU002"
+            }
+        ]
+    },{
+        "_id":{"$oid": "ESEIAAT00002"},
+        "name":"Ingeniería en Tecnologías Aeroespaciales",
+        "subjects":[
+            {
+                "$oid": "ESEIAATSU003"
+            },
+            {
+                "$oid": "ESEIAATSU004"
+            }
+        ]
+    },{
+        "_id":{"$oid": "ESEIAAT00003"},
+        "name":"Ingeniería en Vehículos Aeroespaciales",
+        "subjects":[
+            {
+                "$oid": "ESEIAATSU005"
+            },
+            {
+                "$oid": "ESEIAATSU004"
+            }
+        ]
+    }
+
+]
