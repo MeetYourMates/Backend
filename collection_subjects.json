@@ -30,11 +30,11 @@
     },{
         "_id":{"$oid": "EETACSUBJ004"},
         "name": "Mecànica de Vol",
-	"courses":[]
+	"courses":[{"$oid": "MVQT00002020"}]
     },{
         "_id":{"$oid": "EETACSUBJ003"},
         "name": "Aerodinámica",
-	"courses":[{"$oid": "MVQT00002020"}]
+	"courses":[{"$oid": "AEQT00002020"}]
     },{
         "_id":{"$oid": "EETACSUBJ002"},
         "name": "Quimica",
@@ -70,11 +70,10 @@
     },{
         "_id":{"$oid": "ESEIAATSU001"},
         "name": "Sistemas Eléctricos",
-	"courses":[]
+	"courses":[{"$oid": "SEQT00002020"}]
     },{
         "_id":{"$oid": "ESEIAATSU002"},
         "name": "Ciencia y Tecnología de los Materiales",
-	"courses":[]
     },{
         "_id":{"$oid": "ESEIAATSU003"},
         "name": "Espacio Aéreo, Navegación e Infraestructuras",
