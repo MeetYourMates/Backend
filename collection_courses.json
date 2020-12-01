@@ -15,4 +15,179 @@
     	"projects": [],
     	"professors": [],
     	"students": []
-}]
+},
+
+{
+	"_id": {"$oid": "TIQQT0002020"},
+	"subject": [{"$oid": "EETACSUBJ008"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+
+{
+	"_id": {"$oid": "DSAQT0002020"},
+	"subject": [{"$oid": "EETACSUBJ007"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+
+{
+	"_id": {"$oid": "ESQT00002020"},
+	"subject": [{"$oid": "EETACSUBJ006"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "IXQT00002020"},
+	"subject": [{"$oid": "EETACSUBJ005"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "MVQT00002020"},
+	"subject": [{"$oid": "EETACSUBJ004"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "AEQT00002020"},
+	"subject": [{"$oid": "EETACSUBJ003"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "QUQT00002020"},
+	"subject": [{"$oid": "EETACSUBJ002"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "FIQT00002020"},
+	"subject": [{"$oid": "EETACSUBJ001"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "PAQT00002020"},
+	"subject": [{"$oid": "ESAB0SUBJ001"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "SCQT00002020"},
+	"subject": [{"$oid": "ESAB0SUBJ002"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "DIBQT0002020"},
+	"subject": [{"$oid": "ESAB0SUBJ003"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "ECOQT0002020"},
+	"subject": [{"$oid": "ESAB0SUBJ004"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "IEFQT0002020"},
+	"subject": [{"$oid": "ESAB0SUBJ005"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "ICLQT0002020"},
+	"subject": [{"$oid": "ESAB0SUBJ006"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},{
+	"_id": {"$oid": "SEQT00002020"},
+	"subject": [{"$oid": "ESEIAATSU001"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "CTMQT0002020"},
+	"subject": [{"$oid": "ESEIAATSU002"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "EANIQT002020"},
+	"subject": [{"$oid": "ESEIAATSU003"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "VAQT00002020"},
+	"subject": [{"$oid": "ESEIAATSU004"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+},
+{
+	"_id": {"$oid": "AEXQT0002020"},
+	"subject": [{"$oid": "ESEIAATSU005"}],
+    	"start": "2020-09-23",
+    	"end": "2021-02-10",
+    	"projects": [],
+    	"professors": [],
+    	"students": []
+}
+
+]

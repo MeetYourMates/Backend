@@ -12,7 +12,7 @@ const getDegree = async (req: Request, res: Response) => {
             path: 'subjects', 
             model: 'Subject'}).exec();
         console.log(results);
-        return res.status(200).json(results);
+        return res.status(200).json(results[0]);
     } catch (err) {
         return res.status(404).json(err);
     }
