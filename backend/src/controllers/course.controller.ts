@@ -12,16 +12,6 @@ const getCourse = async (req: Request, res: Response) => {
     }
 }
 
-const getCourseStudents = async (req: Request, res: Response) => { //
-    let course = req.params.course
-    try{
-        const results = await Course.find({"_id": course}).populate('students');
-        return res.status(200).json(results);
-    } catch (err) {
-        return res.status(404).json(err);
-    }
-}
-
 const addCourse = async (req: Request, res: Response) => {
     const course = new Course({
         "name": req.body.name,
@@ -59,6 +49,23 @@ const addStudent = async(req: Request, res: Response) =>{
         console.log("error ", err); 
         res.status(500).json(err); 
     }); 
+}
+
+const getCourseStudents = async (req: Request, res: Response) => { //
+    let course = req.params.course
+    console.log(course);
+    try{
+        //const results = await Course.find({_id:course}).populate("students");
+        const results = await Course.find({_id:course})
+        .populate({
+            path: 'students', 
+            model: 'Student',
+        }).exec();
+        return res.status(200).json(results);
+    } catch (err) {
+        console.log(err);
+        return res.status(404).json(err);
+    }
 }
 
 export default {getCourse,addCourse,addStudent,getCourseStudents};

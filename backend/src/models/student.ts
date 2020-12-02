@@ -49,7 +49,6 @@ const studentSchema = new Schema({
     courses:[{
         type: Schema.Types.ObjectId,
         ref: Course
-
     }]
 });
 
@@ -65,7 +64,7 @@ export interface IStudent extends Document {
     trophies: ITrophy['_id'];
     insignias: IInsignia['_id'];
     chats: IChat['_id'];
-    subjects: ICourse['_id'];
+    courses: ICourse['_id'];
 }
 
 //Exportamos modelo para poder usarlo
