@@ -66,7 +66,7 @@ const registerUser: any = async (req: Request, res: Response) => {
 const accessUser = async (req: Request, res: Response) => {
     try{
         console.log(req.body);
-        const filter = {'email':req.body.email,'password':req.body.password};
+        const filter = {'email':req.body.email,'password':req.body.password}; //Habría que ehacer el hash aqui?
         console.log(filter);
         const resultUser = await User.findOne(filter);
         //I have _id, email, password

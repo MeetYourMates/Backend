@@ -1,0 +1,43 @@
+    [{
+        "_id": {"$oid": "DUMMYSTDNT01"},
+        "user": {"$oid": "DUMMYUSER001"},
+        "ratings": [],
+        "trophies": [],
+        "insignias": [],
+        "chats": [],
+        "subjects": [],
+        "name": "student1",
+        "university": "",
+        "degree": "",
+        "picture": "",
+        "rating": ""
+    },
+    {
+        "_id": {"$oid": "DUMMYSTDNT02"},
+        "user": {"$oid": "DUMMYUSER002"},
+        "ratings": [],
+        "trophies": [],
+        "insignias": [],
+        "chats": [],
+        "subjects": [],
+        "name": "student2",
+        "university": "",
+        "degree": "",
+        "picture": "",
+        "rating": ""
+    },
+    {
+        "_id": {"$oid": "DUMMYSTDNT03"},
+        "user": {"$oid": "DUMMYUSER003"},
+        "ratings": [],
+        "trophies": [],
+        "insignias": [],
+        "chats": [],
+        "subjects": [],
+        "name": "student3",
+        "university": "",
+        "degree": "",
+        "picture": "",
+        "rating": ""
+    }
+]
