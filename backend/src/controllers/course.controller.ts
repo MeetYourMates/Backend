@@ -56,11 +56,7 @@ const getCourseStudents = async (req: Request, res: Response) => { //
     console.log(course);
     try{
         //const results = await Course.find({_id:course}).populate("students");
-        const results = await Course.find({_id:course})
-        .populate({
-            path: 'students', 
-            model: 'Student',
-        }).exec();
+        const results = await Student.find({courses:course});
         return res.status(200).json(results);
     } catch (err) {
         console.log(err);
