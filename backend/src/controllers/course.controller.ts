@@ -3,9 +3,17 @@ import Course from '../models/course';
 import Student from '../models/student';
 
 const getCourse = async (req: Request, res: Response) => {
-    //El await hace que la siguiente linea no se ejecute
-    //hasta que el resultado no se haya obtenido
     let course = req.params.subject
+    try{
+        const results = await Course.find({"_id": course}).populate('students');
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+const getCourseStudents = async (req: Request, res: Response) => { //
+    let course = req.params.course
     try{
         const results = await Course.find({"_id": course}).populate('students');
         return res.status(200).json(results);
@@ -53,4 +61,4 @@ const addStudent = async(req: Request, res: Response) =>{
     }); 
 }
 
-export default {getCourse,addCourse,addStudent};
+export default {getCourse,addCourse,addStudent,getCourseStudents};

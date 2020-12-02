@@ -1,0 +1,30 @@
+[
+    {
+        "_id": {"$oid": "DUMMYCOURSE1"},
+        "subject": [{"$oid": "DUMMYSBJCT01"}],
+        "start": "2020-09-23",
+        "end": "2021-02-10",
+        "projects": [],
+        "professors": [],
+        "students": [{"$oid": "DUMMYSTDNT01"},{"$oid": "DUMMYSTDNT02"}]
+    },
+    {
+        "_id": {"$oid": "DUMMYCOURSE2"},
+        "subject": [{"$oid": "DUMMYSBJCT02"}],
+        "start": "2019-02-17",
+        "end": "2020-07-10",
+        "projects": [],
+        "professors": [],
+        "students": [{"$oid": "DUMMYSTDNT02"},{"$oid": "DUMMYSTDNT03"}]
+    },
+
+    {
+        "_id": {"$oid": "DUMMYCOURSE3"},
+        "subject": [{"$oid": "DUMMYSBJCT03"}],
+        "start": "2020-09-23",
+        "end": "2021-02-10",
+        "projects": [],
+        "professors": [],
+        "students": [{"$oid": "DUMMYSTDNT01"},{"$oid": "DUMMYSTDNT03"}]
+    }
+]
