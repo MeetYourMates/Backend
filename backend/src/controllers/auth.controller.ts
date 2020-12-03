@@ -102,6 +102,11 @@ const validateUser = async (req: Request, res: Response) => {
             await User.updateOne({"_id": user._id}, {"validated": true}).then(() => {
                 // @ts-ignore
                 s.deleteOne();
+                //Create New Student
+                const student = new Student({
+                    "user": user?._id,
+                });
+                student.save();
                 return res.status(201).json("User validated");
                 }
             );
