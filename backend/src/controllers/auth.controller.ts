@@ -6,7 +6,7 @@ import {hashSync, compareSync} from "bcrypt";
 import {generate} from "randomstring";
 import {createTransport, Transporter} from "nodemailer";
 import {MailOptions} from "nodemailer/lib/smtp-pool";
-
+const Bcrypt = require("bcryptjs");
 
 const sendEmail: any = async (receiver: string, code: string) =>  {
     const  transporter = createTransport({
@@ -32,8 +32,9 @@ const sendEmail: any = async (receiver: string, code: string) =>  {
 }
 
 const registerUser: any = async (req: Request, res: Response) => {
+    const saltRounds = 10;
     let newUser = new User({
-        "password": hashSync(req.body.password,10),
+        "password": Bcrypt.hashSync(req.body.password,saltRounds),
         "email": req.body.email.toLowerCase(),
         "validated": false
     });
@@ -65,20 +66,25 @@ const registerUser: any = async (req: Request, res: Response) => {
 
 const accessUser = async (req: Request, res: Response) => {
     try{
-        console.log(req.body);
-        const filter = {'email':req.body.email,'password':req.body.password}; //Habría que ehacer el hash aqui?
-        console.log(filter);
+        const saltRounds = 10;
+        console.log("Request Body: ",req.body);
+        const filter = {'email':req.body.email}; //Habría que ehacer el hash aqui?
+        console.log("Filter Query SignIn",filter);
         const resultUser = await User.findOne(filter);
         //I have _id, email, password
 
         if(resultUser!=null){
             console.log("email: "+ resultUser.email);
-            const filter2 = {'user': resultUser._id};
-            const result = await Student.findOne(filter2).populate('user');
-            console.log("student: " + result);
-            return res.status(200).json(result);
+            if(Bcrypt.compareSync(req.body.password, resultUser.password)){
+                const filter2 = {'user': resultUser._id};
+                const result = await Student.findOne(filter2).populate('user');
+                console.log("student: " + result);
+                return res.status(200).json(result);
+            }else{
+                return res.status(404).json({'error':'User Password Incorrect!'});
+            }
         }else{
-            return res.status(404).json();
+            return res.status(404).json({'error':'User Not Found!'});
         }
     } catch (err) {
         console.log(err);
