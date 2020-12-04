@@ -6,6 +6,7 @@ import {hashSync, compareSync} from "bcrypt";
 import {generate} from "randomstring";
 import {createTransport, Transporter} from "nodemailer";
 import {MailOptions} from "nodemailer/lib/smtp-pool";
+import user from "../models/user";
 const Bcrypt = require("bcryptjs");
 
 const sendEmail: any = async (receiver: string, code: string) =>  {
@@ -77,9 +78,40 @@ const accessUser = async (req: Request, res: Response) => {
             console.log("email: "+ resultUser.email);
             if(Bcrypt.compareSync(req.body.password, resultUser.password)){
                 const filter2 = {'user': resultUser._id};
+                resultUser.password = "password-hidden";
                 const result = await Student.findOne(filter2).populate('user');
-                console.log("student: " + result);
-                return res.status(200).json(result);
+                console.log("Login--> student findone Result: " + result);
+                if(result !=null){
+                    if(!result.user.validated){
+                        //Just in case: if some strange way user has Student Model already added!
+                        console.log("Line87:Login--> student hasn't Validated Odd#1 : " + result);
+                        return res.status(203).json(result);
+                    }else{
+                        //User has Courses means ge already has Let's Get Started Finished!
+                        if(Array.isArray(result.courses) && result.courses.length){
+                            if(result.user.validated){
+                                //Validated and Has courses than student can login!
+                                console.log("Login--> student Validated Result: " + result);
+                                return res.status(200).json(result);
+                            }else{
+                                    //Just in case: if some strange way user hasn't validated but somehow has courses!
+                                    console.log("Line98:Login--> student hasn't Validated Odd#2 : " + result);
+                                    return res.status(203).json(result);
+                            }
+                        } else{
+                            //User hasn't enrolled in anycourse
+                            result.user.password = "password-hidden";
+                            console.log("Login--> student Not Enrolled Result: " + result);
+                            return res.status(206).json(result);
+                        }
+                    }
+                }else{
+                    //User Not validated so no Student!
+                    var stud2 = {user:resultUser}
+                    console.log("Login--> student Not Validated: " + result);
+                    return res.status(203).json(stud2);
+                }
+
             }else{
                 return res.status(404).json({'error':'User Password Incorrect!'});
             }
