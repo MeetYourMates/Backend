@@ -41,8 +41,17 @@ const addStudent = async(req: Request, res: Response) =>{
     console.log(course1);
     await Course.updateOne({_id:course?._id}, {$addToSet: {students: studentId}}).then(result => { 
         if (result.nModified == 1) { 
-            console.log("Student added successfully"); 
-            res.status(201).send({message: 'Student added successfully'}); 
+            console.log("Student added successfully");
+            //Course added means we have a course and a student, now we must do the same inversely
+            //Add a course to student
+            Student.updateOne({_id:studentId}, {$addToSet: {courses: course?.id}}).then(result => {
+                if (result.nModified == 1) {
+                    res.status(201).send({message: 'Student added successfully'}); 
+                }else{
+                    res.status(409).send({message: 'Course was already added in student'}); 
+                }
+            });
+            
         } else { 
             res.status(409).json('Student was already added!') 
     } }).catch((err) => { 
