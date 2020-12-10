@@ -1,0 +1,50 @@
+[{
+    "_id":{"$oid": "EETAC000000A"},
+    "name":"EETAC",
+    "degrees":[
+    {
+        "$oid": "EETAC0000001"
+    },
+    {
+        "$oid": "EETAC0000002"
+    },
+    {
+        "$oid": "EETAC0000003"
+    },
+    {
+        "$oid": "EETAC0000004"
+    },
+    {
+        "$oid": "EETAC0000005"
+    }
+    ]   
+},{   
+    "_id":{"$oid": "ESAB0000000A"},
+    "name":"ESAB",
+    "degrees":[
+       {
+           "$oid": "ESAB00000001"
+       },
+       {
+           "$oid": "ESAB00000002"
+       },
+       {
+           "$oid": "ESAB00000003"
+       }
+    ]   
+   },{
+    "_id":{"$oid": "ESEIAAT0000A"},
+    "name":"ESEIAAT",
+    "degrees":[
+       {
+           "$oid": "ESEIAAT00001"
+       },
+       {
+           "$oid": "ESEIAAT00002"
+       },
+       {
+           "$oid": "ESEIAAT00003"
+       }
+    ]   
+   }
+]

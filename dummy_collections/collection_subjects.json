@@ -1,0 +1,90 @@
+[
+    {
+        "_id":{"$oid": "EETACSUBJ009"},
+        "name": "Enginyeria d'Aplicacions",
+	"courses":[
+
+		{"$oid": "EAQT00002020"},
+
+		{"$oid": "EAQP00002020"}
+	]
+    },{
+        "_id":{"$oid": "EETACSUBJ008"},
+        "name": "Tecnologies d'Informació Quàntica",
+	"courses":[
+		{"$oid": "TIQQT0002020"}]
+    },{
+        "_id":{"$oid": "EETACSUBJ007"},
+        "name": "Disseny de Serveis i Aplicacions",
+	"courses":[
+		{"$oid": "DSAQT0002020"}]
+    },{
+        "_id":{"$oid": "EETACSUBJ006"},
+        "name": "Enginyeria de Software Ràdio",
+	"courses":[
+		{"$oid": "ESQT00002020"}]
+    },{
+        "_id":{"$oid": "EETACSUBJ005"},
+        "name": "Interconnexió de Xarxes",
+	"courses":[{"$oid": "IXQT00002020"}]
+    },{
+        "_id":{"$oid": "EETACSUBJ004"},
+        "name": "Mecànica de Vol",
+	"courses":[{"$oid": "MVQT00002020"}]
+    },{
+        "_id":{"$oid": "EETACSUBJ003"},
+        "name": "Aerodinámica",
+	"courses":[{"$oid": "AEQT00002020"}]
+    },{
+        "_id":{"$oid": "EETACSUBJ002"},
+        "name": "Quimica",
+        "courses":[{"$oid": "QUQT00002020"}]
+    },{
+        "_id":{"$oid": "EETACSUBJ001"},
+        "name": "Fisica",
+	"courses":[{"$oid": "FIQT00002020"}]
+    },{
+        "_id":{"$oid": "ESAB0SUBJ001"},
+        "name": "Produccion Animal",
+	"courses":[{"$oid": "PAQT00002020"}]
+    },{
+        "_id":{"$oid": "ESAB0SUBJ002"},
+        "name": "Sistemas de Cultivo",
+	"courses":[{"$oid": "SCQT00002020"}]
+    },{
+        "_id":{"$oid": "ESAB0SUBJ003"},
+        "name": "Dibujo 1",
+	"courses":[{"$oid": "DIBQT0002020"}]
+    },{
+        "_id":{"$oid": "ESAB0SUBJ004"},
+        "name": "Ecología",
+	"courses":[{"$oid": "ECOQT0002020"}]
+    },{
+        "_id":{"$oid": "ESAB0SUBJ005"},
+        "name": "Industrias Extractivas y Fermentativas",
+	"courses":[{"$oid": "IEFQT0002020"}]
+    },{
+        "_id":{"$oid": "ESAB0SUBJ006"},
+        "name": "Industrias Cárnicas y Lácteas",
+	"courses":[{"$oid": "ICLQT0002020"}]
+    },{
+        "_id":{"$oid": "ESEIAATSU001"},
+        "name": "Sistemas Eléctricos",
+	"courses":[{"$oid": "SEQT00002020"}]
+    },{
+        "_id":{"$oid": "ESEIAATSU002"},
+        "name": "Ciencia y Tecnología de los Materiales",
+    },{
+        "_id":{"$oid": "ESEIAATSU003"},
+        "name": "Espacio Aéreo, Navegación e Infraestructuras",
+	"courses":[{"$oid": "EANIQT002020"}]
+    },{
+        "_id":{"$oid": "ESEIAATSU004"},
+        "name": "Vehículos Aeroespaciales",
+	"courses":[{"$oid": "VAQT00002020"}]
+    },{
+        "_id":{"$oid": "ESEIAATSU005"},
+        "name": "Aerodinámica Experimental",
+	"courses":[{"$oid": "AEXQT0002020"}]
+    }
+]
