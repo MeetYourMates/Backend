@@ -97,6 +97,8 @@ const accessUser = async (req: Request, res: Response) => {
                 if(result !=null){
                     if(!result.user.validated){
                         //Not Validated, no Token!!
+                        const userWithoutToken = {'_id': result.user._id,'email':result.user.email,'password':'password-hidden'};
+                        result.user = userWithoutToken;
                         //Just in case: if some strange way user has Student Model already added!
                         console.log("Line87:Login--> student hasn't Validated Odd#1 : " + result);
                         return res.status(203).json(result);
