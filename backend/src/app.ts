@@ -24,6 +24,7 @@ app.set('port', process.env.PORT || 3000);
 //middlewares
 app.use(morgan('dev'));
 app.use(cors());
+//*******************************KRUNAL**************************************/
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 //Against deprectaction warning of bodyparser
@@ -34,6 +35,7 @@ app.use(express.json());
 //Passport JWT
 app.use(passport.initialize());
 passport.use(passportMiddleware);
+//*******************************KRUNAL**************************************/
 //Changes
 
 //API Routes

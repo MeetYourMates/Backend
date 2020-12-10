@@ -65,6 +65,7 @@ const registerUser: any = async (req: Request, res: Response) => {
         return res.status(500);
     }
 };
+//*******************************KRUNAL**************************************/
 //Token created with 1 week expiration
 function createToken(user: IUser) {
     return jwt.sign({ id: user.id, email: user.email }, config.jwtSecret, {
@@ -149,7 +150,7 @@ const accessUser = async (req: Request, res: Response) => {
         return res.status(500).json(err);
     }
 }
-
+//*******************************KRUNAL**************************************/
 const validateUser = async (req: Request, res: Response) => {
     let code = req.params.code;
     let s = await Validation.findOne({"code": code});
