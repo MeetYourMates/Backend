@@ -1,12 +1,13 @@
-import Student from "../models/student";
-import User from "../models/user";
+import Student, { IStudent } from "../models/student";
 import Validation from "../models/validation";
+import jwt from "jsonwebtoken";
+import config from "../config/config";
 import {Request, Response} from "express";
 import {hashSync, compareSync} from "bcrypt";
 import {generate} from "randomstring";
 import {createTransport, Transporter} from "nodemailer";
 import {MailOptions} from "nodemailer/lib/smtp-pool";
-import user from "../models/user";
+import User, { IUser } from "../models/user";
 const Bcrypt = require("bcryptjs");
 
 const sendEmail: any = async (receiver: string, code: string) =>  {
@@ -64,16 +65,28 @@ const registerUser: any = async (req: Request, res: Response) => {
         return res.status(500);
     }
 };
-
+//Token created with 1 week expiration
+function createToken(user: IUser) {
+    return jwt.sign({ id: user.id, email: user.email }, config.jwtSecret, {
+        expiresIn: 604800
+    });
+}
+//Custom Student with user = {email,password, token}
+function getCustomStudent(student: IStudent,user:any) {
+    const result = {_id:student._id,name:student.name,university:student.university,degree:student.degree,user:user,
+    picture:student.picture,ratings:student.ratings,trophies:student.trophies,insignias:student.insignias,
+    chats:student.chats,courses:student.courses
+    };
+    return result;
+}
+//Login User and returns Student
 const accessUser = async (req: Request, res: Response) => {
     try{
-        const saltRounds = 10;
         console.log("Request Body: ",req.body);
-        const filter = {'email':req.body.email}; //Habría que ehacer el hash aqui?
+        const filter = {'email':req.body.email};
         console.log("Filter Query SignIn",filter);
         const resultUser = await User.findOne(filter);
         //I have _id, email, password
-
         if(resultUser!=null){
             console.log("email: "+ resultUser.email);
             if(Bcrypt.compareSync(req.body.password, resultUser.password)){
@@ -83,6 +96,7 @@ const accessUser = async (req: Request, res: Response) => {
                 console.log("Login--> student findone Result: " + result);
                 if(result !=null){
                     if(!result.user.validated){
+                        //Not Validated, no Token!!
                         //Just in case: if some strange way user has Student Model already added!
                         console.log("Line87:Login--> student hasn't Validated Odd#1 : " + result);
                         return res.status(203).json(result);
@@ -90,24 +104,34 @@ const accessUser = async (req: Request, res: Response) => {
                         //User has Courses means ge already has Let's Get Started Finished!
                         if(Array.isArray(result.courses) && result.courses.length){
                             if(result.user.validated){
+                                //Student --> user --> token
+                                //token: createToken(user)
+                                const userWithToken = {'_id': result.user._id,'email':result.user.email,'password':'password-hidden','token':createToken(result.user)};
+                                //Newly custom created user has now token in the json!
+                                const result2 = getCustomStudent(result,userWithToken);
                                 //Validated and Has courses than student can login!
-                                console.log("Login--> student Validated Result: " + result);
-                                return res.status(200).json(result);
+                                console.log("Login--> student Validated Result: " + result2);
+                                return res.status(200).json(result2);
                             }else{
-                                    //Just in case: if some strange way user hasn't validated but somehow has courses!
-                                    console.log("Line98:Login--> student hasn't Validated Odd#2 : " + result);
-                                    return res.status(203).json(result);
+                                //Not Validated, no Token!!
+                                //Just in case: if some strange way user hasn't validated but somehow has courses!
+                                console.log("Line98:Login--> student hasn't Validated Odd#2 : " + result);
+                                return res.status(203).json(result);
                             }
                         } else{
-                            //User hasn't enrolled in anycourse
-                            result.user.password = "password-hidden";
-                            console.log("Login--> student Not Enrolled Result: " + result);
-                            return res.status(206).json(result);
+                            //Student --> user --> token
+                            //token: createToken(user)
+                            const userWithToken = {'_id': result.user._id,'email':result.user.email,'password':'password-hidden','token':createToken(result.user)};
+                            //Newly custom created user has now token in the json!
+                            const result2 = getCustomStudent(result,userWithToken);
+                            console.log("Login--> student Not Enrolled Result: " + result2);
+                            return res.status(206).json(result2);
                         }
                     }
                 }else{
                     //User Not validated so no Student!
-                    var stud2 = {user:resultUser}
+                    const userWithToken = {'_id': resultUser._id,'email':resultUser.email,'password':'password-hidden','token':createToken(resultUser)};
+                    var stud2 = {user:userWithToken}
                     console.log("Login--> student Not Validated: " + result);
                     return res.status(203).json(stud2);
                 }
