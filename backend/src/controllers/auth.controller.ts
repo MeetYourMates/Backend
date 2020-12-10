@@ -150,6 +150,58 @@ const accessUser = async (req: Request, res: Response) => {
         return res.status(500).json(err);
     }
 }
+// TODO: FINISH THIS FUNCTIONS
+const forgotPassword = async (req: Request, res: Response) => {
+    let code = req.params.code;
+    let s = await Validation.findOne({"code": code});
+
+    if (s != null) {
+        let user = await User.findOne({"_id": s.user._id})
+        if (user != null) {
+            await User.updateOne({"_id": user._id}, {"validated": true}).then(() => {
+                // @ts-ignore
+                s.deleteOne();
+                //Create New Student
+                const student = new Student({
+                    "user": user?._id,
+                    "name":user?.email,
+                });
+                student.save();
+                return res.status(201).json("User validated");
+                }
+            );
+        }
+        else {
+            return res.status(500);
+        }
+    }
+}
+// TODO: FINISH THIS FUNCTIONS
+const changePassword = async (req: Request, res: Response) => {
+    let code = req.params.code;
+    let s = await Validation.findOne({"code": code});
+
+    if (s != null) {
+        let user = await User.findOne({"_id": s.user._id})
+        if (user != null) {
+            await User.updateOne({"_id": user._id}, {"validated": true}).then(() => {
+                // @ts-ignore
+                s.deleteOne();
+                //Create New Student
+                const student = new Student({
+                    "user": user?._id,
+                    "name":user?.email,
+                });
+                student.save();
+                return res.status(201).json("User validated");
+                }
+            );
+        }
+        else {
+            return res.status(500);
+        }
+    }
+}
 //*******************************KRUNAL**************************************/
 const validateUser = async (req: Request, res: Response) => {
     let code = req.params.code;
@@ -177,4 +229,4 @@ const validateUser = async (req: Request, res: Response) => {
     }
 }
 
-export default {registerUser, accessUser, validateUser};
+export default {registerUser, accessUser, validateUser,forgotPassword,changePassword};
