@@ -10,7 +10,7 @@ import {createTransport, Transporter} from "nodemailer";
 import {MailOptions} from "nodemailer/lib/smtp-pool";
 import User, { IUser } from "../models/user";
 const Bcrypt = require("bcryptjs");
-
+const { body, validationResult } = require('express-validator');
 const sendEmail: any = async (receiver: string, code: string) =>  {
     const  transporter = createTransport({
         service: 'gmail',
@@ -19,11 +19,13 @@ const sendEmail: any = async (receiver: string, code: string) =>  {
             pass: 'MeetYourMatesTest'
         }
     });
+    var message = "<h1>Welcome to Meet your Mates!</h1><p>To activate your account, use the next link: <a href='http://localhost:3000/auth/validate/"+code+"'>Activate</a> Or introduce the next code in the app: </p><h3>"+ code +"</h3>";
     let mailOptions: MailOptions = {
         from: 'meetyourmatesprueba@gmail.com',
         to: receiver,
         subject: "Welcome to Meet Your Mates!",
-        text: "Welcome to Meet your Mates! to activate your account, use the next link: http://localhost:3000/auth/validate/" +code+ " Or introduce the next code in the app: "+ code
+        text: "Welcome to Meet your Mates! To activate your account, use the next link: http://localhost:3000/auth/validate/" +code+ " Or introduce the next code in the app: "+ code,
+        html: message
     }
     transporter.sendMail(mailOptions, (error) => {
         if (error) {
@@ -81,6 +83,10 @@ function getCustomStudent(student: IStudent,user:any) {
 }
 //Login User and returns Student
 const accessUser = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try{
         console.log("Request Body: ",req.body);
         const filter = {'email':req.body.email};
@@ -195,6 +201,10 @@ const forgotPassword = async (req: Request, res: Response) => {
     }
 }
 const changePassword = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     //let code = req.params.code;
     //Request.body = {"email":email,"code":code,"password":newPassword};
     if(req.body.email==null||req.body.code==null||req.body.password==null){
