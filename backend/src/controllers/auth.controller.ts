@@ -79,7 +79,7 @@ const accessUser = async (req: Request, res: Response) => {
             if(Bcrypt.compareSync(req.body.password, resultUser.password)){
                 const filter2 = {'user': resultUser._id};
                 resultUser.password = "password-hidden";
-                const result = await Student.findOne(filter2).populate('user');
+                const result = await Student.findOne(filter2).populate('user').populate('ratings').populate('trophies').populate('insignias');
                 console.log("Login--> student findone Result: " + result);
                 if(result !=null){
                     if(!result.user.validated){
@@ -137,6 +137,7 @@ const validateUser = async (req: Request, res: Response) => {
                 //Create New Student
                 const student = new Student({
                     "user": user?._id,
+                    "name":user?.email,
                 });
                 student.save();
                 return res.status(201).json("User validated");
