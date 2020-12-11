@@ -19,7 +19,6 @@ const professorSchema = new Schema({
     courses:[{
         type: Schema.Types.ObjectId,
         ref: Course
-
     }]
 });
 

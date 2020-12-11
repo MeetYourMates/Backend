@@ -24,14 +24,6 @@ const courseSchema = new Schema({
     projects: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: Project
-    }],
-    professors: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: Professor
-    }],
-    students: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: Student
     }]
 });
 //
@@ -40,9 +32,7 @@ export interface ICourse extends Document {
     subject: ISubject['_id'];
     start: Date;
     end: Date;
-    projects: IProject['_id'];
-    professors: IProfessor['_id'];
-    students: IStudent['_id'];
+    projects: IProject['_id']
 }
 
 //Exportamos modelo para poder usarlo 

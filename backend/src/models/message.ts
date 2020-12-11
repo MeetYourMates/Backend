@@ -9,6 +9,9 @@ const messageSchema = new Schema({
     },
     picture: {
         type: String
+    },
+    date:{
+        type:Date
     }
 });
 
@@ -17,6 +20,7 @@ export interface IMessage extends Document {
     name: string;
     text: string;
     picture: string;
+    date:Date;
 }
 
 //Exportamos modelo para poder usarlo 
