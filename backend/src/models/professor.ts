@@ -3,6 +3,8 @@ import User, { IUser } from './user';
 import { ICourse } from './course';
 const Course = require('./course');
 
+//WINS
+
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const professorSchema = new Schema({
     name: {

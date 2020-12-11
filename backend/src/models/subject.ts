@@ -8,6 +8,7 @@ const subjectSchema = new Schema({
         type: String,
         index:true
     },
+    //OUT
     courses: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: Course

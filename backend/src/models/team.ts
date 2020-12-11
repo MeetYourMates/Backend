@@ -21,7 +21,8 @@ const teamSchema = new Schema({
     meetings: [{
         type: Schema.Types.ObjectId,
         ref: Meeting
-    }]
+    }],
+    //students
 });
 
 //Interfaz para tratar respuesta como documento

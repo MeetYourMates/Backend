@@ -7,7 +7,7 @@ import Rating, { IRating } from './rating';
 import  {ICourse} from './course';
 const Course = require('./course');
 
-
+//WINS
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const studentSchema = new Schema({
     name: {
@@ -46,6 +46,7 @@ const studentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Chat
     }],
+    //teams
     courses:[{
         type: Schema.Types.ObjectId,
         ref: Course
