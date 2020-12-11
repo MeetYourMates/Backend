@@ -1,8 +1,9 @@
 import Student, { IStudent } from "../models/student";
 import Validation from "../models/validation";
+import Recovery from "../models/recovery";
 import jwt from "jsonwebtoken";
 import config from "../config/config";
-import {Request, Response} from "express";
+import {request, Request, Response} from "express";
 import {hashSync, compareSync} from "bcrypt";
 import {generate} from "randomstring";
 import {createTransport, Transporter} from "nodemailer";
@@ -29,8 +30,6 @@ const sendEmail: any = async (receiver: string, code: string) =>  {
             console.log(error);
         }
     })
-
-
 }
 
 const registerUser: any = async (req: Request, res: Response) => {
@@ -150,56 +149,72 @@ const accessUser = async (req: Request, res: Response) => {
         return res.status(500).json(err);
     }
 }
-// TODO: FINISH THIS FUNCTIONS
+const sendEmailRecovery: any = async (receiver: string, code: string) =>  {
+    const  transporter = createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'meetyourmatesprueba@gmail.com',
+            pass: 'MeetYourMatesTest'
+        }
+    });
+    var message = "<h1>MYM - Reset Password</h1><p>Need to Reset the password? Just type this code in the app, If you did not make the request, please ignore this email.</p><h3>"+ code +"</h3>";
+    let mailOptions: MailOptions = {
+        from: 'meetyourmatesprueba@gmail.com',
+        to: receiver,
+        subject: "Meet Your Mates - Password Reset Request",
+        text: "Need to Reset the password? Just type this code in the app: "+code+ " ,If you did not make the request, please ignore this email.",
+        html: message
+    }
+    transporter.sendMail(mailOptions, (error) => {
+        if (error) {
+            console.log(error);
+        }
+    })
+}
 const forgotPassword = async (req: Request, res: Response) => {
-    let code = req.params.code;
-    let s = await Validation.findOne({"code": code});
-
-    if (s != null) {
-        let user = await User.findOne({"_id": s.user._id})
-        if (user != null) {
-            await User.updateOne({"_id": user._id}, {"validated": true}).then(() => {
-                // @ts-ignore
-                s.deleteOne();
-                //Create New Student
-                const student = new Student({
-                    "user": user?._id,
-                    "name":user?.email,
-                });
-                student.save();
-                return res.status(201).json("User validated");
-                }
-            );
-        }
-        else {
-            return res.status(500);
-        }
+    if(req.params.email==null){
+        return res.status(400).json({"message":"Bad Request, data requiered"});
+    }
+    let email = req.params.email;
+    //let s = await Validation.findOne({"code": code});
+    console.log({email})
+    let s = await User.findOne({"email": email});
+    if (s) {
+        //User Found
+        let recovery = new Recovery({
+            "code": generate(7),
+            "email": email
+        })
+        recovery.save().then(() => {
+            sendEmailRecovery(email,recovery.code);
+            return res.status(201).json({"message": "Email Sent"});
+        });
+    }else{
+        //User doesnt Exist
+        return res.status(404).json({"message":"No User Found"});
     }
 }
-// TODO: FINISH THIS FUNCTIONS
 const changePassword = async (req: Request, res: Response) => {
-    let code = req.params.code;
-    let s = await Validation.findOne({"code": code});
-
+    //let code = req.params.code;
+    //Request.body = {"email":email,"code":code,"password":newPassword};
+    if(req.body.email==null||req.body.code==null||req.body.password==null){
+        return res.status(400).json({"message":"Bad Request, data requiered"});
+    }else if(req.body.password.length<3){
+        return res.status(400).json({"message":"Password min length 3"});
+    }
+    const saltRounds = 10;
+    const filter = {'code':req.body.code,'email':req.body.email};
+    let s = await Recovery.findOne(filter);
     if (s != null) {
-        let user = await User.findOne({"_id": s.user._id})
-        if (user != null) {
-            await User.updateOne({"_id": user._id}, {"validated": true}).then(() => {
-                // @ts-ignore
-                s.deleteOne();
-                //Create New Student
-                const student = new Student({
-                    "user": user?._id,
-                    "name":user?.email,
-                });
-                student.save();
-                return res.status(201).json("User validated");
-                }
-            );
-        }
-        else {
-            return res.status(500);
-        }
+        //let user = await User.findOne({"_id": s.user._id})
+        await User.updateOne({"email": req.body.email}, {"password":Bcrypt.hashSync(req.body.password,saltRounds) }).then(() => {
+            // @ts-ignore
+            s.deleteOne();
+            return res.status(200).json({"message":"Sucessfully Changed Password"});
+            }
+        );
+    }else {
+        return res.status(500).json({"message":"Code or Email Incorrect"});
     }
 }
 //*******************************KRUNAL**************************************/
