@@ -3,7 +3,7 @@ import Validation from "../models/validation";
 import Recovery from "../models/recovery";
 import jwt from "jsonwebtoken";
 import config from "../config/config";
-import {request, Request, Response} from "express";
+import {Request, Response} from "express";
 import {hashSync, compareSync} from "bcrypt";
 import {generate} from "randomstring";
 import {createTransport, Transporter} from "nodemailer";
@@ -66,7 +66,7 @@ const registerUser: any = async (req: Request, res: Response) => {
         return res.status(500);
     }
 };
-//*******************************KRUNAL**************************************/
+
 //Token created with 1 week expiration
 function createToken(user: IUser) {
     return jwt.sign({ id: user.id, email: user.email }, config.jwtSecret, {
@@ -138,9 +138,13 @@ const accessUser = async (req: Request, res: Response) => {
                     }
                 }else{
                     //User Not validated so no Student!
-                    const userWithToken = {'_id': resultUser._id,'email':resultUser.email,'password':'password-hidden','token':createToken(resultUser)};
-                    var stud2 = {user:userWithToken}
-                    console.log("Login--> student Not Validated: " + result);
+                    const userWithoutToken = {'_id': resultUser._id,'email':resultUser.email,'password':'password-hidden'};
+                    //var stud2:IStudent = {user:userWithToken}
+                    let stud2 = new Student({
+                        "user": userWithoutToken
+                    })
+                    //const result2 = getCustomStudent(stud2,userWithToken);
+                    console.log("Login--> student Not Validated: " + stud2);
                     return res.status(203).json(stud2);
                 }
 
@@ -227,7 +231,7 @@ const changePassword = async (req: Request, res: Response) => {
         return res.status(500).json({"message":"Code or Email Incorrect"});
     }
 }
-//*******************************KRUNAL**************************************/
+//Validates User
 const validateUser = async (req: Request, res: Response) => {
     let code = req.params.code;
     let s = await Validation.findOne({"code": code});

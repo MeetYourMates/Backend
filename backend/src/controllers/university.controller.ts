@@ -46,8 +46,8 @@ const addFaculty = async(req: Request, res: Response) =>{
         "name": req.body.name
      }); 
 
-    //Look for the student in the database
-    let facultydata =await Faculty.findOne({name: faculty.name})
+    //Look for the Faculty in the database
+    let facultydata = await Faculty.findOne({name: faculty.name})
 
     //If the student is not in the database then save it
     if (!facultydata) { 

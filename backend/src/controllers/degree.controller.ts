@@ -29,6 +29,7 @@ const addDegree = async (req: Request, res: Response) => {
         return res.status(500).json(err);
     })
 }
+//Adds a subject to a degree
 const addSubject = async(req: Request, res: Response) =>{
 
     //Display request

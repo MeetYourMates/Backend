@@ -6,6 +6,7 @@ import Student from '../models/student';
 const getStudents = async (req: Request, res: Response) => {
     try{
         const results = await Student.find({}).populate('users','trophies','insignias');
+        //TODO: Security Risk!!! SENDING PASSWORD OF STUDENTS INSIDE USERS DB
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
