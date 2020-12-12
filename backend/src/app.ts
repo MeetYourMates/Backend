@@ -20,7 +20,7 @@ const app = express();
 //Configuración
 //Cuando haya variable de entorno sera PORT y sino 3000
 app.set('port', process.env.PORT || 3000);
-
+app.use(express.static('views'));
 //middlewares
 app.use(morgan('dev'));
 app.use(cors());

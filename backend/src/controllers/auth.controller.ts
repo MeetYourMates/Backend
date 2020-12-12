@@ -142,10 +142,11 @@ const accessUser = async (req: Request, res: Response) => {
                     //var stud2:IStudent = {user:userWithToken}
                     let stud2 = new Student({
                         "user": userWithoutToken
-                    })
+                    });
+                    const result2 = getCustomStudent(stud2,userWithoutToken);
                     //const result2 = getCustomStudent(stud2,userWithToken);
-                    console.log("Login--> student Not Validated: " + stud2);
-                    return res.status(203).json(stud2);
+                    console.log("Login--> student Not Validated: " + result2);
+                    return res.status(203).json(result2);
                 }
 
             }else{
@@ -249,7 +250,8 @@ const validateUser = async (req: Request, res: Response) => {
                     "picture": "https://res.cloudinary.com/mym/image/upload/v1607678821/mym/blank-profile-picture-973460_640_wn9bqw.webp"
                 });
                 student.save();
-                return res.status(201).json("User validated");
+                //return res.status(201).json("User validated");
+                return res.status(201).sendFile(process.cwd() + '/src/views/confirmed.htm');
                 }
             );
         }
