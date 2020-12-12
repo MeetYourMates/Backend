@@ -47,5 +47,10 @@ app.use('/degree',degreeRoutes);
 app.use('/trophy', trophiesRoutes);
 app.use('/insignia', insigniasRoutes);
 app.use('/course',courseRoutes);
+
+// Middleware to catch 404 errors
+app.use(function(req, res, next) {
+  res.status(404).sendFile(process.cwd() + '/src/views/404.htm');
+});
 //Exportamos fichero como 'app'
 export default app;
