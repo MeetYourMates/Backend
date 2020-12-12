@@ -1,6 +1,8 @@
 import {Request, Response} from 'express';
 import Student from '../models/student';
 
+
+
 const getStudents = async (req: Request, res: Response) => {
     try{
         const results = await Student.find({}).populate('users','trophies','insignias');
@@ -44,25 +46,25 @@ const addStudent = async (req: Request, res: Response) => {
         return res.status(500).json(err);
     })
 }
-
-function updateStudent (req: Request, res: Response){
+/******************************POL***************************************/
+function updateStudentProfile (req: Request, res: Response){
+    console.log(req.body);
     const id: string = req.body._id;
-    const name: string = req.params.name;
-    const university: string = req.body.university;
-    const degree: string = req.body.degree;
-    const user: number = req.body.user;
+    const name: string = req.body.name;
+    const user: string = req.body.user;
     const picture: string = req.body.picture;
-    const rating: number = req.body.rating;
-    const trophies: string = req.body.trophies;
-    const courses: string = req.body.courses;
-    const chats: string = req.body.chats;
-    Student.update({"_id": id}, {$set: {"name": name, "university": university, "degree": degree, "user": user, 
-                              "picture": picture, "rating": rating, "trophies": trophies, "courses": courses, "chats": chats}}).then((data) => {
+    Student.update({"_id": id}, {$set: {"name": name,"user": user, 
+                              "picture": picture, }}).then((data) => {
         res.status(201).json(data);
     }).catch((err) => {
         res.status(500).json(err);
     })
 }
+
+
+
+
+/***************************************************************************/
 function deleteStudent (req:Request,res:Response){
     Student.deleteOne({"_id":req.params._id}).then((data) => {
         res.status(200).json(data);
@@ -70,4 +72,7 @@ function deleteStudent (req:Request,res:Response){
         res.status(500).json(err);
     })
 }
-export default {getStudents, getStudent,addStudent,getSubjects,updateStudent};
+
+
+
+export default {getStudents, getStudent,addStudent,getSubjects,updateStudentProfile};
