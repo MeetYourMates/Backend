@@ -54,7 +54,9 @@ const registerUser: any = async (req: Request, res: Response) => {
         })
         let validation = new Validation({
             "code": generate(7),
-            "user": newUser
+            "user": newUser,
+            "name": req.body.name,
+            "surname": req.body.surname
         })
         validation.save().then(() => {
             sendEmail(newUser.email,validation.code);
@@ -252,7 +254,7 @@ const validateUser = async (req: Request, res: Response) => {
                 //Create New Student
                 const student = new Student({
                     "user": user?._id,
-                    "name":user?.email,
+                    "name": s?.name + " " + s?.surname,
                     "picture": "https://res.cloudinary.com/mym/image/upload/v1607678821/mym/blank-profile-picture-973460_640_wn9bqw.webp"
                 });
                 student.save();
