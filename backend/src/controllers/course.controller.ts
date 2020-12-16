@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import Course from '../models/course';
 import Student from '../models/student';
 
@@ -46,7 +46,8 @@ const addStudent = async(req: Request, res: Response) =>{
         console.log([course]);
         if(course!=null){
             //We got the course now we search if the student has this course
-            Student.updateOne({_id:studentId}, {$addToSet: {courses: course?._id}}).then(result => {
+            //@ts-ignore
+            Student.updateOne({_id:studentId}, {$addToSet: {courses: course!._id}}).then(result => {
                 if (result.nModified> 0) {
                     res.status(201).send({message: 'Student Enrolled succesfully!'}); 
                 }else{
