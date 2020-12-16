@@ -13,10 +13,13 @@ const Bcrypt = require("bcryptjs");
 const { body, validationResult } = require('express-validator');
 const sendEmail: any = async (receiver: string, code: string) =>  {
     const  transporter = createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
         auth: {
             user: 'meetyourmatesprueba@gmail.com',
-            pass: 'MeetYourMatesTest'
+            pass: 'hztmdbzaopsgtnal'
         }
     });
     var message = "<h1>Welcome to Meet your Mates!</h1><p>To activate your account, use the next link: <a href='http://localhost:3000/auth/validate/"+code+"'>Activate</a> Or introduce the next code in the app: </p><h3>"+ code +"</h3>";
@@ -162,10 +165,13 @@ const accessUser = async (req: Request, res: Response) => {
 }
 const sendEmailRecovery: any = async (receiver: string, code: string) =>  {
     const  transporter = createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
         auth: {
             user: 'meetyourmatesprueba@gmail.com',
-            pass: 'MeetYourMatesTest'
+            pass: 'hztmdbzaopsgtnal'
         }
     });
     var message = "<h1>MYM - Reset Password</h1><p>Need to Reset the password? Just type this code in the app, If you did not make the request, please ignore this email.</p><h3>"+ code +"</h3>";
