@@ -1,9 +1,5 @@
 import mongoose, { Schema, Document} from 'mongoose';
-import {IProfessor} from './professor';
-const Professor = require('./professor');
 import Project, {IProject} from './project';
-import  {IStudent} from './student';
-const Student = require('./student');
 import  {ISubject} from './subject';
 const Subject = require('./subject');
 //Modelo de objeto que se guarda en la BBDD de MongoDB

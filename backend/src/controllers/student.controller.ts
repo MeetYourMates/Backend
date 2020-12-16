@@ -20,13 +20,26 @@ const getStudent = async (req: Request, res: Response) => {
         return res.status(404).json(err);
     }
 }
-const getSubjects = async (req: Request, res: Response) => {
+const getSubjectsProjects = async (req: Request, res: Response) => {
     try{
-        const results = await Student.find({"user":{"email":req.body.email}}).populate('subjects');
+        const results = await Student.find({"user":{"email":req.params.email}})
+    .populate({
+        path: 'courses', 
+        model: 'Course',
+        populate: [{
+            path: 'subjects',
+            model: 'Subject'
+        }, 
+        {
+            path: 'projects',
+            model: 'Project'
+        }]}).exec();
+
         return res.status(200).json(results);
     } catch (err) {
         return res.status(404).json(err);
     }
+    
 }
 const addStudent = async (req: Request, res: Response) => {
     const student = new Student({
@@ -76,4 +89,4 @@ function deleteStudent (req:Request,res:Response){
 
 
 
-export default {getStudents, getStudent,addStudent,getSubjects,updateStudentProfile};
+export default {getStudents, getStudent,addStudent,getSubjectsProjects,updateStudentProfile};
