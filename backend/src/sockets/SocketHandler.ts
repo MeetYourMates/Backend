@@ -30,6 +30,8 @@ var userData = {
 };
 // structure inspired by
 // https://stackoverflow.com/questions/20466129/how-to-organize-client_socket-handling-in-node-js-and-client_socket-io-app
+//USE THIS FROM NOW ON --> https://www.npmjs.com/package/socketio-jwt
+//NOT THE OLD HEADER METHOD!!
 export default (io: Server) => {
   // Chatroom
   io.on('connection', function (client_socket) {

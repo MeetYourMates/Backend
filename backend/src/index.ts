@@ -2,7 +2,7 @@
 import app from './app'; //Exported App importing here
 //Execute Connection to BDD before launching the Server
 import './database';
-import socketIoHandlers from './sockets/eventHandlers';
+import socketIoHandlers from './sockets/SocketHandler';
 import debug = require('debug');
 //Index.ts level constants
 const packageJson = require('../package.json')
