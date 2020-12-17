@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-var jwtHelper = require('../helpers/jwt');
+import jwtHelper from '../helpers/jwt';
 var Chat = require('./EventHandlers/Chat');
 //var User = require('./EventHandlers/User');
 
@@ -33,7 +33,10 @@ var userData = {
 export default (io: Server) => {
   // Chatroom
   io.on('connection', function (client_socket) {
+    console.log("---------------Headers---------- ");
+    console.log(client_socket.handshake.headers);
     const [ valido, id,email] = jwtHelper.comprobarJWT( client_socket.handshake.headers['x-token'] );
+    console.log("Valid: "+valido);
     // Verificar Authentication Of User
     if ( !valido ) { return client_socket.disconnect(); }
     else{

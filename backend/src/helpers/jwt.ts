@@ -28,9 +28,10 @@ const generarJWT = ( user: User ) => {
 }
 */
 const comprobarJWT = ( token = '' ) => {
-
+    console.log("Testing Token1!");
     try {
-
+        console.log("Testing Token!");
+        console.log("Token: "+token);
         const { id, email } = jwt.verify( token, config.jwtSecret );
         return [ true, id,email];
 
@@ -39,7 +40,6 @@ const comprobarJWT = ( token = '' ) => {
     }
 }
 
-
-module.exports = {
+export default {
     comprobarJWT
 }
