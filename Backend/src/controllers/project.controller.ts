@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import Course from '../models/course';
 import Project from '../models/project';
 
@@ -29,6 +29,7 @@ const addProject
         console.log([course]);
         if(course!=null){
             //We got the course now we search if the Project has this course 
+             //@ts-ignore
             Course.updateOne({_id:course?._id}, {$addToSet: {projects: project?._id}}).then(result => {
                 if (result.nModified> 0) {
                     res.status(201).send({message: 'Project Enrolled succesfully!'}); 
