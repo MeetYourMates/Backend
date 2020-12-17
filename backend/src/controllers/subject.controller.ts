@@ -2,6 +2,19 @@ import {Request, Response} from 'express';
 import Subject from '../models/subject';
 import Course from '../models/course';
 
+const getSubjects = async (req: Request, res: Response) => {
+    //El await hace que la siguiente linea no se ejecute
+    //hasta que el resultado no se haya obtenido
+    try{
+        const results = await Subject.find({});
+        console.log(results);
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+}
+
+
 const addSubject = async (req: Request, res: Response) => {
     const subject = new Subject({
         "name": req.body.name
@@ -47,4 +60,4 @@ const addCourse = async(req: Request, res: Response) =>{
     }); 
  }
 
-export default {addSubject,addCourse};
+export default {addSubject,addCourse,getSubjects};
