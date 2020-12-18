@@ -4,20 +4,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 //Importamos dependencias
-const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const passport_1 = __importDefault(require("passport"));
+const passport_2 = __importDefault(require("./middlewares/passport"));
 //Importamos fichero de rutas
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
-const student_routes_1 = __importDefault(require("./routes/student.routes"));
-const university_routes_1 = __importDefault(require("./routes/university.routes"));
-const faculty_routes_1 = __importDefault(require("./routes/faculty.routes"));
-const degree_routes_1 = __importDefault(require("./routes/degree.routes"));
-const trophies_routes_1 = __importDefault(require("./routes/trophies.routes"));
-const insignias_routes_1 = __importDefault(require("./routes/insignias.routes"));
 const course_routes_1 = __importDefault(require("./routes/course.routes"));
-const passport_2 = __importDefault(require("./middlewares/passport"));
+const degree_routes_1 = __importDefault(require("./routes/degree.routes"));
+const faculty_routes_1 = __importDefault(require("./routes/faculty.routes"));
+const insignias_routes_1 = __importDefault(require("./routes/insignias.routes"));
+const student_routes_1 = __importDefault(require("./routes/student.routes"));
+const trophies_routes_1 = __importDefault(require("./routes/trophies.routes"));
+const university_routes_1 = __importDefault(require("./routes/university.routes"));
+var path = require('path');
 //Inicializamos express
 const app = express_1.default();
 //Path for Express Server
@@ -32,12 +33,14 @@ app.use(express_1.default.static('views'));
 app.use(morgan_1.default('dev'));
 app.use(cors_1.default());
 //*******************************KRUNAL**************************************/
+//var dirPublic = path.join(__dirname, 'public');
 app.use(express_1.default.urlencoded({ extended: false }));
-//app.use(express.static(__dirname + "/public"));
-app.use(express_1.default.static(__dirname + '/public'));
-// set up our socket server
-//require('./sockets/base')(io);
-app.use(favicon(__dirname + "/public" + '/favicon.ico'));
+//For Public Folder such as WebPage and Etc...
+app.use(express_1.default.static(path.join(__dirname, 'public')));
+//For Serving Images could be any big image...
+app.use('/images', express_1.default.static(path.join(__dirname, 'images')));
+//For Serving Favicon shown on webtabs 16x16 px
+app.use(favicon(path.join(__dirname, "/public", '/favicon.ico')));
 //Against deprectaction warning of bodyparser 
 app.use(express_1.default.urlencoded({
     extended: true

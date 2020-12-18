@@ -1,18 +1,19 @@
 //Importamos dependencias
-import express from 'express';
 import cors from 'cors';
+import express from 'express';
 import morgan from 'morgan';
-import passport from 'passport'
-//Importamos fichero de rutas
-import authRoutes, { use } from './routes/auth.routes'
-import studentRoutes from './routes/student.routes'
-import universityRoutes from './routes/university.routes'
-import facultyRoutes from './routes/faculty.routes'
-import degreeRoutes from './routes/degree.routes'
-import trophiesRoutes from './routes/trophies.routes'
-import insigniasRoutes from './routes/insignias.routes'
-import courseRoutes from './routes/course.routes'
+import passport from 'passport';
 import passportMiddleware from './middlewares/passport';
+//Importamos fichero de rutas
+import authRoutes from './routes/auth.routes';
+import courseRoutes from './routes/course.routes';
+import degreeRoutes from './routes/degree.routes';
+import facultyRoutes from './routes/faculty.routes';
+import insigniasRoutes from './routes/insignias.routes';
+import studentRoutes from './routes/student.routes';
+import trophiesRoutes from './routes/trophies.routes';
+import universityRoutes from './routes/university.routes';
+var path = require('path');
 
 //Inicializamos express
 const app = express();
@@ -29,13 +30,14 @@ app.use(express.static('views'));
 app.use(morgan('dev'));
 app.use(cors());
 //*******************************KRUNAL**************************************/
-
+//var dirPublic = path.join(__dirname, 'public');
 app.use(express.urlencoded({extended:false}));
-//app.use(express.static(__dirname + "/public"));
-app.use(express.static(__dirname + '/public'));
-// set up our socket server
-//require('./sockets/base')(io);
-app.use(favicon(__dirname+ "/public"+ '/favicon.ico'));
+//For Public Folder such as WebPage and Etc...
+app.use(express.static(path.join(__dirname, 'public')));
+//For Serving Images could be any big image...
+app.use('/images', express.static(path.join(__dirname, 'images')));
+//For Serving Favicon shown on webtabs 16x16 px
+app.use(favicon(path.join(__dirname, "/public", '/favicon.ico')));
 //Against deprectaction warning of bodyparser 
 app.use(express.urlencoded({
     extended: true
