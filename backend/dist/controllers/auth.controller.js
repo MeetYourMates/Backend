@@ -12,14 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const student_1 = __importDefault(require("../models/student"));
-const validation_1 = __importDefault(require("../models/validation"));
-const recovery_1 = __importDefault(require("../models/recovery"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = __importDefault(require("../config/config"));
-const randomstring_1 = require("randomstring");
 const nodemailer_1 = require("nodemailer");
+const randomstring_1 = require("randomstring");
+const config_1 = __importDefault(require("../config/config"));
+const recovery_1 = __importDefault(require("../models/recovery"));
+const student_1 = __importDefault(require("../models/student"));
 const user_1 = __importDefault(require("../models/user"));
+const validation_1 = __importDefault(require("../models/validation"));
+var path = require('path');
 const Bcrypt = require("bcryptjs");
 const { body, validationResult } = require('express-validator');
 const sendEmail = (receiver, code) => __awaiter(void 0, void 0, void 0, function* () {
@@ -272,7 +273,7 @@ const validateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 });
                 student.save();
                 //return res.status(201).json("User validated");
-                return res.status(201).sendFile(process.cwd() + '/src/views/confirmed.htm');
+                return res.status(201).sendFile(path.join(__dirname, "/public", '/views', '/confirmed.html'));
             });
         }
         else {

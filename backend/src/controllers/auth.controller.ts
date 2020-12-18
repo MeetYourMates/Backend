@@ -1,14 +1,14 @@
-import Student, { IStudent } from "../models/student";
-import Validation from "../models/validation";
-import Recovery from "../models/recovery";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { createTransport } from "nodemailer";
+import { MailOptions } from "nodemailer/lib/smtp-pool";
+import { generate } from "randomstring";
 import config from "../config/config";
-import {Request, Response} from "express";
-import {hashSync, compareSync} from "bcrypt";
-import {generate} from "randomstring";
-import {createTransport, Transporter} from "nodemailer";
-import {MailOptions} from "nodemailer/lib/smtp-pool";
+import Recovery from "../models/recovery";
+import Student, { IStudent } from "../models/student";
 import User, { IUser } from "../models/user";
+import Validation from "../models/validation";
+var path = require('path');
 const Bcrypt = require("bcryptjs");
 const { body, validationResult } = require('express-validator');
 const sendEmail: any = async (receiver: string, code: string) =>  {
@@ -259,7 +259,7 @@ const validateUser = async (req: Request, res: Response) => {
                 });
                 student.save();
                 //return res.status(201).json("User validated");
-                return res.status(201).sendFile(process.cwd() + '/src/views/confirmed.htm');
+                return res.status(201).sendFile(path.join(__dirname, "/public",'/views', '/confirmed.html'));
                 }
             );
         }
