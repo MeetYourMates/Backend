@@ -273,7 +273,7 @@ const validateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 });
                 student.save();
                 //return res.status(201).json("User validated");
-                return res.status(201).sendFile(path.join(__dirname, "/public", '/views', '/confirmed.html'));
+                return res.status(201).sendFile(path.join(__dirname, "../public", '/views', '/confirmed.html'));
             });
         }
         else {
