@@ -2,18 +2,19 @@
 import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
-import passport from 'passport';
-import passportMiddleware from './middlewares/passport';
+import passport from 'passport'
+
 //Importamos fichero de rutas
-import authRoutes from './routes/auth.routes';
-import courseRoutes from './routes/course.routes';
-import degreeRoutes from './routes/degree.routes';
-import facultyRoutes from './routes/faculty.routes';
-import insigniasRoutes from './routes/insignias.routes';
-import studentRoutes from './routes/student.routes';
-import trophiesRoutes from './routes/trophies.routes';
-import universityRoutes from './routes/university.routes';
-var path = require('path');
+import authRoutes, { use } from './routes/auth.routes'
+import studentRoutes from './routes/student.routes'
+import universityRoutes from './routes/university.routes'
+import facultyRoutes from './routes/faculty.routes'
+import degreeRoutes from './routes/degree.routes'
+import trophiesRoutes from './routes/trophies.routes'
+import insigniasRoutes from './routes/insignias.routes'
+import courseRoutes from './routes/course.routes'
+import passportMiddleware from './middlewares/passport'
+import projectRoutes from './routes/project.routes'
 
 //Inicializamos express
 const app = express();
@@ -57,6 +58,7 @@ app.use('/degree',degreeRoutes);
 app.use('/trophy', trophiesRoutes);
 app.use('/insignia', insigniasRoutes);
 app.use('/course',courseRoutes);
+app.use('project',projectRoutes);
 
 // Middleware to catch 404 errors
 app.use(function(req, res, next) {

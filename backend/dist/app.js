@@ -15,10 +15,9 @@ const course_routes_1 = __importDefault(require("./routes/course.routes"));
 const degree_routes_1 = __importDefault(require("./routes/degree.routes"));
 const faculty_routes_1 = __importDefault(require("./routes/faculty.routes"));
 const insignias_routes_1 = __importDefault(require("./routes/insignias.routes"));
-const student_routes_1 = __importDefault(require("./routes/student.routes"));
-const trophies_routes_1 = __importDefault(require("./routes/trophies.routes"));
-const university_routes_1 = __importDefault(require("./routes/university.routes"));
-var path = require('path');
+const course_routes_1 = __importDefault(require("./routes/course.routes"));
+const passport_2 = __importDefault(require("./middlewares/passport"));
+const project_routes_1 = __importDefault(require("./routes/project.routes"));
 //Inicializamos express
 const app = express_1.default();
 //Path for Express Server
@@ -60,6 +59,7 @@ app.use('/degree', degree_routes_1.default);
 app.use('/trophy', trophies_routes_1.default);
 app.use('/insignia', insignias_routes_1.default);
 app.use('/course', course_routes_1.default);
+app.use('project', project_routes_1.default);
 // Middleware to catch 404 errors
 app.use(function (req, res, next) {
     res.status(404).sendFile(process.cwd() + '/src/views/404.htm');
