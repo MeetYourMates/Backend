@@ -8,16 +8,18 @@ const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const passport_1 = __importDefault(require("passport"));
-const passport_2 = __importDefault(require("./middlewares/passport"));
 //Importamos fichero de rutas
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
-const course_routes_1 = __importDefault(require("./routes/course.routes"));
-const degree_routes_1 = __importDefault(require("./routes/degree.routes"));
+const student_routes_1 = __importDefault(require("./routes/student.routes"));
+const university_routes_1 = __importDefault(require("./routes/university.routes"));
 const faculty_routes_1 = __importDefault(require("./routes/faculty.routes"));
+const degree_routes_1 = __importDefault(require("./routes/degree.routes"));
+const trophies_routes_1 = __importDefault(require("./routes/trophies.routes"));
 const insignias_routes_1 = __importDefault(require("./routes/insignias.routes"));
 const course_routes_1 = __importDefault(require("./routes/course.routes"));
 const passport_2 = __importDefault(require("./middlewares/passport"));
 const project_routes_1 = __importDefault(require("./routes/project.routes"));
+var path = require('path');
 //Inicializamos express
 const app = express_1.default();
 //Path for Express Server

@@ -15,6 +15,7 @@ import insigniasRoutes from './routes/insignias.routes'
 import courseRoutes from './routes/course.routes'
 import passportMiddleware from './middlewares/passport'
 import projectRoutes from './routes/project.routes'
+var path = require('path');
 
 //Inicializamos express
 const app = express();
