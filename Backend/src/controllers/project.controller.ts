@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import Course from '../models/course';
 import Project from '../models/project';
 
