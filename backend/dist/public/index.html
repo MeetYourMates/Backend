@@ -1,73 +1,12 @@
 <!-- test-io-client.html -->
-<script src="/socket.io/socket.io.js"></script>
-<script>
-
-    function init()
-    {
-        output = document.getElementById("output");
-        testSocket();
-    }
-
-    function testSocket()
-    {
-        var socket = io.connect('http://localhost:3000/', {
-            transports: ["websocket"],
-            extraHeaders: { 'x-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZGE0MWI3YjU4MTZjN2JmOGI0ZDU1NyIsImVtYWlsIjoia3J1bmFsbWlyYWNsZUBnbWFpbC5jb20iLCJpYXQiOjE2MDgyMjc2NzEsImV4cCI6MTYwODgzMjQ3MX0.TCciLJ8jSW5pDMZDx8AyGUfG_5QZmYri0ZrOlU5nxJg" }
-            });
-        socket.on('chat', onMessage );
-        socket.on('connect', onConnect );
-        socket.on('disconnect', onDisconnect );
-        socket.on('connect_error', onError );
-        socket.on('reconnect_error', onError );
-
-        function onConnect(evt)
-        {   //writeToScreen(evt.data);
-            writeToScreen("CONNECTED");
-            doSend("Allo?");
-        }
-
-        function onDisconnect(evt)
-        {
-            writeToScreen("DISCONNECTED");
-        }
-
-        function onMessage(data)
-        {   
-            writeToScreen("Mess: "+data);
-            writeToScreen('<span style="color: blue;">RESPONSE: ' + data+'</span>');
-            //socket.close();
-        }
-
-        function onError(message)
-        {
-            writeToScreen('<span style="color: red;">ERROR:</span> ' + message);
-        }
-
-        function doSend(message)
-        {
-            writeToScreen("SENT: " + message);
-            socket.emit('chat', message);
-        }
-
-        function writeToScreen(message)
-        {
-            var pre = document.createElement("p");
-            pre.style.wordWrap = "break-word";
-            pre.innerHTML = message;
-            output.appendChild(pre);
-        }
-    }
-
-    window.addEventListener("load", init, false);
-</script>
-
 <!DOCTYPE html>
 <html> 
     <head>
         <title></title>
         <link rel="shortcut icon" href="/favicon.ico" />
     </head>
-    <body>
+    <body onload="init()">
+        <script src="/socket.io/socket.io.js"></script>
         <script>
 
             function init()
