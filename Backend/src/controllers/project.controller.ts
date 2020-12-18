@@ -2,8 +2,7 @@ import {Request, Response} from 'express';
 import Course from '../models/course';
 import Project from '../models/project';
 
-const addProject
- = async(req: Request, res: Response) =>{
+const addProject = async(req: Request, res: Response) =>{
 
     //Display request
     console.log(req.body);
@@ -22,14 +21,16 @@ const addProject
         "hashtags": req.body.hashtags,
         "teams": req.body.teams
     });
-    //Add Project to subject
-    await Course.findOne({subject: [subjectId]}).sort({start: -1}).then(course => { 
+    await project.save().then((data) => { 
+        //Add Project to subject
+        Course.findOne({subject: [subjectId]}).sort({start: -1}).then(course => { 
         //No error and we got a result
         console.log("Adding Course to Project: ");
         console.log([course]);
         if(course!=null){
             //We got the course now we search if the Project has this course 
-            Course.updateOne({_id:course?._id}, {$addToSet: {projects: project?._id}}).then(result => {
+            //@ts-ignore
+            Course.updateOne({"_id":course?._id}, {$addToSet: {projects: data!._id}}).then(result => {
                 if (result.nModified> 0) {
                     res.status(201).send({message: 'Project Enrolled succesfully!'}); 
                 }else{
@@ -45,6 +46,8 @@ const addProject
         console.log("error ", err); 
         res.status(500).json({message: 'Server Error!'}); 
     });
+    });
+    
 }
 
 export default {addProject};
