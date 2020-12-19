@@ -14,6 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const course_1 = __importDefault(require("../models/course"));
 const project_1 = __importDefault(require("../models/project"));
+/**======================
+ *    addProject
+ *========================**/
 const addProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Display request
     console.log(req.body);
