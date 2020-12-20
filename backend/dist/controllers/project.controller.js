@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const course_1 = __importDefault(require("../models/course"));
 const project_1 = __importDefault(require("../models/project"));
+//! Not getting Uploaded 
 const addProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Display request
     console.log(req.body);
@@ -60,5 +61,6 @@ const addProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     });
 });
+//! Not getting Uploaded 
 exports.default = { addProject };
 //# sourceMappingURL=project.controller.js.map
