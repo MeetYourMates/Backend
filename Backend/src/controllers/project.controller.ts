@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Course from '../models/course';
 import Project from '../models/project';
-
+//! Not getting Uploaded 
 const addProject = async(req: Request, res: Response) =>{
 
     //Display request
@@ -49,5 +49,5 @@ const addProject = async(req: Request, res: Response) =>{
     });
     
 }
-
+//! Not getting Uploaded 
 export default {addProject};
