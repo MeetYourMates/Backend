@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 
+RUN echo "$PWD"
+
 RUN npm install
 
 RUN npm run build
