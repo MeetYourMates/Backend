@@ -2,11 +2,9 @@ FROM node:latest
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY ./backend .
 
 RUN npm install
-
-COPY . .
 
 RUN echo "$PWD"
 
