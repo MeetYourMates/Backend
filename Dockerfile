@@ -8,7 +8,7 @@ RUN npm install
 
 RUN echo "$PWD"
 
-RUN npm run-script build
+RUN npm run build
 
 EXPOSE 3000
 
