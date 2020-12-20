@@ -18,9 +18,7 @@
             function testSocket()
             {
                 var socket = io.connect('http://localhost:3000/', {
-                    transports: ["websocket"],
-                    extraHeaders: { 'x-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZGE0MWI3YjU4MTZjN2JmOGI0ZDU1NyIsImVtYWlsIjoia3J1bmFsbWlyYWNsZUBnbWFpbC5jb20iLCJpYXQiOjE2MDgyMjc2NzEsImV4cCI6MTYwODgzMjQ3MX0.TCciLJ8jSW5pDMZDx8AyGUfG_5QZmYri0ZrOlU5nxJg" }
-                    });
+                    transports: ["websocket"]});
                 socket.on('chat', onMessage );
                 socket.on('connect', onConnect );
                 socket.on('disconnect', onDisconnect );
@@ -29,8 +27,12 @@
         
                 function onConnect(evt)
                 {   //writeToScreen(evt.data);
-                    writeToScreen("CONNECTED");
-                    doSend("Allo?");
+                    socket.emit('authentication', {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZGE0MWI3YjU4MTZjN2JmOGI0ZDU1NyIsImVtYWlsIjoia3J1bmFsbWlyYWNsZUBnbWFpbC5jb20iLCJpYXQiOjE2MDgyMjc2NzEsImV4cCI6MTYwODgzMjQ3MX0.TCciLJ8jSW5pDMZDx8AyGUfG_5QZmYri0ZrOlU5nxJg"});
+                    socket.on('authenticated', function() {
+                        // use the socket as usual
+                        writeToScreen("CONNECTED");
+                        doSend("Allo?");
+                    });   
                 }
         
                 function onDisconnect(evt)

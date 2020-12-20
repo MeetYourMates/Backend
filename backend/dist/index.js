@@ -50,10 +50,10 @@ server.on('error', onError);
 server.on('listening', onListening);
 //Only Websocket Connection Allowed, no Long Polling!
 const options = {
+    transports: ["websocket"],
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
-        allowedHeaders: ["x-token"],
         credentials: true
     }
 };
