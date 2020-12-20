@@ -2,14 +2,16 @@ FROM node:latest
 
 WORKDIR /usr/src/app
 
-COPY . /usr/src/app
-
-RUN echo "$PWD"
+COPY package*.json ./
 
 RUN npm install
 
-RUN npm run build
+COPY . .
+
+RUN echo "$PWD"
+
+RUN npm run-script build
 
 EXPOSE 3000
 
-CMD ["node", "./dist/index.js"]
+CMD ["npm", "start"]
