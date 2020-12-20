@@ -2,7 +2,6 @@ import { Server } from 'socket.io';
 import jwtHelper from '../helpers/jwt';
 import { IUser } from '../models/user';
 
-var Chat = require('./EventHandlers/Chat');
 //var User = require('./EventHandlers/User');
 
 // --------------------------------------

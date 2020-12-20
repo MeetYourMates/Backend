@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jwt_1 = __importDefault(require("../helpers/jwt"));
-var Chat = require('./EventHandlers/Chat');
 //All Users On SocketServer Data Array
 var userData = {
     users: [],
