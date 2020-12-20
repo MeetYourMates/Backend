@@ -52,7 +52,7 @@ app.use('/degree',degreeRoutes);
 app.use('/trophy', trophiesRoutes);
 app.use('/insignia', insigniasRoutes);
 app.use('/course',courseRoutes);
-app.use('project',projectRoutes);
+app.use('/project',projectRoutes);
 
 // Middleware to catch 404 errors
 app.use(function(req, res, next) {
