@@ -4,10 +4,9 @@
   "description": "Meet Your Mates",
   "main": "index.js",
   "scripts": {
-    "start": "tsc --build && node dist/index.js",
-    "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
-    "build": "tsc --build",
-    "clean": "tsc --build --clean"
+    "start": "ts-node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "build": "tsc -p ."
   },
   "author": "EA Grupo 2",
   "license": "ISC",
@@ -49,6 +48,7 @@
     "@types/serve-favicon": "^2.5.2",
     "@types/socket.io": "^2.1.12",
     "@types/socketio-jwt": "^0.2.0",
-    "typescript": "^4.1.2"
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
   }
 }

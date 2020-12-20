@@ -6,8 +6,6 @@ COPY ./backend .
 
 RUN npm install
 
-RUN echo "$PWD"
-
 RUN npm run build
 
 EXPOSE 3000

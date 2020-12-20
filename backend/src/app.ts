@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //For Serving Images could be any big image...
 app.use('/images', express.static(path.join(__dirname, 'images')));
 //For Serving Favicon shown on webtabs 16x16 px
-app.use(favicon(path.join(__dirname, "/public", '/favicon.ico')));
+app.use(favicon(path.join(__dirname, "../dist/public", '/favicon.ico')));
 //Against deprectaction warning of bodyparser 
 app.use(express.urlencoded({extended: true}));
 // parse application/json
@@ -56,7 +56,7 @@ app.use('project',projectRoutes);
 
 // Middleware to catch 404 errors
 app.use(function(req, res, next) {
-  res.status(404).sendFile(path.join(__dirname, "/public",'/views', '/404.html'));
+  res.status(404).sendFile(path.join(__dirname,"../dist/public",'/views', '/404.html'));
 });
 //Exportamos fichero como 'app'
 export default app;

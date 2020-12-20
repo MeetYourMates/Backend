@@ -5,9 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const project_controller_1 = __importDefault(require("../controllers/project.controller"));
-/**======================
- *    Project Controller
- *========================**/
 const router = express_1.Router();
 router.post('/add', project_controller_1.default.addProject);
 exports.default = router;
