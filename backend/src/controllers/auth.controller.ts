@@ -255,7 +255,7 @@ const validateUser = async (req: Request, res: Response) => {
                 const student = new Student({
                     "user": user?._id,
                     "name": s?.name + " " + s?.surname,
-                    "picture": "https://res.cloudinary.com/mym/image/upload/v1607678821/mym/blank-profile-picture-973460_640_wn9bqw.webp"
+                    "picture": "https://res.cloudinary.com/mym/image/upload/v1608718659/mym/blank-profile-picture-973460_640_o2p879.png"
                 });
                 student.save();
                 //return res.status(201).json("User validated");

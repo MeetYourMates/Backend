@@ -21,5 +21,6 @@ router.post("/changePassword",[
 router.get("/forgotPassword/:email", authController.forgotPassword);
 //*******************************KRUNAL**************************************/
 router.post('/signUp', authController.registerUser);
+router.post('/signUpGoogle', authController.registerUserbyGoogle);
 router.get("/validate/:code", authController.validateUser);
 export = router

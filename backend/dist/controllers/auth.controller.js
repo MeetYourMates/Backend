@@ -342,7 +342,7 @@ var validateUser = function (req, res) { return __awaiter(void 0, void 0, void 0
                         var student = new student_1.default({
                             "user": user_2 === null || user_2 === void 0 ? void 0 : user_2._id,
                             "name": (s === null || s === void 0 ? void 0 : s.name) + " " + (s === null || s === void 0 ? void 0 : s.surname),
-                            "picture": "https://res.cloudinary.com/mym/image/upload/v1607678821/mym/blank-profile-picture-973460_640_wn9bqw.webp"
+                            "picture": "https://res.cloudinary.com/mym/image/upload/v1608718659/mym/blank-profile-picture-973460_640_o2p879.png"
                         });
                         student.save();
                         //return res.status(201).json("User validated");

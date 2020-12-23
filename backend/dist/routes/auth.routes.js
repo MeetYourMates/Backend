@@ -25,6 +25,7 @@ router.post("/changePassword", [
 router.get("/forgotPassword/:email", auth_controller_1.default.forgotPassword);
 //*******************************KRUNAL**************************************/
 router.post('/signUp', auth_controller_1.default.registerUser);
+router.post('/signUpGoogle', auth_controller_1.default.registerUserbyGoogle);
 router.get("/validate/:code", auth_controller_1.default.validateUser);
 module.exports = router;
 //# sourceMappingURL=auth.routes.js.map
