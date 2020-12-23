@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const university_controller_1 = __importDefault(require("../controllers/university.controller"));
-const router = express_1.Router();
+var express_1 = require("express");
+var university_controller_1 = __importDefault(require("../controllers/university.controller"));
+var router = express_1.Router();
 router.get('/all', university_controller_1.default.getUniversities);
 router.post('/add', university_controller_1.default.addUniversity);
 router.post('/addFaculty/:university', university_controller_1.default.addFaculty);

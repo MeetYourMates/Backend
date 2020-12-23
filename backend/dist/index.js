@@ -4,38 +4,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 //Main Execution File of the Server
-const app_1 = __importDefault(require("./app")); //Exported App importing here
+var app_1 = __importDefault(require("./app")); //Exported App importing here
 //Execute Connection to BDD before launching the Server
 require("./database");
-const SocketHandler_1 = __importDefault(require("./sockets/SocketHandler"));
-const debug = require("debug");
+var SocketHandler_1 = __importDefault(require("./sockets/SocketHandler"));
+var debug = require("debug");
 //Index.ts level constants
 var cors = require('cors');
-const packageJson = require('../package.json');
+var packageJson = require('../package.json');
 debug('ts-express:server');
 //Error Handling - Server
-const onError = (error) => {
+var onError = function (error) {
     if (error.syscall !== 'listen')
         throw error;
-    let bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
+    var bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
     switch (error.code) {
         case 'EACCES':
-            console.error(`${bind} requires elevated privileges`);
+            console.error(bind + " requires elevated privileges");
             process.exit(1);
         case 'EADDRINUSE':
-            console.error(`${bind} is already in use`);
+            console.error(bind + " is already in use");
             process.exit(1);
         default:
             throw error;
     }
 };
 //Event Listening - Server
-const onListening = () => {
+var onListening = function () {
     // tslint:disable-next-line:max-line-length
-    console.log(`${packageJson.name} ${packageJson.version} listening on port ${port}!`);
-    let addr = server.address();
-    let bind = `port ${addr.port}`;
-    debug(`Listening on ${bind}`);
+    console.log(packageJson.name + " " + packageJson.version + " listening on port " + port + "!");
+    var addr = server.address();
+    var bind = "port " + addr.port;
+    debug("Listening on " + bind);
 };
 //Iniciamos Server
 //app.use(cors());
@@ -45,11 +45,11 @@ app_1.default.use(function (req, res, next) {
     next();
 });
 var server = require('http').Server(app_1.default);
-const port = app_1.default.get('port');
+var port = app_1.default.get('port');
 server.on('error', onError);
 server.on('listening', onListening);
 //Only Websocket Connection Allowed, no Long Polling!
-const options = {
+var options = {
     transports: ["websocket"],
     cors: {
         origin: "*",

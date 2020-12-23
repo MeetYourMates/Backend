@@ -4,26 +4,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 //Importamos dependencias
-const express_1 = __importDefault(require("express"));
-const morgan_1 = __importDefault(require("morgan"));
-const passport_1 = __importDefault(require("passport"));
-const passport_2 = __importDefault(require("./middlewares/passport"));
+var express_1 = __importDefault(require("express"));
+var morgan_1 = __importDefault(require("morgan"));
+var passport_1 = __importDefault(require("passport"));
+var passport_2 = __importDefault(require("./middlewares/passport"));
 //Importamos fichero de rutas
-const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
-const course_routes_1 = __importDefault(require("./routes/course.routes"));
-const degree_routes_1 = __importDefault(require("./routes/degree.routes"));
-const faculty_routes_1 = __importDefault(require("./routes/faculty.routes"));
-const insignias_routes_1 = __importDefault(require("./routes/insignias.routes"));
-const project_routes_1 = __importDefault(require("./routes/project.routes"));
-const student_routes_1 = __importDefault(require("./routes/student.routes"));
-const trophies_routes_1 = __importDefault(require("./routes/trophies.routes"));
-const university_routes_1 = __importDefault(require("./routes/university.routes"));
+var auth_routes_1 = __importDefault(require("./routes/auth.routes"));
+var course_routes_1 = __importDefault(require("./routes/course.routes"));
+var degree_routes_1 = __importDefault(require("./routes/degree.routes"));
+var faculty_routes_1 = __importDefault(require("./routes/faculty.routes"));
+var insignias_routes_1 = __importDefault(require("./routes/insignias.routes"));
+var project_routes_1 = __importDefault(require("./routes/project.routes"));
+var student_routes_1 = __importDefault(require("./routes/student.routes"));
+var trophies_routes_1 = __importDefault(require("./routes/trophies.routes"));
+var university_routes_1 = __importDefault(require("./routes/university.routes"));
 var path = require('path');
-const cors = require('cors');
+var cors = require('cors');
 var cookieParser = require('cookie-parser');
 var favicon = require('serve-favicon'); //Serve Favicon for webpage
 //Starting Express
-const app = express_1.default();
+var app = express_1.default();
 //Configuration
 //Setting Port as Environment Provided else using 3000
 app.set('port', process.env.PORT || 3000);

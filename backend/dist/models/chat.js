@@ -22,10 +22,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-const message_1 = __importDefault(require("./message"));
+var mongoose_1 = __importStar(require("mongoose"));
+var message_1 = __importDefault(require("./message"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-const chatSchema = new mongoose_1.Schema({
+var chatSchema = new mongoose_1.Schema({
     name: {
         type: String
     },

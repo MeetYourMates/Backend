@@ -19,8 +19,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-const recoverySchema = new mongoose_1.Schema({
+var mongoose_1 = __importStar(require("mongoose"));
+var recoverySchema = new mongoose_1.Schema({
     email: {
         type: String
     },

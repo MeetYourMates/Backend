@@ -19,9 +19,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
+var mongoose_1 = __importStar(require("mongoose"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-const insigniaSchema = new mongoose_1.Schema({
+var insigniaSchema = new mongoose_1.Schema({
     hashtag: {
         type: String
     },

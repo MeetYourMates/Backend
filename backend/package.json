@@ -6,7 +6,8 @@
   "scripts": {
     "start": "tsc --build && node dist/index.js",
     "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
-    "clean": "tsc --build --clean"
+    "clean": "tsc --build --clean",
+    "build":"tsc --build  --clean"
   },
   "author": "EA Grupo 2",
   "license": "ISC",
