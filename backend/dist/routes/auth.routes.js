@@ -11,7 +11,7 @@ const router = express_1.Router();
 //for more validator types
 router.post('/signIn', [
     // username must be an email
-    body('email').isEmail().normalizeEmail(),
+    body('email').isEmail(),
     // password must be at least 3 chars long
     body('password').isLength({ min: 3 })
 ], auth_controller_1.default.accessUser);
@@ -25,6 +25,7 @@ router.post("/changePassword", [
 router.get("/forgotPassword/:email", auth_controller_1.default.forgotPassword);
 //*******************************KRUNAL**************************************/
 router.post('/signUp', auth_controller_1.default.registerUser);
+router.post('/signUpGoogle', auth_controller_1.default.registerUserbyGoogle);
 router.get("/validate/:code", auth_controller_1.default.validateUser);
 module.exports = router;
 //# sourceMappingURL=auth.routes.js.map

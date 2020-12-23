@@ -268,5 +268,37 @@ const validateUser = async (req: Request, res: Response) => {
         }
     }
 }
+const registerUserbyGoogle: any = async (req: Request, res: Response) => {
+    const saltRounds = 10;
+    let newUser = new User({
+        "password": Bcrypt.hashSync(req.body.user.password,saltRounds),
+        "email": req.body.user.email.toLowerCase(),
+        "validated": true
+    });
+    let newStudent = new Student({
+        "name": req.body.name,
+        "picture":req.body.picture,
+    });
 
-export default {registerUser, accessUser, validateUser,forgotPassword,changePassword};
+    let s = await User.findOne({"email": newUser.email});
+
+    if (!s) {
+
+        await newUser.save().then((data) => {
+            newUser = data;
+            newStudent.user = newUser?._id;
+            newStudent.save().then((data) =>{
+                return res.status(201).json({"message": "Student created by Google"})
+            });
+        })
+    }
+    else if (s) {
+        return res.status(409).json("User already exists");
+    }
+    else {
+        return res.status(500);
+    }
+};
+
+export default {registerUserbyGoogle,registerUser, accessUser, validateUser,forgotPassword,changePassword};
+

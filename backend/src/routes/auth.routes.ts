@@ -7,7 +7,7 @@ const router = Router();
 //for more validator types
 router.post('/signIn',[
     // username must be an email
-    body('email').isEmail().normalizeEmail(),
+    body('email').isEmail(),
     // password must be at least 3 chars long
     body('password').isLength({ min: 3 })
   ], authController.accessUser);

@@ -280,5 +280,33 @@ const validateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
     }
 });
-exports.default = { registerUser, accessUser, validateUser, forgotPassword, changePassword };
+const registerUserbyGoogle = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const saltRounds = 10;
+    let newUser = new user_1.default({
+        "password": Bcrypt.hashSync(req.body.user.password, saltRounds),
+        "email": req.body.user.email.toLowerCase(),
+        "validated": true
+    });
+    let newStudent = new student_1.default({
+        "name": req.body.name,
+        "picture": req.body.picture,
+    });
+    let s = yield user_1.default.findOne({ "email": newUser.email });
+    if (!s) {
+        yield newUser.save().then((data) => {
+            newUser = data;
+            newStudent.user = newUser === null || newUser === void 0 ? void 0 : newUser._id;
+            newStudent.save().then((data) => {
+                return res.status(201).json({ "message": "Student created by Google" });
+            });
+        });
+    }
+    else if (s) {
+        return res.status(409).json("User already exists");
+    }
+    else {
+        return res.status(500);
+    }
+});
+exports.default = { registerUserbyGoogle, registerUser, accessUser, validateUser, forgotPassword, changePassword };
 //# sourceMappingURL=auth.controller.js.map
