@@ -2,10 +2,10 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-const express_1 = require("express");
-const auth_controller_1 = __importDefault(require("../controllers/auth.controller"));
-const { body, validationResult } = require('express-validator');
-const router = express_1.Router();
+var express_1 = require("express");
+var auth_controller_1 = __importDefault(require("../controllers/auth.controller"));
+var _a = require('express-validator'), body = _a.body, validationResult = _a.validationResult;
+var router = express_1.Router();
 //*******************************KRUNAL**************************************/
 //Using Validator --> check https://github.com/validatorjs/validator.js
 //for more validator types

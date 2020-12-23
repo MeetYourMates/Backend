@@ -22,12 +22,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-const chat_1 = __importDefault(require("./chat"));
-const task_1 = __importDefault(require("./task"));
-const meeting_1 = __importDefault(require("./meeting"));
+var mongoose_1 = __importStar(require("mongoose"));
+var chat_1 = __importDefault(require("./chat"));
+var task_1 = __importDefault(require("./task"));
+var meeting_1 = __importDefault(require("./meeting"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-const teamSchema = new mongoose_1.Schema({
+var teamSchema = new mongoose_1.Schema({
     name: {
         type: String
     },

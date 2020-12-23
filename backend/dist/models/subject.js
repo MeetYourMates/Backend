@@ -19,10 +19,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-const Course = require('./course');
+var mongoose_1 = __importStar(require("mongoose"));
+var Course = require('./course');
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-const subjectSchema = new mongoose_1.Schema({
+var subjectSchema = new mongoose_1.Schema({
     name: {
         type: String,
         index: true

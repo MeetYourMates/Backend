@@ -22,10 +22,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-const professor_1 = __importDefault(require("./professor"));
+var mongoose_1 = __importStar(require("mongoose"));
+var professor_1 = __importDefault(require("./professor"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-const trophySchema = new mongoose_1.Schema({
+var trophySchema = new mongoose_1.Schema({
     title: {
         type: String
     },

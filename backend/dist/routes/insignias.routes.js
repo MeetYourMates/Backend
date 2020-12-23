@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const insignia_controller_1 = __importDefault(require("../controllers/insignia.controller"));
-const router = express_1.Router();
+var express_1 = require("express");
+var insignia_controller_1 = __importDefault(require("../controllers/insignia.controller"));
+var router = express_1.Router();
 router.get('/getAll', insignia_controller_1.default.getInsignias);
 router.get('/get/:id', insignia_controller_1.default.getInsignia);
 router.put('/AddInsignia', insignia_controller_1.default.newInsignia);

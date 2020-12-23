@@ -22,9 +22,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-const user_1 = __importDefault(require("./user"));
-const validationSchema = new mongoose_1.Schema({
+var mongoose_1 = __importStar(require("mongoose"));
+var user_1 = __importDefault(require("./user"));
+var validationSchema = new mongoose_1.Schema({
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: user_1.default
