@@ -1,5 +1,6 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import Student from '../models/student';
+import User from '../models/user';
 
 
 
@@ -63,13 +64,17 @@ const addStudent = async (req: Request, res: Response) => {
 /******************************POL***************************************/
 function updateStudentProfile (req: Request, res: Response){
     console.log(req.body);
-    const id: string = req.body._id;
-    const name: string = req.body.name;
-    const user: string = req.body.user;
-    const picture: string = req.body.picture;
-    Student.update({"_id": id}, {$set: {"name": name,"user": user, 
-                              "picture": picture, }}).then((data) => {
-        res.status(201).json(data);
+    //Only Updates Name and  Picture
+    User.findByIdAndUpdate({"_id": req.body.user._id}, {$set: {"name": req.body.user.name,"picture":req.body.user.picture}}).then((data) => {
+        if(data==null) return res.status(400).json(req.body);
+        Student.findByIdAndUpdate({"_id": req.body._id},{$set: {"ratings": req.body.ratings,"trophies":req.body.trophies,"insignias":req.body.insignias}},{
+            new: true
+          }).then((resultStudent)=>{
+          if(resultStudent==null){return res.status(400).json(req.body);}
+          console.log("***************************************");
+          console.log(resultStudent);
+          res.status(200).json(req.body);
+        })
     }).catch((err) => {
         res.status(500).json(err);
     })

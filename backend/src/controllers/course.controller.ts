@@ -70,7 +70,7 @@ const getCourseStudents = async (req: Request, res: Response) => { //
     console.log(course);
     try{
         //const results = await Course.find({_id:course}).populate("students");
-        const results = await Student.find({courses:course});
+        const results = await Student.find({courses:course}).populate('user');
         return res.status(200).json(results);
     } catch (err) {
         console.log(err);

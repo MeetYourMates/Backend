@@ -38,36 +38,40 @@ const sendEmail: any = async (receiver: string, code: string) =>  {
 }
 
 const registerUser: any = async (req: Request, res: Response) => {
+    try{
     const saltRounds = 10;
     let newUser = new User({
         "password": Bcrypt.hashSync(req.body.password,saltRounds),
         "email": req.body.email.toLowerCase(),
+        "name": req.body.name,
+        "picture":"https://res.cloudinary.com/meetyourmatesapi/image/upload/v1608740748/users/585e4bf3cb11b227491c339a_caeqr6.png",
         "validated": false
     });
 
-    let s = await User.findOne({"email": newUser.email});
-
-    if (!s) {
-
-        await newUser.save().then((data) => {
-            newUser = data;
-        })
-        let validation = new Validation({
-            "code": generate(7),
-            "user": newUser,
-            "name": req.body.name,
-            "surname": req.body.surname
-        })
-        validation.save().then(() => {
-            sendEmail(newUser.email,validation.code);
-            return res.status(201).json({"message": "User registered",
-            "code": validation.code});
-        })
-    }
-    else if (s) {
-        return res.status(409).json("User already exists");
-    }
-    else {
+    User.findOne({"email": newUser.email}).then((s)=>{
+        if(!s.validated){
+            //Not Validated Than delete the current user
+            User.deleteOne({"email": newUser.email}).then(()=>{
+                newUser.save().then((data) => {
+                    newUser = data;
+                })
+                let validation = new Validation({
+                    "code": generate(7),
+                    "user": newUser,
+                })
+                validation.save().then(() => {
+                    sendEmail(newUser.email,validation.code);
+                    return res.status(201).json({"message": "User registered",
+                    "code": validation.code});
+                });
+            });
+        }else{
+            //User Exists and is Validated!
+            return res.status(409).json("User already exists");
+        }
+    });
+    }catch(err) {
+        console.log(err);
         return res.status(500);
     }
 };
@@ -81,11 +85,12 @@ function createToken(user: IUser) {
 //Custom Student with user = {email,password, token}
 function getCustomStudent(student: IStudent,user:any) {
     const result = {_id:student._id,name:student.name,university:student.university,degree:student.degree,user:user,
-    picture:student.picture,ratings:student.ratings,trophies:student.trophies,insignias:student.insignias,
+    ratings:student.ratings,trophies:student.trophies,insignias:student.insignias,
     chats:student.chats,courses:student.courses
     };
     return result;
 }
+
 //Login User and returns Student
 const accessUser = async (req: Request, res: Response) => {
     const errors = validationResult(req);
@@ -96,70 +101,76 @@ const accessUser = async (req: Request, res: Response) => {
         console.log("Request Body: ",req.body);
         const filter = {'email':req.body.email};
         console.log("Filter Query SignIn",filter);
-        const resultUser = await User.findOne(filter);
+        User.findOne(filter).then(async (resultUser)=>{
         //I have _id, email, password
         if(resultUser!=null){
             console.log("email: "+ resultUser.email);
             if(Bcrypt.compareSync(req.body.password, resultUser.password)){
-                const filter2 = {'user': resultUser._id};
                 resultUser.password = "password-hidden";
-                const result = await Student.findOne(filter2).populate('user').populate('ratings').populate('trophies').populate('insignias');
-                console.log("Login--> student findone Result: " + result);
-                if(result !=null){
-                    if(!result.user.validated){
-                        //Not Validated, no Token!!
-                        const userWithoutToken = {'_id': result.user._id,'email':result.user.email,'password':'password-hidden'};
-                        result.user = userWithoutToken;
-                        //Just in case: if some strange way user has Student Model already added!
-                        console.log("Line87:Login--> student hasn't Validated Odd#1 : " + result);
-                        return res.status(203).json(result);
-                    }else{
-                        //User has Courses means ge already has Let's Get Started Finished!
-                        if(Array.isArray(result.courses) && result.courses.length){
-                            if(result.user.validated){
-                                //Student --> user --> token
-                                //token: createToken(user)
-                                const userWithToken = {'_id': result.user._id,'email':result.user.email,'password':'password-hidden','token':createToken(result.user)};
-                                //Newly custom created user has now token in the json!
-                                const result2 = getCustomStudent(result,userWithToken);
-                                //Validated and Has courses than student can login!
-                                console.log("Login--> student Validated Result: " + result2);
-                                return res.status(200).json(result2);
-                            }else{
-                                //Not Validated, no Token!!
-                                //Just in case: if some strange way user hasn't validated but somehow has courses!
-                                console.log("Line98:Login--> student hasn't Validated Odd#2 : " + result);
-                                return res.status(203).json(result);
-                            }
+                Student.findOne({"user":resultUser._id}).then((resStudent)=>{
+                if(resStudent==null){
+                    //* NOT VALIDATED 
+                    let userWithoutToken = new User({
+                        "_id":resultUser._id,
+                        "password": "password-hidden",
+                        "email": resultUser.email,
+                        "name": resultUser.name,
+                        "picture": resultUser.picture,
+                        "validated": false,
+                        "token":"Not-Authorized"
+                    });
+                    let studentNotValidated = new Student({
+                        "user":userWithoutToken
+                    });
+                    console.log("Line87:Login--> student hasn't Validated Odd#1 : " + studentNotValidated);
+                    return res.status(203).json(studentNotValidated);
+                }else{
+                    //* Validated
+                    Student.findOne({'user': resultUser._id}).populate('user').populate('ratings').populate('trophies').populate('insignias').then((result)=>{
+                        /**==============================================
+                         **      Validated & Completed Lets Get Started
+                         *===============================================**/
+                        if(result.courses.length>0){
+                            let userWithToken:any = {
+                                "_id":result.user._id,
+                                "password": "password-hidden",
+                                "email": result.user.email,
+                                "name": result.user.name,
+                                "picture": result.user.picture,
+                                "validated": true,
+                                "token":createToken(result.user)
+                            };
+                            const result2 = getCustomStudent(result,userWithToken);
+                            //Validated and Has courses than student can login!
+                            console.log("Login--> student Validated Result: " + result2);
+                            return res.status(200).json(result2);
                         } else{
                             //Student --> user --> token
                             //token: createToken(user)
-                            const userWithToken = {'_id': result.user._id,'email':result.user.email,'password':'password-hidden','token':createToken(result.user)};
+                            let userWithToken:any = {
+                                "_id":result.user._id,
+                                "password": "password-hidden",
+                                "email": result.user.email,
+                                "name": result.user.name,
+                                "picture": result.user.picture,
+                                "validated": true,
+                                "token":createToken(result.user)
+                            };
                             //Newly custom created user has now token in the json!
                             const result2 = getCustomStudent(result,userWithToken);
                             console.log("Login--> student Not Enrolled Result: " + result2);
                             return res.status(206).json(result2);
                         }
-                    }
-                }else{
-                    //User Not validated so no Student!
-                    const userWithoutToken = {'_id': resultUser._id,'email':resultUser.email,'password':'password-hidden'};
-                    //var stud2:IStudent = {user:userWithToken}
-                    let stud2 = new Student({
-                        "user": userWithoutToken
                     });
-                    const result2 = getCustomStudent(stud2,userWithoutToken);
-                    //const result2 = getCustomStudent(stud2,userWithToken);
-                    console.log("Login--> student Not Validated: " + result2);
-                    return res.status(203).json(result2);
                 }
 
+                });
             }else{
                 return res.status(404).json({'error':'User Password Incorrect!'});
             }
         }else{
             return res.status(404).json({'error':'User Not Found!'});
-        }
+        }});
     } catch (err) {
         console.log(err);
         return res.status(500).json(err);
@@ -253,13 +264,11 @@ const validateUser = async (req: Request, res: Response) => {
                 s.deleteOne();
                 //Create New Student
                 const student = new Student({
-                    "user": user?._id,
-                    "name": s?.name + " " + s?.surname,
-                    "picture": "https://res.cloudinary.com/mym/image/upload/v1608718659/mym/blank-profile-picture-973460_640_o2p879.png"
+                    "user": user?._id
                 });
                 student.save();
                 //return res.status(201).json("User validated");
-                return res.status(201).sendFile(path.join(__dirname, "../dist/public",'/views', '/confirmed.html'));
+                return res.status(201).sendFile(path.join(__dirname, "../public",'/views', '/confirmed.html'));
                 }
             );
         }
@@ -273,11 +282,12 @@ const registerUserbyGoogle: any = async (req: Request, res: Response) => {
     let newUser = new User({
         "password": Bcrypt.hashSync(req.body.user.password,saltRounds),
         "email": req.body.user.email.toLowerCase(),
+        "name": req.body.name,
+        "picture":req.body.picture,
         "validated": true
     });
     let newStudent = new Student({
-        "name": req.body.name,
-        "picture":req.body.picture,
+        "user":""
     });
 
     let s = await User.findOne({"email": newUser.email});
@@ -287,7 +297,7 @@ const registerUserbyGoogle: any = async (req: Request, res: Response) => {
         await newUser.save().then((data) => {
             newUser = data;
             newStudent.user = newUser?._id;
-            newStudent.save().then((data) =>{
+            newStudent.save().then(() =>{
                 return res.status(201).json({"message": "Student created by Google"})
             });
         })

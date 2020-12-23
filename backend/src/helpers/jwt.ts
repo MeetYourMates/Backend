@@ -1,5 +1,5 @@
 import config from "../config/config";
-import User, { IUser } from "../models/user";
+import User from "../models/user";
 const jwt = require('jsonwebtoken');
 
 /*
@@ -27,21 +27,22 @@ const generarJWT = ( user: User ) => {
     });
 }
 */
-//Returns a Promise with a tuple of [boolean and User]
-async function CheckJWT(token = ''): Promise<[boolean , IUser]> {
-    console.log("Testing Token1!");
-    try {
-        console.log("Testing Token!");
-        console.log("Token: " + token);
-        const { id, email } = jwt.verify(token, config.jwtSecret);
-        const usr: IUser = await User.findOne({ "_id": id });
-        usr.password = "password-hidden";
-        return [true, usr];
-
-    } catch (error) {
-        console.log("JWT Helper--> CheckJWT: ", error);
-        return [false, null];
-    }
+function CheckJWT(token:string){
+    return new Promise((resolve,reject )=>{
+        try {
+            const { id, email } = jwt.verify(token, config.jwtSecret);
+           User.findOne({ "_id": id }).then((usr)=>{
+                if(usr==null){
+                    reject(new Error("No User with this token-->Invalid token!"));   
+                }
+                usr.password = "password-hidden";
+                resolve( [true, usr]);
+            });
+        } catch (error) {
+            //console.log("JWT Helper--> CheckJWT: ", error);
+            reject(new Error(error));
+        }
+    });
 }
 
 export default {

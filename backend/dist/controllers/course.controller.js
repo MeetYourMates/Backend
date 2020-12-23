@@ -135,7 +135,7 @@ var getCourseStudents = function (req, res) { return __awaiter(void 0, void 0, v
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, student_1.default.find({ courses: course })];
+                return [4 /*yield*/, student_1.default.find({ courses: course }).populate('user')];
             case 2:
                 results = _a.sent();
                 return [2 /*return*/, res.status(200).json(results)];

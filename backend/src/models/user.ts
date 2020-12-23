@@ -4,9 +4,6 @@ const userSchema = new Schema({
     name: {
         type: String
     },
-    surname: {
-        type: String
-    },
     email: {
         type: String
     },
@@ -15,15 +12,18 @@ const userSchema = new Schema({
     },
     validated: {
         type: Boolean
+    },
+    picture:{
+        type:String
     }
 });
 
 //Interfaz para tratar respuesta como documento
 export interface IUser extends Document {
     name: string;
-    surname: string;
     email: string;
     password: string;
+    picture: string;
     validated: boolean;
 }
 

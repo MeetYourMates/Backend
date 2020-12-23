@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var student_1 = __importDefault(require("../models/student"));
+var user_1 = __importDefault(require("../models/user"));
 var getStudents = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var results, err_1;
     return __generator(this, function (_a) {
@@ -130,13 +131,20 @@ var addStudent = function (req, res) { return __awaiter(void 0, void 0, void 0, 
 /******************************POL***************************************/
 function updateStudentProfile(req, res) {
     console.log(req.body);
-    var id = req.body._id;
-    var name = req.body.name;
-    var user = req.body.user;
-    var picture = req.body.picture;
-    student_1.default.update({ "_id": id }, { $set: { "name": name, "user": user,
-            "picture": picture, } }).then(function (data) {
-        res.status(201).json(data);
+    //Only Updates Name and  Picture
+    user_1.default.findByIdAndUpdate({ "_id": req.body.user._id }, { $set: { "name": req.body.user.name, "picture": req.body.user.picture } }).then(function (data) {
+        if (data == null)
+            return res.status(400).json(req.body);
+        student_1.default.findByIdAndUpdate({ "_id": req.body._id }, { $set: { "ratings": req.body.ratings, "trophies": req.body.trophies, "insignias": req.body.insignias } }, {
+            new: true
+        }).then(function (resultStudent) {
+            if (resultStudent == null) {
+                return res.status(400).json(req.body);
+            }
+            console.log("***************************************");
+            console.log(resultStudent);
+            res.status(200).json(req.body);
+        });
     }).catch(function (err) {
         res.status(500).json(err);
     });

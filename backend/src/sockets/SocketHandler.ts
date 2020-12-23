@@ -41,9 +41,8 @@ export default (io: Server) => {
     authenticate: async (client_socket, payload:Token, callback) => {
       //client_socket.emit('connect',{"message":"Please Authorize","timeout":timeOut});
       const token:string = payload.token;
-      try {
         jwtHelper.CheckJWT( token).then((data:[boolean,IUser])=>{
-          //console.log("Data: ",data);
+          console.log("Data: ",data);
           if(data[0]==false){
             console.log("---------------------------------------------");
             console.log(`Socket ${client_socket.id} unauthorized.`);
@@ -59,15 +58,14 @@ export default (io: Server) => {
             };
             return callback(null, true);
           }
+        }).catch((err)=>{
+          console.log("---------------------------------------------");
+          console.log('JWT ERROR PROMISE: ', err.message);
+          console.log("---------------------------------------------");
+          console.log(`Socket ${client_socket.id} unauthorized.`);
+          console.log("---------------------------------------------");
+          return callback({ message: 'UNAUTHORIZED' });
         });
-      } catch (e) {
-        console.log("---------------------------------------------");
-        console.log("Error While Authenticating ",e);
-        console.log("---------------------------------------------");
-        console.log(`Socket ${client_socket.id} unauthorized.`);
-        console.log("---------------------------------------------");
-        return callback({ message: 'UNAUTHORIZED' });
-      }
     },
     /**============================================
      **               Post Authentication Events
@@ -89,19 +87,33 @@ export default (io: Server) => {
           //User Asking for UsersList
           client_socket.emit('online_users',userData.users);
         });
-
+        function sendMessage( payload:chatMessage){
+          return new Promise((resolve,reject)=>{
+              try {
+                console.log("text: "+payload.text);
+                userData.users.forEach(user => {
+                  if(user._id == payload.recipientId ||user._id == payload.senderId){
+                    //Client is this -->SEND MESSAGE TO HIM
+                    var i = userData.users.indexOf(user);
+                    if (i === -1)return;
+                    if(userData.userSockets[i] != client_socket){
+                      userData.userSockets[i].emit("chat_message",payload);}
+                  }
+                });
+                resolve( true);
+              } catch (error) {
+                reject(new Error(error));
+              }
+          });
+      };
       ///TODO: CHAT MESSAGE --> SAVE TO DataBase Messages of User
         client_socket.on('chat_message', async( payload:chatMessage ) => {
-          //io.emit('chat-message',payload.text);
-          console.log("text: "+payload.text);
-          userData.users.forEach(user => {
-            if(user._id == payload.recipientId ||user._id == payload.senderId){
-              //Client is this -->SEND MESSAGE TO HIM
-              var i = userData.users.indexOf(user);
-              if (i === -1)return;
-              if(userData.userSockets[i] != client_socket){
-                userData.userSockets[i].emit("chat_message",payload);}
-            }
+          sendMessage(payload).catch((err)=>{
+            console.log("---------------------------------------------");
+            console.log('sendMessage Promise: ', err.message);
+            console.log("---------------------------------------------");
+            console.log(`Socket ${client_socket.id} badMessage Request.`);
+            console.log("---------------------------------------------");
           });
         });
     },

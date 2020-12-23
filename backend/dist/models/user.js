@@ -25,9 +25,6 @@ var userSchema = new mongoose_1.Schema({
     name: {
         type: String
     },
-    surname: {
-        type: String
-    },
     email: {
         type: String
     },
@@ -36,6 +33,9 @@ var userSchema = new mongoose_1.Schema({
     },
     validated: {
         type: Boolean
+    },
+    picture: {
+        type: String
     }
 });
 //Exportamos modelo para poder usarlo 

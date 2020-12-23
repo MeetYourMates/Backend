@@ -60,35 +60,32 @@ exports.default = (function (io) {
             var token;
             return __generator(this, function (_a) {
                 token = payload.token;
-                try {
-                    jwt_1.default.CheckJWT(token).then(function (data) {
-                        //console.log("Data: ",data);
-                        if (data[0] == false) {
-                            console.log("---------------------------------------------");
-                            console.log("Socket " + client_socket.id + " unauthorized.");
-                            console.log("---------------------------------------------");
-                            return callback({ message: 'UNAUTHORIZED' });
+                jwt_1.default.CheckJWT(token).then(function (data) {
+                    console.log("Data: ", data);
+                    if (data[0] == false) {
+                        console.log("---------------------------------------------");
+                        console.log("Socket " + client_socket.id + " unauthorized.");
+                        console.log("---------------------------------------------");
+                        return callback({ message: 'UNAUTHORIZED' });
+                    }
+                    else {
+                        //Authenticated --> Only add if the socket is not already added!
+                        var i = userData.userSockets.indexOf(client_socket);
+                        if (i === -1) {
+                            userData.users.push(data[1]);
+                            userData.userSockets.push(client_socket);
                         }
-                        else {
-                            //Authenticated --> Only add if the socket is not already added!
-                            var i = userData.userSockets.indexOf(client_socket);
-                            if (i === -1) {
-                                userData.users.push(data[1]);
-                                userData.userSockets.push(client_socket);
-                            }
-                            ;
-                            return callback(null, true);
-                        }
-                    });
-                }
-                catch (e) {
+                        ;
+                        return callback(null, true);
+                    }
+                }).catch(function (err) {
                     console.log("---------------------------------------------");
-                    console.log("Error While Authenticating ", e);
+                    console.log('JWT ERROR PROMISE: ', err.message);
                     console.log("---------------------------------------------");
                     console.log("Socket " + client_socket.id + " unauthorized.");
                     console.log("---------------------------------------------");
-                    return [2 /*return*/, callback({ message: 'UNAUTHORIZED' })];
-                }
+                    return callback({ message: 'UNAUTHORIZED' });
+                });
                 return [2 /*return*/];
             });
         }); },
@@ -115,21 +112,38 @@ exports.default = (function (io) {
                     return [2 /*return*/];
                 });
             }); });
+            function sendMessage(payload) {
+                return new Promise(function (resolve, reject) {
+                    try {
+                        console.log("text: " + payload.text);
+                        userData.users.forEach(function (user) {
+                            if (user._id == payload.recipientId || user._id == payload.senderId) {
+                                //Client is this -->SEND MESSAGE TO HIM
+                                var i = userData.users.indexOf(user);
+                                if (i === -1)
+                                    return;
+                                if (userData.userSockets[i] != client_socket) {
+                                    userData.userSockets[i].emit("chat_message", payload);
+                                }
+                            }
+                        });
+                        resolve(true);
+                    }
+                    catch (error) {
+                        reject(new Error(error));
+                    }
+                });
+            }
+            ;
             ///TODO: CHAT MESSAGE --> SAVE TO DataBase Messages of User
             client_socket.on('chat_message', function (payload) { return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    //io.emit('chat-message',payload.text);
-                    console.log("text: " + payload.text);
-                    userData.users.forEach(function (user) {
-                        if (user._id == payload.recipientId || user._id == payload.senderId) {
-                            //Client is this -->SEND MESSAGE TO HIM
-                            var i = userData.users.indexOf(user);
-                            if (i === -1)
-                                return;
-                            if (userData.userSockets[i] != client_socket) {
-                                userData.userSockets[i].emit("chat_message", payload);
-                            }
-                        }
+                    sendMessage(payload).catch(function (err) {
+                        console.log("---------------------------------------------");
+                        console.log('sendMessage Promise: ', err.message);
+                        console.log("---------------------------------------------");
+                        console.log("Socket " + client_socket.id + " badMessage Request.");
+                        console.log("---------------------------------------------");
                     });
                     return [2 /*return*/];
                 });

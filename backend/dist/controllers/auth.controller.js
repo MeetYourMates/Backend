@@ -80,47 +80,46 @@ var sendEmail = function (receiver, code) { return __awaiter(void 0, void 0, voi
     });
 }); };
 var registerUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var saltRounds, newUser, s, validation_2;
+    var saltRounds, newUser_1;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                saltRounds = 10;
-                newUser = new user_1.default({
-                    "password": Bcrypt.hashSync(req.body.password, saltRounds),
-                    "email": req.body.email.toLowerCase(),
-                    "validated": false
-                });
-                return [4 /*yield*/, user_1.default.findOne({ "email": newUser.email })];
-            case 1:
-                s = _a.sent();
-                if (!!s) return [3 /*break*/, 3];
-                return [4 /*yield*/, newUser.save().then(function (data) {
-                        newUser = data;
-                    })];
-            case 2:
-                _a.sent();
-                validation_2 = new validation_1.default({
-                    "code": randomstring_1.generate(7),
-                    "user": newUser,
-                    "name": req.body.name,
-                    "surname": req.body.surname
-                });
-                validation_2.save().then(function () {
-                    sendEmail(newUser.email, validation_2.code);
-                    return res.status(201).json({ "message": "User registered",
-                        "code": validation_2.code });
-                });
-                return [3 /*break*/, 4];
-            case 3:
-                if (s) {
-                    return [2 /*return*/, res.status(409).json("User already exists")];
+        try {
+            saltRounds = 10;
+            newUser_1 = new user_1.default({
+                "password": Bcrypt.hashSync(req.body.password, saltRounds),
+                "email": req.body.email.toLowerCase(),
+                "name": req.body.name,
+                "picture": "https://res.cloudinary.com/meetyourmatesapi/image/upload/v1608740748/users/585e4bf3cb11b227491c339a_caeqr6.png",
+                "validated": false
+            });
+            user_1.default.findOne({ "email": newUser_1.email }).then(function (s) {
+                if (!s.validated) {
+                    //Not Validated Than delete the current user
+                    user_1.default.deleteOne({ "email": newUser_1.email }).then(function () {
+                        newUser_1.save().then(function (data) {
+                            newUser_1 = data;
+                        });
+                        var validation = new validation_1.default({
+                            "code": randomstring_1.generate(7),
+                            "user": newUser_1,
+                        });
+                        validation.save().then(function () {
+                            sendEmail(newUser_1.email, validation.code);
+                            return res.status(201).json({ "message": "User registered",
+                                "code": validation.code });
+                        });
+                    });
                 }
                 else {
-                    return [2 /*return*/, res.status(500)];
+                    //User Exists and is Validated!
+                    return res.status(409).json("User already exists");
                 }
-                _a.label = 4;
-            case 4: return [2 /*return*/];
+            });
         }
+        catch (err) {
+            console.log(err);
+            return [2 /*return*/, res.status(500)];
+        }
+        return [2 /*return*/];
     });
 }); };
 //Token created with 1 week expiration
@@ -132,93 +131,106 @@ function createToken(user) {
 //Custom Student with user = {email,password, token}
 function getCustomStudent(student, user) {
     var result = { _id: student._id, name: student.name, university: student.university, degree: student.degree, user: user,
-        picture: student.picture, ratings: student.ratings, trophies: student.trophies, insignias: student.insignias,
+        ratings: student.ratings, trophies: student.trophies, insignias: student.insignias,
         chats: student.chats, courses: student.courses
     };
     return result;
 }
 //Login User and returns Student
 var accessUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var errors, filter, resultUser, filter2, result, userWithoutToken, userWithToken, result2, userWithToken, result2, userWithoutToken, stud2, result2, err_1;
+    var errors, filter;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                errors = validationResult(req);
-                if (!errors.isEmpty()) {
-                    return [2 /*return*/, res.status(400).json({ errors: errors.array() })];
-                }
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 8, , 9]);
-                console.log("Request Body: ", req.body);
-                filter = { 'email': req.body.email };
-                console.log("Filter Query SignIn", filter);
-                return [4 /*yield*/, user_1.default.findOne(filter)];
-            case 2:
-                resultUser = _a.sent();
-                if (!(resultUser != null)) return [3 /*break*/, 6];
-                console.log("email: " + resultUser.email);
-                if (!Bcrypt.compareSync(req.body.password, resultUser.password)) return [3 /*break*/, 4];
-                filter2 = { 'user': resultUser._id };
-                resultUser.password = "password-hidden";
-                return [4 /*yield*/, student_1.default.findOne(filter2).populate('user').populate('ratings').populate('trophies').populate('insignias')];
-            case 3:
-                result = _a.sent();
-                console.log("Login--> student findone Result: " + result);
-                if (result != null) {
-                    if (!result.user.validated) {
-                        userWithoutToken = { '_id': result.user._id, 'email': result.user.email, 'password': 'password-hidden' };
-                        result.user = userWithoutToken;
-                        //Just in case: if some strange way user has Student Model already added!
-                        console.log("Line87:Login--> student hasn't Validated Odd#1 : " + result);
-                        return [2 /*return*/, res.status(203).json(result)];
-                    }
-                    else {
-                        //User has Courses means ge already has Let's Get Started Finished!
-                        if (Array.isArray(result.courses) && result.courses.length) {
-                            if (result.user.validated) {
-                                userWithToken = { '_id': result.user._id, 'email': result.user.email, 'password': 'password-hidden', 'token': createToken(result.user) };
-                                result2 = getCustomStudent(result, userWithToken);
-                                //Validated and Has courses than student can login!
-                                console.log("Login--> student Validated Result: " + result2);
-                                return [2 /*return*/, res.status(200).json(result2)];
-                            }
-                            else {
-                                //Not Validated, no Token!!
-                                //Just in case: if some strange way user hasn't validated but somehow has courses!
-                                console.log("Line98:Login--> student hasn't Validated Odd#2 : " + result);
-                                return [2 /*return*/, res.status(203).json(result)];
-                            }
+        errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return [2 /*return*/, res.status(400).json({ errors: errors.array() })];
+        }
+        try {
+            console.log("Request Body: ", req.body);
+            filter = { 'email': req.body.email };
+            console.log("Filter Query SignIn", filter);
+            user_1.default.findOne(filter).then(function (resultUser) { return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    //I have _id, email, password
+                    if (resultUser != null) {
+                        console.log("email: " + resultUser.email);
+                        if (Bcrypt.compareSync(req.body.password, resultUser.password)) {
+                            resultUser.password = "password-hidden";
+                            student_1.default.findOne({ "user": resultUser._id }).then(function (resStudent) {
+                                if (resStudent == null) {
+                                    //* NOT VALIDATED 
+                                    var userWithoutToken = new user_1.default({
+                                        "_id": resultUser._id,
+                                        "password": "password-hidden",
+                                        "email": resultUser.email,
+                                        "name": resultUser.name,
+                                        "picture": resultUser.picture,
+                                        "validated": false,
+                                        "token": "Not-Authorized"
+                                    });
+                                    var studentNotValidated = new student_1.default({
+                                        "user": userWithoutToken
+                                    });
+                                    console.log("Line87:Login--> student hasn't Validated Odd#1 : " + studentNotValidated);
+                                    return res.status(203).json(studentNotValidated);
+                                }
+                                else {
+                                    //* Validated
+                                    student_1.default.findOne({ 'user': resultUser._id }).populate('user').populate('ratings').populate('trophies').populate('insignias').then(function (result) {
+                                        /**==============================================
+                                         **      Validated & Completed Lets Get Started
+                                         *===============================================**/
+                                        if (result.courses.length > 0) {
+                                            var userWithToken = {
+                                                "_id": result.user._id,
+                                                "password": "password-hidden",
+                                                "email": result.user.email,
+                                                "name": result.user.name,
+                                                "picture": result.user.picture,
+                                                "validated": true,
+                                                "token": createToken(result.user)
+                                            };
+                                            var result2 = getCustomStudent(result, userWithToken);
+                                            //Validated and Has courses than student can login!
+                                            console.log("Login--> student Validated Result: " + result2);
+                                            return res.status(200).json(result2);
+                                        }
+                                        else {
+                                            //Student --> user --> token
+                                            //token: createToken(user)
+                                            var userWithToken = {
+                                                "_id": result.user._id,
+                                                "password": "password-hidden",
+                                                "email": result.user.email,
+                                                "name": result.user.name,
+                                                "picture": result.user.picture,
+                                                "validated": true,
+                                                "token": createToken(result.user)
+                                            };
+                                            //Newly custom created user has now token in the json!
+                                            var result2 = getCustomStudent(result, userWithToken);
+                                            console.log("Login--> student Not Enrolled Result: " + result2);
+                                            return res.status(206).json(result2);
+                                        }
+                                    });
+                                }
+                            });
                         }
                         else {
-                            userWithToken = { '_id': result.user._id, 'email': result.user.email, 'password': 'password-hidden', 'token': createToken(result.user) };
-                            result2 = getCustomStudent(result, userWithToken);
-                            console.log("Login--> student Not Enrolled Result: " + result2);
-                            return [2 /*return*/, res.status(206).json(result2)];
+                            return [2 /*return*/, res.status(404).json({ 'error': 'User Password Incorrect!' })];
                         }
                     }
-                }
-                else {
-                    userWithoutToken = { '_id': resultUser._id, 'email': resultUser.email, 'password': 'password-hidden' };
-                    stud2 = new student_1.default({
-                        "user": userWithoutToken
-                    });
-                    result2 = getCustomStudent(stud2, userWithoutToken);
-                    //const result2 = getCustomStudent(stud2,userWithToken);
-                    console.log("Login--> student Not Validated: " + result2);
-                    return [2 /*return*/, res.status(203).json(result2)];
-                }
-                return [3 /*break*/, 5];
-            case 4: return [2 /*return*/, res.status(404).json({ 'error': 'User Password Incorrect!' })];
-            case 5: return [3 /*break*/, 7];
-            case 6: return [2 /*return*/, res.status(404).json({ 'error': 'User Not Found!' })];
-            case 7: return [3 /*break*/, 9];
-            case 8:
-                err_1 = _a.sent();
-                console.log(err_1);
-                return [2 /*return*/, res.status(500).json(err_1)];
-            case 9: return [2 /*return*/];
+                    else {
+                        return [2 /*return*/, res.status(404).json({ 'error': 'User Not Found!' })];
+                    }
+                    return [2 /*return*/];
+                });
+            }); });
         }
+        catch (err) {
+            console.log(err);
+            return [2 /*return*/, res.status(500).json(err)];
+        }
+        return [2 /*return*/];
     });
 }); };
 var sendEmailRecovery = function (receiver, code) { return __awaiter(void 0, void 0, void 0, function () {
@@ -340,13 +352,11 @@ var validateUser = function (req, res) { return __awaiter(void 0, void 0, void 0
                         s.deleteOne();
                         //Create New Student
                         var student = new student_1.default({
-                            "user": user_2 === null || user_2 === void 0 ? void 0 : user_2._id,
-                            "name": (s === null || s === void 0 ? void 0 : s.name) + " " + (s === null || s === void 0 ? void 0 : s.surname),
-                            "picture": "https://res.cloudinary.com/mym/image/upload/v1608718659/mym/blank-profile-picture-973460_640_o2p879.png"
+                            "user": user_2 === null || user_2 === void 0 ? void 0 : user_2._id
                         });
                         student.save();
                         //return res.status(201).json("User validated");
-                        return res.status(201).sendFile(path.join(__dirname, "../dist/public", '/views', '/confirmed.html'));
+                        return res.status(201).sendFile(path.join(__dirname, "../public", '/views', '/confirmed.html'));
                     })];
             case 3:
                 _a.sent();
@@ -365,11 +375,12 @@ var registerUserbyGoogle = function (req, res) { return __awaiter(void 0, void 0
                 newUser = new user_1.default({
                     "password": Bcrypt.hashSync(req.body.user.password, saltRounds),
                     "email": req.body.user.email.toLowerCase(),
+                    "name": req.body.name,
+                    "picture": req.body.picture,
                     "validated": true
                 });
                 newStudent = new student_1.default({
-                    "name": req.body.name,
-                    "picture": req.body.picture,
+                    "user": ""
                 });
                 return [4 /*yield*/, user_1.default.findOne({ "email": newUser.email })];
             case 1:
@@ -378,7 +389,7 @@ var registerUserbyGoogle = function (req, res) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, newUser.save().then(function (data) {
                         newUser = data;
                         newStudent.user = newUser === null || newUser === void 0 ? void 0 : newUser._id;
-                        newStudent.save().then(function (data) {
+                        newStudent.save().then(function () {
                             return res.status(201).json({ "message": "Student created by Google" });
                         });
                     })];

@@ -1,10 +1,10 @@
-import mongoose, { Schema, Document} from 'mongoose';
-import User, { IUser } from './user';
-import Trophy, {ITrophy} from './trophy';
-import Insignia, {IInsignia} from './insignia';
-import Chat, {IChat} from './chat';
+import mongoose, { Document, Schema } from 'mongoose';
+import Chat, { IChat } from './chat';
+import { ICourse } from './course';
+import Insignia, { IInsignia } from './insignia';
 import Rating, { IRating } from './rating';
-import  {ICourse} from './course';
+import Trophy, { ITrophy } from './trophy';
+import User, { IUser } from './user';
 const Course = require('./course');
 
 
@@ -23,9 +23,6 @@ const studentSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: User
-    },
-    picture: {
-        type: String
     },
     ratings: [{
         type: Schema.Types.ObjectId,
@@ -58,7 +55,6 @@ export interface IStudent extends Document {
     university: string;
     degree: string;
     user: IUser['_id']; //Relacion con la coleccion students
-    picture: string;
     rating: number;
     ratings: IRating['_id'];
     trophies: ITrophy['_id'];
