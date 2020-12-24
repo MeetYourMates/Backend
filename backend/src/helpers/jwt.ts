@@ -1,32 +1,13 @@
 import config from "../config/config";
-import User from "../models/user";
+import User, { IUser } from "../models/user";
 const jwt = require('jsonwebtoken');
 
-/*
-const generarJWT = ( user: User ) => {
-
-    return new Promise( (resolve, reject) => {
-
-        const payload = { id: user.id, email: user.email };
-
-        jwt.sign( payload, config.jwtSecret, {
-            expiresIn: '24h'
-        }, ( err, token ) => {
-
-            if ( err ) {
-                // no se pudo crear el token
-                reject('No se pudo generar el JWT');
-
-            } else {
-                // TOKEN!
-                resolve( token );
-            }
-
-        })
-
+//Token created with 1 week expiration
+function createToken(user: IUser) {
+    return jwt.sign({ id: user.id, email: user.email }, config.jwtSecret, {
+        expiresIn: 604800
     });
 }
-*/
 function CheckJWT(token:string){
     return new Promise((resolve,reject )=>{
         try {
@@ -46,5 +27,6 @@ function CheckJWT(token:string){
 }
 
 export default {
-    CheckJWT
+    CheckJWT,
+    createToken
 }

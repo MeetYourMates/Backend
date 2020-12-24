@@ -39,6 +39,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var custom_models_helper_1 = __importDefault(require("../helpers/custom_models_helper"));
+var jwt_1 = __importDefault(require("../helpers/jwt"));
 var course_1 = __importDefault(require("../models/course"));
 var student_1 = __importDefault(require("../models/student"));
 var getCourse = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -101,22 +103,29 @@ var addStudent = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                         if (course != null) {
                             //We got the course now we search if the student has this course
                             //@ts-ignore
-                            student_1.default.updateOne({ _id: studentId }, { $addToSet: { courses: course._id } }).then(function (result) {
-                                if (result.nModified > 0) {
-                                    res.status(201).send({ message: 'Student Enrolled succesfully!' });
+                            student_1.default.findOneAndUpdate({ _id: studentId }, { "$addToSet": { courses: course._id }, "$set": { "university": req.body.university, "degree": req.body.degree } }, { returnOriginal: false }).populate('user')
+                                .exec(function (err, result) {
+                                console.log("Course Update: ", result);
+                                if (err) {
+                                    // ...
+                                    res.status(400).send({ message: 'No Subject in Database' });
                                 }
                                 else {
-                                    res.status(409).send({ message: 'Student was already Enrolled!' });
+                                    var userWithToken = {
+                                        "_id": result.user._id,
+                                        "password": "password-hidden",
+                                        "email": result.user.email,
+                                        "name": result.user.name,
+                                        "picture": result.user.picture,
+                                        "validated": true,
+                                        "token": jwt_1.default.createToken(result.user)
+                                    };
+                                    var result2 = custom_models_helper_1.default.getCustomStudent(result, userWithToken);
+                                    console.log("Course: result2: ", result2);
+                                    res.status(201).send(result2);
                                 }
                             });
                         }
-                        else {
-                            //No Course Found
-                            res.status(400).send({ message: 'No Subject in Database' });
-                        }
-                    }).catch(function (err) {
-                        console.log("error ", err);
-                        res.status(500).json({ message: 'Server Error!' });
                     })];
             case 1:
                 //Add student to subject

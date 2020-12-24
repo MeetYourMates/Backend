@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { createTransport } from "nodemailer";
 import { MailOptions } from "nodemailer/lib/smtp-pool";
 import { generate } from "randomstring";
-import config from "../config/config";
+import customHelper from "../helpers/custom_models_helper";
+import jwtHelper from "../helpers/jwt";
 import Recovery from "../models/recovery";
-import Student, { IStudent } from "../models/student";
+import Student from "../models/student";
 import User, { IUser } from "../models/user";
 import Validation from "../models/validation";
 var path = require('path');
@@ -49,7 +49,20 @@ const registerUser: any = async (req: Request, res: Response) => {
     });
 
     User.findOne({"email": newUser.email}).then((s)=>{
-        if(!s.validated){
+        if(s==null){
+            newUser.save().then((data) => {
+                newUser = data;
+            })
+            let validation = new Validation({
+                "code": generate(7),
+                "user": newUser,
+            })
+            validation.save().then(() => {
+                sendEmail(newUser.email,validation.code);
+                return res.status(201).json({"message": "User registered",
+                "code": validation.code});
+            });
+        }else if(!s.validated){
             //Not Validated Than delete the current user
             User.deleteOne({"email": newUser.email}).then(()=>{
                 newUser.save().then((data) => {
@@ -76,20 +89,6 @@ const registerUser: any = async (req: Request, res: Response) => {
     }
 };
 
-//Token created with 1 week expiration
-function createToken(user: IUser) {
-    return jwt.sign({ id: user.id, email: user.email }, config.jwtSecret, {
-        expiresIn: 604800
-    });
-}
-//Custom Student with user = {email,password, token}
-function getCustomStudent(student: IStudent,user:any) {
-    const result = {_id:student._id,name:student.name,university:student.university,degree:student.degree,user:user,
-    ratings:student.ratings,trophies:student.trophies,insignias:student.insignias,
-    chats:student.chats,courses:student.courses
-    };
-    return result;
-}
 
 //Login User and returns Student
 const accessUser = async (req: Request, res: Response) => {
@@ -119,9 +118,7 @@ const accessUser = async (req: Request, res: Response) => {
                         "validated": false,
                         "token":"Not-Authorized"
                     });
-                    let studentNotValidated = new Student({
-                        "user":userWithoutToken
-                    });
+                    const studentNotValidated:{"user":IUser} = {"user":userWithoutToken};
                     console.log("Line87:Login--> student hasn't Validated Odd#1 : " + studentNotValidated);
                     return res.status(203).json(studentNotValidated);
                 }else{
@@ -138,9 +135,9 @@ const accessUser = async (req: Request, res: Response) => {
                                 "name": result.user.name,
                                 "picture": result.user.picture,
                                 "validated": true,
-                                "token":createToken(result.user)
+                                "token":jwtHelper.createToken(result.user)
                             };
-                            const result2 = getCustomStudent(result,userWithToken);
+                            const result2 =customHelper.getCustomStudent(result,userWithToken);
                             //Validated and Has courses than student can login!
                             console.log("Login--> student Validated Result: " + result2);
                             return res.status(200).json(result2);
@@ -154,10 +151,10 @@ const accessUser = async (req: Request, res: Response) => {
                                 "name": result.user.name,
                                 "picture": result.user.picture,
                                 "validated": true,
-                                "token":createToken(result.user)
+                                "token":jwtHelper.createToken(result.user)
                             };
                             //Newly custom created user has now token in the json!
-                            const result2 = getCustomStudent(result,userWithToken);
+                            const result2 = customHelper.getCustomStudent(result,userWithToken);
                             console.log("Login--> student Not Enrolled Result: " + result2);
                             return res.status(206).json(result2);
                         }

@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
+import customHelper from "../helpers/custom_models_helper";
+import jwtHelper from "../helpers/jwt";
 import Course from '../models/course';
 import Student from '../models/student';
-
 const getCourse = async (req: Request, res: Response) => {
     let course = req.params.subject
     try{
@@ -24,6 +25,7 @@ const addCourse = async (req: Request, res: Response) => {
         return res.status(500).json(err);
     })
 }
+
 //Add a course to a student and viceversa!
 const addStudent = async(req: Request, res: Response) =>{
 
@@ -47,21 +49,28 @@ const addStudent = async(req: Request, res: Response) =>{
         if(course!=null){
             //We got the course now we search if the student has this course
             //@ts-ignore
-            Student.updateOne({_id:studentId}, {$addToSet: {courses: course!._id}}).then(result => {
-                if (result.nModified> 0) {
-                    res.status(201).send({message: 'Student Enrolled succesfully!'}); 
-                }else{
-                    res.status(409).send({message: 'Student was already Enrolled!'}); 
+            Student.findOneAndUpdate({_id:studentId}, {"$addToSet": {courses: course!._id},"$set": {"university": req.body.university,"degree":req.body.degree}},{returnOriginal:false}).populate('user')
+            .exec(function(err, result) {
+                console.log("Course Update: ",result);
+                if (err) {
+                    // ...
+                    res.status(400).send({message: 'No Subject in Database'});
+                } else {
+                    let userWithToken:any = {
+                        "_id":result.user._id,
+                        "password": "password-hidden",
+                        "email": result.user.email,
+                        "name": result.user.name,
+                        "picture": result.user.picture,
+                        "validated": true,
+                        "token":jwtHelper.createToken(result.user)
+                    };
+                    const result2 = customHelper.getCustomStudent(result,userWithToken);
+                    console.log("Course: result2: ",result2);
+                    res.status(201).send(result2); 
                 }
             });
-        }else{
-            //No Course Found
-            res.status(400).send({message: 'No Subject in Database'});
         }
-
-    }).catch((err) => { 
-        console.log("error ", err); 
-        res.status(500).json({message: 'Server Error!'}); 
     });
 }
 

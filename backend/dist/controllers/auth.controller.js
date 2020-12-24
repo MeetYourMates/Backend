@@ -39,10 +39,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var nodemailer_1 = require("nodemailer");
 var randomstring_1 = require("randomstring");
-var config_1 = __importDefault(require("../config/config"));
+var custom_models_helper_1 = __importDefault(require("../helpers/custom_models_helper"));
+var jwt_1 = __importDefault(require("../helpers/jwt"));
 var recovery_1 = __importDefault(require("../models/recovery"));
 var student_1 = __importDefault(require("../models/student"));
 var user_1 = __importDefault(require("../models/user"));
@@ -92,7 +92,21 @@ var registerUser = function (req, res) { return __awaiter(void 0, void 0, void 0
                 "validated": false
             });
             user_1.default.findOne({ "email": newUser_1.email }).then(function (s) {
-                if (!s.validated) {
+                if (s == null) {
+                    newUser_1.save().then(function (data) {
+                        newUser_1 = data;
+                    });
+                    var validation_2 = new validation_1.default({
+                        "code": randomstring_1.generate(7),
+                        "user": newUser_1,
+                    });
+                    validation_2.save().then(function () {
+                        sendEmail(newUser_1.email, validation_2.code);
+                        return res.status(201).json({ "message": "User registered",
+                            "code": validation_2.code });
+                    });
+                }
+                else if (!s.validated) {
                     //Not Validated Than delete the current user
                     user_1.default.deleteOne({ "email": newUser_1.email }).then(function () {
                         newUser_1.save().then(function (data) {
@@ -122,20 +136,6 @@ var registerUser = function (req, res) { return __awaiter(void 0, void 0, void 0
         return [2 /*return*/];
     });
 }); };
-//Token created with 1 week expiration
-function createToken(user) {
-    return jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, config_1.default.jwtSecret, {
-        expiresIn: 604800
-    });
-}
-//Custom Student with user = {email,password, token}
-function getCustomStudent(student, user) {
-    var result = { _id: student._id, name: student.name, university: student.university, degree: student.degree, user: user,
-        ratings: student.ratings, trophies: student.trophies, insignias: student.insignias,
-        chats: student.chats, courses: student.courses
-    };
-    return result;
-}
 //Login User and returns Student
 var accessUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var errors, filter;
@@ -167,9 +167,7 @@ var accessUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                                         "validated": false,
                                         "token": "Not-Authorized"
                                     });
-                                    var studentNotValidated = new student_1.default({
-                                        "user": userWithoutToken
-                                    });
+                                    var studentNotValidated = { "user": userWithoutToken };
                                     console.log("Line87:Login--> student hasn't Validated Odd#1 : " + studentNotValidated);
                                     return res.status(203).json(studentNotValidated);
                                 }
@@ -187,9 +185,9 @@ var accessUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                                                 "name": result.user.name,
                                                 "picture": result.user.picture,
                                                 "validated": true,
-                                                "token": createToken(result.user)
+                                                "token": jwt_1.default.createToken(result.user)
                                             };
-                                            var result2 = getCustomStudent(result, userWithToken);
+                                            var result2 = custom_models_helper_1.default.getCustomStudent(result, userWithToken);
                                             //Validated and Has courses than student can login!
                                             console.log("Login--> student Validated Result: " + result2);
                                             return res.status(200).json(result2);
@@ -204,10 +202,10 @@ var accessUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                                                 "name": result.user.name,
                                                 "picture": result.user.picture,
                                                 "validated": true,
-                                                "token": createToken(result.user)
+                                                "token": jwt_1.default.createToken(result.user)
                                             };
                                             //Newly custom created user has now token in the json!
-                                            var result2 = getCustomStudent(result, userWithToken);
+                                            var result2 = custom_models_helper_1.default.getCustomStudent(result, userWithToken);
                                             console.log("Login--> student Not Enrolled Result: " + result2);
                                             return res.status(206).json(result2);
                                         }
