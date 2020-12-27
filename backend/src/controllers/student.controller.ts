@@ -95,7 +95,7 @@ function deleteStudent (req:Request,res:Response){
 const getStudentCourses = async (req: Request, res: Response) => {
     try{
         const results = await Student.find({_id:req.params.id}).select('courses').populate('courses');
-        return res.status(200).json(results);
+        return res.status(200).json(results[0]['courses']);//Ignoro vector student y me meto directamente en los courses, así ahorro complicaciones en el frontend
     } catch (err) {
         console.log(err);
         return res.status(404).json(err);

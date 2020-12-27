@@ -167,7 +167,7 @@ var getStudentCourses = function (req, res) { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, student_1.default.find({ _id: req.params.id }).select('courses').populate('courses')];
             case 1:
                 results = _a.sent();
-                return [2 /*return*/, res.status(200).json(results)];
+                return [2 /*return*/, res.status(200).json(results[0]['courses'])]; //Ignoro vector student y me meto directamente en los courses, así ahorro complicaciones en el frontend
             case 2:
                 err_4 = _a.sent();
                 console.log(err_4);
