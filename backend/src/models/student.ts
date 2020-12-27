@@ -1,11 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import Chat, { IChat } from './chat';
-import { ICourse } from './course';
+import Course, { ICourse } from './course';
 import Insignia, { IInsignia } from './insignia';
 import Rating, { IRating } from './rating';
 import Trophy, { ITrophy } from './trophy';
 import User, { IUser } from './user';
-const Course = require('./course');
 
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Student from '../models/student';
+import Course from '../models/course';
 import User from '../models/user';
 
 
@@ -79,11 +80,8 @@ function updateStudentProfile (req: Request, res: Response){
         res.status(500).json(err);
     })
 }
-
-
-
-
 /***************************************************************************/
+
 function deleteStudent (req:Request,res:Response){
     Student.deleteOne({"_id":req.params._id}).then((data) => {
         res.status(200).json(data);
@@ -93,5 +91,17 @@ function deleteStudent (req:Request,res:Response){
 }
 
 
+/******************************PEP***************************************/
+const getStudentCourses = async (req: Request, res: Response) => {
+    try{
+        const results = await Student.find({_id:req.params.id}).select('courses').populate('courses');
+        return res.status(200).json(results);
+    } catch (err) {
+        console.log(err);
+        return res.status(404).json(err);
+    }
+}
+/************************************************************************/
 
-export default {getStudents, getStudent,addStudent,getSubjectsProjects,updateStudentProfile};
+
+export default {getStudents, getStudent,addStudent,getSubjectsProjects,updateStudentProfile,getStudentCourses};

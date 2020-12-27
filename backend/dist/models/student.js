@@ -24,11 +24,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importStar(require("mongoose"));
 var chat_1 = __importDefault(require("./chat"));
+var course_1 = __importDefault(require("./course"));
 var insignia_1 = __importDefault(require("./insignia"));
 var rating_1 = __importDefault(require("./rating"));
 var trophy_1 = __importDefault(require("./trophy"));
 var user_1 = __importDefault(require("./user"));
-var Course = require('./course');
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 var studentSchema = new mongoose_1.Schema({
     name: {
@@ -66,7 +66,7 @@ var studentSchema = new mongoose_1.Schema({
         }],
     courses: [{
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: Course
+            ref: course_1.default
         }]
 });
 //Exportamos modelo para poder usarlo

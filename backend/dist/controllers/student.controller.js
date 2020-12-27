@@ -157,5 +157,25 @@ function deleteStudent(req, res) {
         res.status(500).json(err);
     });
 }
-exports.default = { getStudents: getStudents, getStudent: getStudent, addStudent: addStudent, getSubjectsProjects: getSubjectsProjects, updateStudentProfile: updateStudentProfile };
+/******************************PEP***************************************/
+var getStudentCourses = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var results, err_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, student_1.default.find({ _id: req.params.id }).select('courses').populate('courses')];
+            case 1:
+                results = _a.sent();
+                return [2 /*return*/, res.status(200).json(results)];
+            case 2:
+                err_4 = _a.sent();
+                console.log(err_4);
+                return [2 /*return*/, res.status(404).json(err_4)];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+/************************************************************************/
+exports.default = { getStudents: getStudents, getStudent: getStudent, addStudent: addStudent, getSubjectsProjects: getSubjectsProjects, updateStudentProfile: updateStudentProfile, getStudentCourses: getStudentCourses };
 //# sourceMappingURL=student.controller.js.map

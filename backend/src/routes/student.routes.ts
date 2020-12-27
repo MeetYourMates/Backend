@@ -6,6 +6,7 @@ const router = Router();
 router.get('/all', studentController.getStudents);
 router.put('/updateStudent', studentController.updateStudentProfile);
 router.get('/getSubjectsProjects/:email', studentController.getSubjectsProjects);
+router.get('/getStudentCourses/:id', studentController.getStudentCourses);
 
 //router.post('/edit', modelController.editModel);
 
