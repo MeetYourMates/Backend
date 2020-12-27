@@ -119,7 +119,7 @@ const accessUser = async (req: Request, res: Response) => {
                         "token":"Not-Authorized"
                     });
                     const studentNotValidated:{"user":IUser} = {"user":userWithoutToken};
-                    console.log("Line87:Login--> student hasn't Validated Odd#1 : " + studentNotValidated);
+                    console.log("Line87:Login--> student hasn't Validated: " + studentNotValidated);
                     return res.status(203).json(studentNotValidated);
                 }else{
                     //* Validated
@@ -251,8 +251,9 @@ const changePassword = async (req: Request, res: Response) => {
 //Validates User
 const validateUser = async (req: Request, res: Response) => {
     let code = req.params.code;
+    console.log("Validation Code: ",code);
     let s = await Validation.findOne({"code": code});
-
+    console.log("Validation Mongodb user found: ",s);
     if (s != null) {
         let user = await User.findOne({"_id": s.user._id})
         if (user != null) {
@@ -272,6 +273,8 @@ const validateUser = async (req: Request, res: Response) => {
         else {
             return res.status(500);
         }
+    }else{
+        return res.status(404).json({"message":"Code Incorrect"});
     }
 }
 const registerUserbyGoogle: any = async (req: Request, res: Response) => {

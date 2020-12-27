@@ -168,7 +168,7 @@ var accessUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                                         "token": "Not-Authorized"
                                     });
                                     var studentNotValidated = { "user": userWithoutToken };
-                                    console.log("Line87:Login--> student hasn't Validated Odd#1 : " + studentNotValidated);
+                                    console.log("Line87:Login--> student hasn't Validated: " + studentNotValidated);
                                     return res.status(203).json(studentNotValidated);
                                 }
                                 else {
@@ -337,10 +337,12 @@ var validateUser = function (req, res) { return __awaiter(void 0, void 0, void 0
         switch (_a.label) {
             case 0:
                 code = req.params.code;
+                console.log("Code: ", code);
                 return [4 /*yield*/, validation_1.default.findOne({ "code": code })];
             case 1:
                 s = _a.sent();
-                if (!(s != null)) return [3 /*break*/, 5];
+                console.log(s);
+                if (!(s != null)) return [3 /*break*/, 6];
                 return [4 /*yield*/, user_1.default.findOne({ "_id": s.user._id })];
             case 2:
                 user_2 = _a.sent();
@@ -360,7 +362,9 @@ var validateUser = function (req, res) { return __awaiter(void 0, void 0, void 0
                 _a.sent();
                 return [3 /*break*/, 5];
             case 4: return [2 /*return*/, res.status(500)];
-            case 5: return [2 /*return*/];
+            case 5: return [3 /*break*/, 7];
+            case 6: return [2 /*return*/, res.status(404).json({ "message": "Code Incorrect" })];
+            case 7: return [2 /*return*/];
         }
     });
 }); };
