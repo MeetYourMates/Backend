@@ -337,11 +337,11 @@ var validateUser = function (req, res) { return __awaiter(void 0, void 0, void 0
         switch (_a.label) {
             case 0:
                 code = req.params.code;
-                console.log("Code: ", code);
+                console.log("Validation Code: ", code);
                 return [4 /*yield*/, validation_1.default.findOne({ "code": code })];
             case 1:
                 s = _a.sent();
-                console.log(s);
+                console.log("Validation Mongodb user found: ", s);
                 if (!(s != null)) return [3 /*break*/, 6];
                 return [4 /*yield*/, user_1.default.findOne({ "_id": s.user._id })];
             case 2:
