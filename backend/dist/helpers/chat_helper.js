@@ -20,13 +20,16 @@ function setLastActiveAsNow(idUser) {
             user_1.default.updateOne(query, { lastActiveAt: Date.now() }).then(function (res) {
                 if (res.nModified == 0) {
                     reject(new Error("No User Found to add the TimeStamp of lastActive with this id: " + idUser));
+                    return;
                 }
                 resolve(true);
+                return;
             });
         }
         catch (error) {
-            //console.debug("Some error while setting LastActive on User", error);
+            ////console.debug("Some error while setting LastActive on User", error);
             reject(new Error(error));
+            return;
         }
     });
 }
@@ -39,15 +42,16 @@ function setLastActiveAsNow(idUser) {
  * *    3. If the Chat exists and users exist which are references than just add the message!
  * *   Uses promise to do work asynchronously!
  *====================================================================================================================**/
-function saveMessage(payload, isRecipientOnline) {
+function saveMessage(payload) {
     return new Promise(function (resolve, reject) {
         try {
             //Step 0. Check if recipientExists
             var query = { "_id": payload.recipientId };
-            user_1.default.findOne(query).then(function (resUser) {
+            user_1.default.findOne(query).exec().then(function (resUser) {
                 if (resUser == null) {
-                    console.debug("Recipient doesn't exist");
+                    ////console.debug( "Recipient doesn't exist" );
                     reject(new Error("Recipient doesn't exist"));
+                    return;
                 }
                 else {
                     //Recipient Exist
@@ -61,14 +65,14 @@ function saveMessage(payload, isRecipientOnline) {
                     });
                     //Step 2. Save the Message
                     message.save().then(function (resultMessage) {
-                        console.debug("chatHelper****************");
+                        //console.debug( "chatHelper****************" );
                         //console.debug( resultMessage );
                         //Step 3. Check if Private Chat Exists between this two users
                         var filter = {
                             users: { $all: [payload.senderId, payload.recipientId] }
                         };
                         //const filter = { "users": [payload.senderId, payload.recipientId] };
-                        privateChat_1.default.findOne(filter).lean().then(function (privateChatResult) {
+                        privateChat_1.default.findOne(filter).lean().exec().then(function (privateChatResult) {
                             if (!privateChatResult) {
                                 //If it doesn't exist -->Create a new Private Chat
                                 var privatechat = new privateChat_1.default({
@@ -77,43 +81,53 @@ function saveMessage(payload, isRecipientOnline) {
                                 });
                                 //Save the privatechat 
                                 privatechat.save().then(function (resultPrivateChat) {
-                                    console.debug("Chat doesn't exists,created: ", resultPrivateChat);
+                                    //console.debug( "Chat doesn't exists,created: ", resultPrivateChat );
                                     // and add the reference to both sender and recipient
                                     var queryUpdate = { _id: { "$in": [payload.senderId, payload.recipientId] } };
                                     user_1.default.updateMany(queryUpdate, { "$push": { privatechats: resultPrivateChat._id } }).lean().then(function (updateRes) {
-                                        console.debug("Chat added to user:  ", updateRes);
+                                        //console.debug( "Chat added to user:  ", updateRes );
                                         resolve(true);
+                                        return;
                                     }).catch(function (err) {
                                         reject(err);
+                                        return;
                                     });
                                 }).catch(function (err) {
                                     reject(err);
+                                    return;
                                 });
                                 ;
                             }
                             else {
                                 //Private Chat found --> thus it exists
-                                console.debug("Private chat already exists: ", privateChatResult);
+                                //console.debug( "Private chat already exists: ", privateChatResult );
                                 //just add the reference "_id" of the message to Private Chat
                                 var queryUpdate = { _id: privateChatResult._id };
                                 privateChat_1.default.updateOne(queryUpdate, { $push: { messages: resultMessage._id } }).lean().then(function (updateRes) {
-                                    console.debug("Message appended to user:  ", updateRes);
+                                    //console.debug( "Message appended to user:  ", updateRes );
                                     resolve(true);
+                                    return;
                                 });
                             }
                         }).catch(function (err) {
                             reject(err);
+                            return;
                         });
                     }).catch(function (reason) {
-                        console.debug("saveMessageChatHelper: ", reason);
+                        //console.debug( "saveMessageChatHelper: ", reason );
                         reject(new Error("saveMessageChatHelper: " + reason));
+                        return;
                     });
                 }
+            }).catch(function (err) {
+                reject(new Error("Cannot Find recipient,due to\n " + err));
+                return;
             });
         }
         catch (error) {
             //console.debug("Some error while setting LastActive on User", error);
             reject(new Error(error));
+            return;
         }
     });
 }
@@ -145,20 +159,23 @@ function getChatHistory(userId) {
                     }]
             }).lean().then(function (resUser) {
                 if (resUser == null) {
-                    console.debug("Private Chat history doesn't exist");
+                    //console.debug( "Private Chat history doesn't exist" );
                     reject(new Error("Private Chat History doesn't exist"));
+                    return;
                 }
                 else {
-                    console.debug(typeof (resUser));
+                    //console.debug( typeof ( resUser ) );
                     // Return the private Chats List with user and messages populated
-                    console.debug(resUser.privatechats);
+                    //console.debug( resUser.privatechats );
                     resolve(resUser.privatechats);
+                    return;
                 }
             });
         }
         catch (error) {
             //console.debug("Some error while setting LastActive on User", error);
             reject(new Error(error));
+            return;
         }
     });
 }

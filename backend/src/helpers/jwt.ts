@@ -12,7 +12,7 @@ function CheckJWT(token:string){
     return new Promise((resolve,reject )=>{
         try {
             const { id, email } = jwt.verify(token, config.jwtSecret);
-           User.findOne({ "_id": id }).select('picture name email _id lastActiveAt').lean().then((usr)=>{
+           User.findOne({ "_id": id }).select('picture name email _id lastActiveAt').then((usr)=>{
                 if(usr==null){
                     reject(new Error("No User with this token-->Invalid token!"));   
                 }

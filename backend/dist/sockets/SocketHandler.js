@@ -42,7 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var chat_helper_1 = __importDefault(require("../helpers/chat_helper"));
 var jwt_1 = __importDefault(require("../helpers/jwt"));
 var socketAuth = require('socketio-auth');
-//Client No Auth TimeOut
+//Client No Auth TimeOut (ms)
 var timeOut = 10000;
 //!All Users On SocketServer Data Array
 var userData = {
@@ -62,7 +62,7 @@ exports.default = (function (io) {
             return __generator(this, function (_a) {
                 token = payload.token;
                 jwt_1.default.CheckJWT(token).then(function (data) {
-                    console.debug("Data: ", data);
+                    //console.debug("Data: ",data);
                     if (data[0] == false) {
                         console.debug("---------------------------------------------");
                         console.debug("Socket " + client_socket.id + " unauthorized.");
@@ -71,13 +71,26 @@ exports.default = (function (io) {
                     }
                     else {
                         //Authenticated --> Only add if the socket is not already added!
-                        var i = userData.users.indexOf(data[1]);
-                        if (i === -1) {
-                            userData.users.push(data[1]);
-                            userData.userSockets.push(client_socket);
-                        }
-                        ;
+                        //TODO: FUTURE CHECK IF USER IS CONNECTED FROM DIFFERENT DEVICE OR SAME
+                        //! BASED ON THAT WE SHOULD ALLOW HIM TO CONNECT OR NOT
+                        //! RIGHTNOW SAME USER CAN CONNECT MULTIPLE TIMES FROM SAME DEVICE
+                        //! VULNERIBILITY--> SEVERE POSSIBILITY OF SERVER SOCKET.IO OVERLOAD!
+                        /* let i = -1;
+                        userData.users.forEach( ( user, index ) =>{
+                          if ( user._id.equals(data[1]._id) ){ i = index;}
+                        } );
+                        console.log( "i: ", i );
+                        if (i == -1)
+                        { */
+                        console.debug("New User Authenticated...");
+                        userData.users.push(data[1]);
+                        userData.userSockets.push(client_socket);
                         return callback(null, true);
+                        /* } else
+                        {
+                          console.debug( "User Already Authenticated..." );
+                          return callback( { message: 'Single Socket Authentication' },false);
+                        }; */
                     }
                 }).catch(function (err) {
                     console.debug("---------------------------------------------");
@@ -122,38 +135,45 @@ exports.default = (function (io) {
             function sendMessage(payload) {
                 return new Promise(function (resolve, reject) {
                     try {
-                        console.debug("Message: ", payload);
+                        //console.debug("Message: ",payload);
                         //Possible Validations that the payload is not null, or its field are non null. No server error but won't do anything
                         if (payload == null) {
-                            resolve(true);
+                            reject(new Error("Payload null"));
                         }
                         if (payload.recipientId == null || payload.senderId == null || ((payload.text == null || payload.text == "") && (payload.image == null || payload.image == "")) || payload.createdAt == null) {
-                            resolve(true);
+                            reject(new Error("Payload not correct"));
+                            return;
                         }
                         //We cannot have the user send message to himself!
                         if (payload.recipientId == payload.senderId) {
-                            resolve(true);
+                            reject(new Error("user send message to himself"));
+                            return;
                         }
                         //We cannot allow users to send message as senderId other than themself!
                         if (userData.users[userData.userSockets.indexOf(client_socket)]._id != payload.senderId) {
-                            resolve(true);
+                            reject(new Error("senderId different than client, invalid"));
+                            return;
                         }
-                        var isRecipientOnline_1 = false;
+                        ;
                         // If validations Okay, than we search for the user, If the Recipiend is found than we send the message
                         userData.users.forEach(function (user, indexCurrent) {
                             if (user._id == payload.recipientId) {
                                 //Client is this -->SEND MESSAGE TO HIM
                                 userData.userSockets[indexCurrent].emit("chat_message", payload);
-                                isRecipientOnline_1 = true;
                             }
                         });
                         //If the recipiend Id is not found, but it may exist in the database we need to save the message from this user
                         //So that when the recipient reconnects he can see the messages sent to him while offline
-                        chat_helper_1.default.saveMessage(payload, isRecipientOnline_1);
+                        chat_helper_1.default.saveMessage(payload).catch(function (err) {
+                            reject(err);
+                            return;
+                        });
                         resolve(true);
+                        return;
                     }
                     catch (error) {
                         reject(new Error(error));
+                        return;
                     }
                 });
             }
@@ -177,12 +197,15 @@ exports.default = (function (io) {
                             //We have the messages on success, we will send this messages to the client
                             client_socket.emit("private_chat_history", privateChatsResult);
                             resolve(true);
+                            return;
                         }).catch(function (err) {
                             reject(err);
+                            return;
                         });
                     }
                     catch (error) {
                         reject(new Error(error));
+                        return;
                     }
                 });
             }

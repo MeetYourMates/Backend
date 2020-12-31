@@ -15,13 +15,16 @@ function setLastActiveAsNow(idUser:string){
             var query = { "_id": idUser };
            User.updateOne(query,{ lastActiveAt: Date.now()}).then((res)=>{
                 if(res.nModified==0){
-                    reject(new Error("No User Found to add the TimeStamp of lastActive with this id: "+idUser));   
+                    reject( new Error( "No User Found to add the TimeStamp of lastActive with this id: " + idUser ) );
+                    return;
                 }
-                resolve(true);
+               resolve( true );
+               return;
             });
         } catch (error) {
-            //console.debug("Some error while setting LastActive on User", error);
-            reject(new Error(error));
+            ////console.debug("Some error while setting LastActive on User", error);
+            reject( new Error( error ) );
+            return;
         }
     });
 }
@@ -34,16 +37,17 @@ function setLastActiveAsNow(idUser:string){
  * *    3. If the Chat exists and users exist which are references than just add the message!
  * *   Uses promise to do work asynchronously!
  *====================================================================================================================**/
-function saveMessage(payload:IMessage, isRecipientOnline:boolean){
+function saveMessage(payload:IMessage){
     return new Promise((resolve,reject )=>{
         try {
             //Step 0. Check if recipientExists
             var query = { "_id": payload.recipientId };
-            User.findOne(query).then((resUser)=>{
+            User.findOne(query).exec().then((resUser)=>{
                 if ( resUser == null )
                 {
-                    console.debug( "Recipient doesn't exist" );
-                    reject(new Error("Recipient doesn't exist"));
+                    ////console.debug( "Recipient doesn't exist" );
+                    reject( new Error( "Recipient doesn't exist" ) );
+                    return;
                 }else{
                     //Recipient Exist
                     //Step 1. Convert Payload to Message 
@@ -57,14 +61,14 @@ function saveMessage(payload:IMessage, isRecipientOnline:boolean){
                     //Step 2. Save the Message
                     message.save().then( (resultMessage) =>
                     {
-                        console.debug( "chatHelper****************" );
+                        //console.debug( "chatHelper****************" );
                         //console.debug( resultMessage );
                         //Step 3. Check if Private Chat Exists between this two users
                         const filter = {
                             users: { $all: [payload.senderId, payload.recipientId] }
                         };
                         //const filter = { "users": [payload.senderId, payload.recipientId] };
-                        PrivateChat.findOne(filter).lean().then((privateChatResult) => {
+                        PrivateChat.findOne(filter).lean().exec().then((privateChatResult) => {
                             if ( !privateChatResult )
                             {   
                                 //If it doesn't exist -->Create a new Private Chat
@@ -75,46 +79,56 @@ function saveMessage(payload:IMessage, isRecipientOnline:boolean){
                                 //Save the privatechat 
                                 privatechat.save().then(function(resultPrivateChat)
                                 {
-                                    console.debug( "Chat doesn't exists,created: ", resultPrivateChat );
+                                    //console.debug( "Chat doesn't exists,created: ", resultPrivateChat );
                                    // and add the reference to both sender and recipient
                                     const queryUpdate = { _id: { "$in": [payload.senderId, payload.recipientId] } };
                                     User.updateMany( queryUpdate, { "$push": { privatechats: resultPrivateChat._id } } ).lean().then( (updateRes)=> {
-                                        console.debug( "Chat added to user:  ", updateRes );
+                                        //console.debug( "Chat added to user:  ", updateRes );
                                         resolve( true );
+                                        return;
                                     } ).catch( ( err ) =>
                                     {
                                         reject( err );
+                                        return;
                                     });  
                                 } ).catch( ( err ) =>
                                 {
                                     reject( err );
+                                    return;
                                 });  ;
                                 
                             } else{
                                 //Private Chat found --> thus it exists
-                                console.debug( "Private chat already exists: ", privateChatResult );
+                                //console.debug( "Private chat already exists: ", privateChatResult );
                                 //just add the reference "_id" of the message to Private Chat
                                 const queryUpdate = { _id: privateChatResult._id};
                                 PrivateChat.updateOne( queryUpdate, { $push: { messages: resultMessage._id } } ).lean().then( (updateRes)=> {
-                                    console.debug( "Message appended to user:  ", updateRes );
+                                    //console.debug( "Message appended to user:  ", updateRes );
                                     resolve( true );
+                                    return;
                                 });
                             }
                         }).catch( ( err ) =>
                         {
-                            reject( err );
+                            reject( err );return;
                         });
                     } ).catch( ( reason ) =>
                     {
-                        console.debug( "saveMessageChatHelper: ", reason );
-                        reject(new Error("saveMessageChatHelper: "+ reason ));
+                        //console.debug( "saveMessageChatHelper: ", reason );
+                        reject( new Error( "saveMessageChatHelper: " + reason ) );
+                        return;
                     } );
                 }
 
+            } ).catch( function (err){
+            
+                reject( new Error( "Cannot Find recipient,due to\n " + err ) );
+                return;
             })
         } catch (error) {
             //console.debug("Some error while setting LastActive on User", error);
-            reject(new Error(error));
+            reject( new Error( error ) );
+            return;
         }
     });
 }
@@ -148,21 +162,24 @@ function getChatHistory(userId:String): Promise<any>{
             {
                 if ( resUser == null )
                 {   
-                    console.debug( "Private Chat history doesn't exist" );
-                    reject(new Error("Private Chat History doesn't exist"));
+                    //console.debug( "Private Chat history doesn't exist" );
+                    reject( new Error( "Private Chat History doesn't exist" ) );
+                    return;
                 }
                 else
                 {   
-                    console.debug( typeof ( resUser ) );
+                    //console.debug( typeof ( resUser ) );
                     // Return the private Chats List with user and messages populated
-                    console.debug( resUser.privatechats );
+                    //console.debug( resUser.privatechats );
                     resolve( resUser.privatechats );
+                    return;
                 }
 
             })
         } catch (error) {
             //console.debug("Some error while setting LastActive on User", error);
-            reject(new Error(error));
+            reject( new Error( error ) );
+            return;
         }
     });
 }

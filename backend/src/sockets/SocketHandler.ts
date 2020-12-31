@@ -44,7 +44,7 @@ export default (io: Server) => {
       //client_socket.emit('connect',{"message":"Please Authorize","timeout":timeOut});
       const token:string = payload.token;
         jwtHelper.CheckJWT( token).then((data:[boolean,IUser])=>{
-          console.debug("Data: ",data);
+          //console.debug("Data: ",data);
           if(data[0]==false){
             console.debug("---------------------------------------------");
             console.debug(`Socket ${client_socket.id} unauthorized.`);
@@ -52,13 +52,27 @@ export default (io: Server) => {
             return callback({ message: 'UNAUTHORIZED' });
           }else{
             //Authenticated --> Only add if the socket is not already added!
-            var i = userData.users.indexOf( data[1] );
-            if (i === -1)
-            {
+            //TODO: FUTURE CHECK IF USER IS CONNECTED FROM DIFFERENT DEVICE OR SAME
+            //! BASED ON THAT WE SHOULD ALLOW HIM TO CONNECT OR NOT
+            //! RIGHTNOW SAME USER CAN CONNECT MULTIPLE TIMES FROM SAME DEVICE
+            //! VULNERIBILITY--> SEVERE POSSIBILITY OF SERVER SOCKET.IO OVERLOAD!
+            /* let i = -1;
+            userData.users.forEach( ( user, index ) =>{
+              if ( user._id.equals(data[1]._id) ){ i = index;}
+            } );
+            console.log( "i: ", i );
+            if (i == -1)
+            { */
+              console.debug( "New User Authenticated..." );
               userData.users.push(data[1]);
-              userData.userSockets.push(client_socket);
-            };
-            return callback(null, true);
+              userData.userSockets.push( client_socket );
+              return callback(null, true);
+            /* } else
+            {
+              console.debug( "User Already Authenticated..." );
+              return callback( { message: 'Single Socket Authentication' },false);
+            }; */
+            
           }
         }).catch((err)=>{
           console.debug("---------------------------------------------");
@@ -99,31 +113,35 @@ export default (io: Server) => {
         function sendMessage( payload:IMessage){
           return new Promise((resolve,reject)=>{
               try {
-                console.debug("Message: ",payload);
+                //console.debug("Message: ",payload);
                 //Possible Validations that the payload is not null, or its field are non null. No server error but won't do anything
-                if(payload==null){resolve(true);}
-                if(payload.recipientId==null ||payload.senderId==null || ((payload.text ==null|| payload.text=="") && (payload.image==null|| payload.image==""))|| payload.createdAt==null){resolve(true);}
+                if(payload==null){reject(new Error("Payload null"));}
+                if ( payload.recipientId == null || payload.senderId == null || ( ( payload.text == null || payload.text == "" ) && ( payload.image == null || payload.image == "" ) ) || payload.createdAt == null )
+                { reject( new Error( "Payload not correct" ) ); return; }
                 //We cannot have the user send message to himself!
-                if ( payload.recipientId == payload.senderId ) { resolve( true ); }
+                if ( payload.recipientId == payload.senderId ) { reject( new Error( "user send message to himself" )); return;}
                 //We cannot allow users to send message as senderId other than themself!
-                if( userData.users[userData.userSockets.indexOf( client_socket )]._id != payload.senderId ){ resolve( true );}
+                if ( userData.users[userData.userSockets.indexOf( client_socket )]._id != payload.senderId )
+                { reject( new Error( "senderId different than client, invalid" ) ); return; };
 
-                let isRecipientOnline = false;
                 // If validations Okay, than we search for the user, If the Recipiend is found than we send the message
                 userData.users.forEach((user,indexCurrent)=> {
                   if(user._id == payload.recipientId){
                     //Client is this -->SEND MESSAGE TO HIM
                     userData.userSockets[indexCurrent].emit( "chat_message", payload );
-                    isRecipientOnline = true;
                   }
                 });
                 //If the recipiend Id is not found, but it may exist in the database we need to save the message from this user
                 //So that when the recipient reconnects he can see the messages sent to him while offline
-                chat_helper.saveMessage(payload,isRecipientOnline);
+                chat_helper.saveMessage( payload ).catch( function( err )
+                {
+                  reject( err ); return;
+                });
                 
-                resolve( true);
+                resolve( true);return;
               } catch (error) {
-                reject(new Error(error));
+                reject( new Error( error ) );
+                return;
               }
           });
       };
@@ -148,13 +166,16 @@ export default (io: Server) => {
               {
                 //We have the messages on success, we will send this messages to the client
                 client_socket.emit("private_chat_history",privateChatsResult);
-                resolve(true);
+                resolve( true );
+                return;
               } ).catch( (err) =>
               {
-                reject(err);
+                reject( err );
+                return;
               });
               } catch (error) {
-                reject(new Error(error));
+              reject( new Error( error ) );
+              return;
               }
           });
         };
