@@ -12,7 +12,7 @@ node_modules/
 ../dist/middlewares
 ../dist/models
 ../dist/routes
-../dist/sockets
+../dist/sockets/
 ../dist/app.js
 ../dist/app.js.mao
 ../dist/database.js

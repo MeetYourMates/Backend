@@ -214,9 +214,9 @@ exports.default = (function (io) {
                 return __generator(this, function (_a) {
                     getChatHistory().catch(function (err) {
                         console.debug("---------------------------------------------");
-                        console.debug('getChatHistory Promise: ', err.message);
+                        console.debug('getChatHistory returned Promise: ', err.message);
                         console.debug("---------------------------------------------");
-                        console.debug("Socket " + client_socket.id + " private_chat_history, something bad occured...");
+                        console.debug("Socket " + client_socket.id + " get private_chat_history, something bad occured...");
                         console.debug("---------------------------------------------");
                     });
                     return [2 /*return*/];

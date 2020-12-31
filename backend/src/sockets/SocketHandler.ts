@@ -5,7 +5,7 @@ import { IMessage } from '../models/message';
 import { IUser } from '../models/user';
 const socketAuth = require('socketio-auth');
 
-//Client No Auth TimeOut
+//Client No Auth TimeOut (ms)
 const timeOut = 10000;
 /**================================================================================================
  **                                           CUSTOM INTERFACES
@@ -183,9 +183,9 @@ export default (io: Server) => {
         client_socket.on('private_chat_history', async() => {
           getChatHistory().catch((err)=>{
             console.debug("---------------------------------------------");
-            console.debug('getChatHistory Promise: ', err.message);
+            console.debug('getChatHistory returned Promise: ', err.message);
             console.debug("---------------------------------------------");
-            console.debug(`Socket ${client_socket.id} private_chat_history, something bad occured...`);
+            console.debug(`Socket ${client_socket.id} get private_chat_history, something bad occured...`);
             console.debug("---------------------------------------------");
           });
         } );
