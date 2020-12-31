@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function getCustomStudent(student, user) {
     var result = { _id: student._id, name: student.name, university: student.university, degree: student.degree, user: user,
         ratings: student.ratings, trophies: student.trophies, insignias: student.insignias,
-        chats: student.chats, courses: student.courses
+        courses: student.courses
     };
     return result;
 }

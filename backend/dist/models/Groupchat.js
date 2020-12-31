@@ -18,27 +18,35 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importStar(require("mongoose"));
+var message_1 = __importDefault(require("./message"));
+var user_1 = __importDefault(require("./user"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-var messageSchema = new mongoose_1.Schema({
-    senderId: {
+var groupchatSchema = new mongoose_1.Schema({
+    //Name, Description, Picture will only be available for group Chats
+    name: {
         type: String
     },
-    recipientId: {
+    description: {
         type: String
     },
-    text: {
+    picture: {
         type: String
     },
-    image: {
-        type: String
-    },
-    createdAt: {
-        type: Date
-    }
+    users: [{
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: user_1.default
+        }],
+    messages: [{
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: message_1.default
+        }]
 });
 //Exportamos modelo para poder usarlo 
 //Mongoose#model(name, [schema], [collectionName], [skipInit])
-exports.default = mongoose_1.default.model('Message', messageSchema, 'messages');
-//# sourceMappingURL=message.js.map
+exports.default = mongoose_1.default.model('GroupChat', groupchatSchema, 'groupchats');
+//# sourceMappingURL=groupchat.js.map

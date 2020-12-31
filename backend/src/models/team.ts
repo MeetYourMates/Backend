@@ -1,7 +1,7 @@
-import mongoose, { Schema, Document} from 'mongoose';
-import Chat, { IChat } from './chat';
-import Task, { ITask } from './task';
+import mongoose, { Document, Schema } from 'mongoose';
+import GroupChat, { IGroupChat } from './groupchat';
 import Meeting, { IMeeting } from './meeting';
+import Task, { ITask } from './task';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const teamSchema = new Schema({
     name: {
@@ -10,9 +10,9 @@ const teamSchema = new Schema({
     availability: {
         type: Number
     },
-    chat: {
+    groupchat: {
         type: Schema.Types.ObjectId,
-        ref: Chat
+        ref: GroupChat
     },
     tasks: [{
         type: Schema.Types.ObjectId,
@@ -28,7 +28,7 @@ const teamSchema = new Schema({
 export interface ITeam extends Document {
     name: String;
     availability: Number;
-    chat: IChat['_id'];
+    chat: IGroupChat['_id'];
     tasks: ITask['_id'];
     meetings: IMeeting['_id'];
 }

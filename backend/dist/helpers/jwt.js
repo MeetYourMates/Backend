@@ -6,10 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = __importDefault(require("../config/config"));
 var user_1 = __importDefault(require("../models/user"));
 var jwt = require('jsonwebtoken');
-//Token created with 1 week expiration
+//Token created with 1 week expiration = 604800, 1 Year expiration =  
 function createToken(user) {
     return jwt.sign({ id: user.id, email: user.email }, config_1.default.jwtSecret, {
-        expiresIn: 604800
+        expiresIn: '365d'
     });
 }
 function CheckJWT(token) {

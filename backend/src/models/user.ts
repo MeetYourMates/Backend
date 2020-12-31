@@ -1,4 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import GroupChat, { IGroupChat } from './groupchat';
+import PrivateChat, { IPrivateChat } from './privateChat';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const userSchema = new Schema({
     name: {
@@ -15,7 +17,18 @@ const userSchema = new Schema({
     },
     picture:{
         type:String
-    }
+    },
+    lastActiveAt: {
+        type:Date
+    },
+    privatechats: [{
+        type: Schema.Types.ObjectId,
+        ref: PrivateChat
+    }],
+    groupchats: [{
+        type: Schema.Types.ObjectId,
+        ref: GroupChat
+    }]
 });
 
 //Interfaz para tratar respuesta como documento
@@ -25,6 +38,8 @@ export interface IUser extends Document {
     password: string;
     picture: string;
     validated: boolean;
+    privatechats: IPrivateChat['_id'];
+    groupchats: IGroupChat['_id'];
 }
 
 //Exportamos modelo para poder usarlo 

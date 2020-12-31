@@ -24,8 +24,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importStar(require("mongoose"));
 var message_1 = __importDefault(require("./message"));
+var user_1 = __importDefault(require("./user"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 var chatSchema = new mongoose_1.Schema({
+    //Name, Description, Picture will only be available for group Chats
     name: {
         type: String
     },
@@ -35,10 +37,17 @@ var chatSchema = new mongoose_1.Schema({
     picture: {
         type: String
     },
+    users: [{
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: user_1.default
+        }],
     messages: [{
             type: mongoose_1.Schema.Types.ObjectId,
             ref: message_1.default
-        }]
+        }],
+    isGroupChat: {
+        type: Boolean
+    }
 });
 //Exportamos modelo para poder usarlo 
 //Mongoose#model(name, [schema], [collectionName], [skipInit])

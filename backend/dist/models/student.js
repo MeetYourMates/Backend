@@ -23,7 +23,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importStar(require("mongoose"));
-var chat_1 = __importDefault(require("./chat"));
 var course_1 = __importDefault(require("./course"));
 var insignia_1 = __importDefault(require("./insignia"));
 var rating_1 = __importDefault(require("./rating"));
@@ -59,10 +58,6 @@ var studentSchema = new mongoose_1.Schema({
     insignias: [{
             type: mongoose_1.Schema.Types.ObjectId,
             ref: insignia_1.default
-        }],
-    chats: [{
-            type: mongoose_1.Schema.Types.ObjectId,
-            ref: chat_1.default
         }],
     courses: [{
             type: mongoose_1.Schema.Types.ObjectId,

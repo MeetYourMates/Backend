@@ -1,26 +1,30 @@
-import mongoose, { Schema, Document} from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const messageSchema = new Schema({
-    name: {
+    senderId: {
+        type: String
+    },
+    recipientId: {
         type: String
     },
     text: {
         type: String
     },
-    picture: {
+    image: {
         type: String
     },
-    date:{
+    createdAt:{
         type:Date
     }
 });
 
 //Interfaz para tratar respuesta como documento
 export interface IMessage extends Document {
-    name: string;
+    senderId: string;
+    recipientId: string;
     text: string;
-    picture: string;
-    date:Date;
+    image: string;
+    createdAt: Date;
 }
 
 //Exportamos modelo para poder usarlo 

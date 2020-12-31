@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import Chat, { IChat } from './chat';
 import Course, { ICourse } from './course';
 import Insignia, { IInsignia } from './insignia';
 import Rating, { IRating } from './rating';
 import Trophy, { ITrophy } from './trophy';
 import User, { IUser } from './user';
+
 
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
@@ -38,10 +38,6 @@ const studentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Insignia
     }],
-    chats: [{
-        type: Schema.Types.ObjectId,
-        ref: Chat
-    }],
     courses:[{
         type: Schema.Types.ObjectId,
         ref: Course
@@ -58,7 +54,6 @@ export interface IStudent extends Document {
     ratings: IRating['_id'];
     trophies: ITrophy['_id'];
     insignias: IInsignia['_id'];
-    chats: IChat['_id'];
     courses: ICourse['_id'];
 }
 

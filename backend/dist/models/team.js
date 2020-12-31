@@ -23,9 +23,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importStar(require("mongoose"));
-var chat_1 = __importDefault(require("./chat"));
-var task_1 = __importDefault(require("./task"));
+var groupchat_1 = __importDefault(require("./groupchat"));
 var meeting_1 = __importDefault(require("./meeting"));
+var task_1 = __importDefault(require("./task"));
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 var teamSchema = new mongoose_1.Schema({
     name: {
@@ -34,9 +34,9 @@ var teamSchema = new mongoose_1.Schema({
     availability: {
         type: Number
     },
-    chat: {
+    groupchat: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: chat_1.default
+        ref: groupchat_1.default
     },
     tasks: [{
             type: mongoose_1.Schema.Types.ObjectId,

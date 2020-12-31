@@ -2,10 +2,10 @@ import config from "../config/config";
 import User, { IUser } from "../models/user";
 const jwt = require('jsonwebtoken');
 
-//Token created with 1 week expiration
+//Token created with 1 week expiration = 604800, 1 Year expiration =  
 function createToken(user: IUser) {
     return jwt.sign({ id: user.id, email: user.email }, config.jwtSecret, {
-        expiresIn: 604800
+        expiresIn: '365d'
     });
 }
 function CheckJWT(token:string){

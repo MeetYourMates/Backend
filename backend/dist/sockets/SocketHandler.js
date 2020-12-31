@@ -39,17 +39,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var chat_helper_1 = __importDefault(require("../helpers/chat_helper"));
 var jwt_1 = __importDefault(require("../helpers/jwt"));
 var socketAuth = require('socketio-auth');
 //Client No Auth TimeOut
 var timeOut = 10000;
-//All Users On SocketServer Data Array
+//!All Users On SocketServer Data Array
 var userData = {
     users: [],
     userSockets: []
 };
 /**================================================================================================
- *                                         SOCKET.IO SERVER WITH AUTHENTICATION
+ **                                         SOCKET.IO SERVER WITH AUTHENTICATION
  *================================================================================================**/
 exports.default = (function (io) {
     socketAuth(io, {
@@ -61,16 +62,16 @@ exports.default = (function (io) {
             return __generator(this, function (_a) {
                 token = payload.token;
                 jwt_1.default.CheckJWT(token).then(function (data) {
-                    console.log("Data: ", data);
+                    console.debug("Data: ", data);
                     if (data[0] == false) {
-                        console.log("---------------------------------------------");
-                        console.log("Socket " + client_socket.id + " unauthorized.");
-                        console.log("---------------------------------------------");
+                        console.debug("---------------------------------------------");
+                        console.debug("Socket " + client_socket.id + " unauthorized.");
+                        console.debug("---------------------------------------------");
                         return callback({ message: 'UNAUTHORIZED' });
                     }
                     else {
                         //Authenticated --> Only add if the socket is not already added!
-                        var i = userData.userSockets.indexOf(client_socket);
+                        var i = userData.users.indexOf(data[1]);
                         if (i === -1) {
                             userData.users.push(data[1]);
                             userData.userSockets.push(client_socket);
@@ -79,11 +80,11 @@ exports.default = (function (io) {
                         return callback(null, true);
                     }
                 }).catch(function (err) {
-                    console.log("---------------------------------------------");
-                    console.log('JWT ERROR PROMISE: ', err.message);
-                    console.log("---------------------------------------------");
-                    console.log("Socket " + client_socket.id + " unauthorized.");
-                    console.log("---------------------------------------------");
+                    console.debug("---------------------------------------------");
+                    console.debug('JWT ERROR PROMISE: ', err.message);
+                    console.debug("---------------------------------------------");
+                    console.debug("Socket " + client_socket.id + " unauthorized.");
+                    console.debug("---------------------------------------------");
                     return callback({ message: 'UNAUTHORIZED' });
                 });
                 return [2 /*return*/];
@@ -93,12 +94,12 @@ exports.default = (function (io) {
          **               Post Authentication Events
          *=============================================**/
         postAuthenticate: function (client_socket) {
-            console.log("Socket " + client_socket.id + " authenticated.");
+            console.debug("Socket " + client_socket.id + " authenticated.");
             //TODO: USERS ONLINE LIST -- Completed
             // Just Showing the Data
-            console.log("---------------------------------------------");
-            console.log("user Connected: ", userData.users);
-            console.log("---------------------------------------------");
+            console.debug("---------------------------------------------");
+            console.debug("user Connected: ", userData.users);
+            console.debug("---------------------------------------------");
             // SEND THE LIST OF CONNECTED USERS TO EVERYBODY AS CHANGES!
             //Group of Online Users
             client_socket.join('online_users');
@@ -112,21 +113,43 @@ exports.default = (function (io) {
                     return [2 /*return*/];
                 });
             }); });
+            /**==============================================
+             * ?  sendMessage function handler
+             * *  does work asynchronously off the main thread
+             * *  so that the main thread can attend other
+             * *  messages from the same user in parallel
+             *=============================================**/
             function sendMessage(payload) {
                 return new Promise(function (resolve, reject) {
                     try {
-                        console.log("text: " + payload.text);
-                        userData.users.forEach(function (user) {
-                            if (user._id == payload.recipientId || user._id == payload.senderId) {
+                        console.debug("Message: ", payload);
+                        //Possible Validations that the payload is not null, or its field are non null. No server error but won't do anything
+                        if (payload == null) {
+                            resolve(true);
+                        }
+                        if (payload.recipientId == null || payload.senderId == null || ((payload.text == null || payload.text == "") && (payload.image == null || payload.image == "")) || payload.createdAt == null) {
+                            resolve(true);
+                        }
+                        //We cannot have the user send message to himself!
+                        if (payload.recipientId == payload.senderId) {
+                            resolve(true);
+                        }
+                        //We cannot allow users to send message as senderId other than themself!
+                        if (userData.users[userData.userSockets.indexOf(client_socket)]._id != payload.senderId) {
+                            resolve(true);
+                        }
+                        var isRecipientOnline_1 = false;
+                        // If validations Okay, than we search for the user, If the Recipiend is found than we send the message
+                        userData.users.forEach(function (user, indexCurrent) {
+                            if (user._id == payload.recipientId) {
                                 //Client is this -->SEND MESSAGE TO HIM
-                                var i = userData.users.indexOf(user);
-                                if (i === -1)
-                                    return;
-                                if (userData.userSockets[i] != client_socket) {
-                                    userData.userSockets[i].emit("chat_message", payload);
-                                }
+                                userData.userSockets[indexCurrent].emit("chat_message", payload);
+                                isRecipientOnline_1 = true;
                             }
                         });
+                        //If the recipiend Id is not found, but it may exist in the database we need to save the message from this user
+                        //So that when the recipient reconnects he can see the messages sent to him while offline
+                        chat_helper_1.default.saveMessage(payload, isRecipientOnline_1);
                         resolve(true);
                     }
                     catch (error) {
@@ -135,15 +158,84 @@ exports.default = (function (io) {
                 });
             }
             ;
-            ///TODO: CHAT MESSAGE --> SAVE TO DataBase Messages of User
+            /**==============================================
+             * ?  getChatHistory function handler
+             * *  does work asynchronously off the main thread
+             * *  so that the main thread can attend other
+             * *  messages from the same user in parallel
+             *=============================================**/
+            //Payload must contain the 
+            function getChatHistory() {
+                return new Promise(function (resolve, reject) {
+                    try {
+                        var userId = userData.users[userData.userSockets.indexOf(client_socket)]._id;
+                        //? Gets all of the Private Chats, that this user has talked with.
+                        //? all of the dirty work of putting in correct list per user will be done in frontend
+                        //? Extra efficient on server and balances the workload to clientSide!
+                        //@ts-nocheck
+                        chat_helper_1.default.getMessage(userId).then(function (privateChatsResult) {
+                            //We have the messages on success, we will send this messages to the client
+                            client_socket.emit("private_chat_history", privateChatsResult);
+                            resolve(true);
+                        }).catch(function (err) {
+                            reject(err);
+                        });
+                    }
+                    catch (error) {
+                        reject(new Error(error));
+                    }
+                });
+            }
+            ;
+            /**==============================================
+             * ?  Private chat messages event handler
+             * *   using sendMessage as a Promise to do
+             * *   work asynchronously!
+             *=============================================**/
             client_socket.on('chat_message', function (payload) { return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     sendMessage(payload).catch(function (err) {
-                        console.log("---------------------------------------------");
-                        console.log('sendMessage Promise: ', err.message);
-                        console.log("---------------------------------------------");
-                        console.log("Socket " + client_socket.id + " badMessage Request.");
-                        console.log("---------------------------------------------");
+                        console.debug("---------------------------------------------");
+                        console.debug('sendMessage Promise: ', err.message);
+                        console.debug("---------------------------------------------");
+                        console.debug("Socket " + client_socket.id + " badMessage Request.");
+                        console.debug("---------------------------------------------");
+                    });
+                    return [2 /*return*/];
+                });
+            }); });
+            /**==============================================
+               * ?  User historial private messages event handler
+               * *  using sendChatHistory as a Promise to do
+               * *  work asynchronously! When finished should
+               * *  send user his chat history
+               *=============================================**/
+            client_socket.on('private_chat_history', function () { return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    getChatHistory().catch(function (err) {
+                        console.debug("---------------------------------------------");
+                        console.debug('getChatHistory Promise: ', err.message);
+                        console.debug("---------------------------------------------");
+                        console.debug("Socket " + client_socket.id + " private_chat_history, something bad occured...");
+                        console.debug("---------------------------------------------");
+                    });
+                    return [2 /*return*/];
+                });
+            }); });
+            ///TODO: GROUP CHAT MESSAGE --> Not Finished!!
+            /**==============================================
+              * ?  Group chat messages event handler
+              * *  using sendMessage as a Promise to do
+              * *  work asynchronously!
+              *=============================================**/
+            client_socket.on('group_chat_message', function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    sendMessage(payload).catch(function (err) {
+                        console.debug("---------------------------------------------");
+                        console.debug('sendMessage Promise: ', err.message);
+                        console.debug("---------------------------------------------");
+                        console.debug("Socket " + client_socket.id + " badMessage Request.");
+                        console.debug("---------------------------------------------");
                     });
                     return [2 /*return*/];
                 });
@@ -157,17 +249,22 @@ exports.default = (function (io) {
          *               Disconnect Event
          *=============================================**/
         disconnect: function (client_socket) {
-            console.log("Socket " + client_socket.id + " disconnected.");
+            console.debug("Socket " + client_socket.id + " disconnected.");
             client_socket.leave('online_users');
             var i = userData.userSockets.indexOf(client_socket);
             if (i === -1)
                 return; //If User isn't in our list!
-            userData.userSockets.splice(i, 1);
-            userData.users.splice(i, 1);
-            io.to('online_users').emit('online_users', userData.users);
-            console.log("---------------------------------------------");
-            console.log('Got disconnect!');
-            console.log("---------------------------------------------");
+            //First we save the current Disconnection Time as LastActive
+            //Date.now() TimeStamp in miliseconds
+            chat_helper_1.default.setLastActiveAsNow(userData.users[i]._id).finally(function () {
+                //Delete the User from OnlineUsers List and Notify Other Users!
+                userData.userSockets.splice(i, 1);
+                userData.users.splice(i, 1);
+                io.to('online_users').emit('online_users', userData.users);
+                console.debug("---------------------------------------------");
+                console.debug('Got disconnect!');
+                console.debug("---------------------------------------------");
+            });
         },
     });
 });
@@ -175,10 +272,10 @@ exports.default = (function (io) {
 /*
   // Chatroom
   io.on('connection', function (client_socket) {
-    console.log("---------------SOCKET.IO HANDLER EVENTS LOGS---------- ");
+    console.debug("---------------SOCKET.IO HANDLER EVENTS debugS---------- ");
     //Client or User is Authenticated
     jwtHelper.CheckJWT( client_socket.handshake.headers['x-token']).then((data:[boolean,IUser])=>{
-      //console.log("Data: ",data);
+      //console.debug("Data: ",data);
       if(data[0]==false){
         return client_socket.disconnect();
       }else{
@@ -187,7 +284,7 @@ exports.default = (function (io) {
           userData.users.push(data[1]);
           userData.userSockets.push(client_socket);
         // Just Showing the Data
-          console.log("user Connected: ",userData.users);
+          console.debug("user Connected: ",userData.users);
         // SEND THE LIST OF CONNECTED USERS TO EVERYBODY AS CHANGES!
           //Group of Online Users
           client_socket.join('online_users');
@@ -202,7 +299,7 @@ exports.default = (function (io) {
         ///TODO: CHAT MESSAGE --> SAVE TO DataBase Messages of User
           client_socket.on('chat_message', async( payload:chatMessage ) => {
             //io.emit('chat-message',payload.text);
-            console.log("text: "+payload.text);
+            console.debug("text: "+payload.text);
             userData.users.forEach(user => {
               if(user._id == payload.recipientId){
                 //Client is this -->SEND MESSAGE TO HIM
@@ -220,7 +317,7 @@ exports.default = (function (io) {
           userData.userSockets.splice(i, 1);
           userData.users.splice(i,1);
           io.to('online_users').emit('online_users',userData.users);
-          console.log('Got disconnect!');
+          console.debug('Got disconnect!');
        });
       }
     });

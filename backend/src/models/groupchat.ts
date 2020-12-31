@@ -1,7 +1,9 @@
-import mongoose, { Schema, Document} from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import Message, { IMessage } from './message';
+import User, { IUser } from './user';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
-const chatSchema = new Schema({
+const groupchatSchema = new Schema({
+    //Name, Description, Picture will only be available for group Chats
     name: {
         type: String
     },
@@ -11,6 +13,10 @@ const chatSchema = new Schema({
     picture: {
         type: String
     },
+    users:[{
+        type: Schema.Types.ObjectId,
+        ref:User
+    }],
     messages: [{
         type: Schema.Types.ObjectId,
         ref: Message
@@ -18,13 +24,15 @@ const chatSchema = new Schema({
 });
 
 //Interfaz para tratar respuesta como documento
-export interface IChat extends Document {
+export interface IGroupChat extends Document {
     name: string;
+    isGroupChat: Boolean;
     description: string;
+    users: IUser['_id'];
     messages: IMessage['_id'];
     picture: string;
 }
 
 //Exportamos modelo para poder usarlo 
 //Mongoose#model(name, [schema], [collectionName], [skipInit])
-export default mongoose.model<IChat>('Chat', chatSchema,'chats');
+export default mongoose.model<IGroupChat>('GroupChat', groupchatSchema,'groupchats');

@@ -7,3 +7,16 @@ node_modules/
 .idea
 .vscode
 ./Backend
+./dist/config
+./dist/controllers
+./dist/helpers
+./dist/middlewares
+./dist/models
+./dist/routes
+./dist/sockets
+./dist/app.js
+./dist/app.js.mao
+./dist/database.js
+./dist/database.js.map
+./dist/index.js
+./dist/index.js.map
