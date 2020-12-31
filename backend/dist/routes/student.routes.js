@@ -10,6 +10,7 @@ router.get('/all', student_controller_1.default.getStudents);
 router.put('/updateStudent', student_controller_1.default.updateStudentProfile);
 router.get('/getSubjectsProjects/:email', student_controller_1.default.getSubjectsProjects);
 router.get('/getStudentCourses/:id', student_controller_1.default.getStudentCourses);
+router.get('/getStudentsAndCourses/:id', student_controller_1.default.getStudentsAndCourses);
 //router.post('/edit', modelController.editModel);
 exports.default = router;
 //# sourceMappingURL=student.routes.js.map

@@ -74,7 +74,7 @@ const addStudent = async(req: Request, res: Response) =>{
     });
 }
 
-const getCourseStudents = async (req: Request, res: Response) => { //
+const getCourseStudents = async (req: Request, res: Response) => { 
     let course = req.params.course
     console.log(course);
     try{
