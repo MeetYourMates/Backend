@@ -12,11 +12,11 @@ function CheckJWT(token:string){
     return new Promise((resolve,reject )=>{
         try {
             const { id, email } = jwt.verify(token, config.jwtSecret);
-           User.findOne({ "_id": id }).then((usr)=>{
+           User.findOne({ "_id": id }).select('picture name email _id lastActiveAt').lean().then((usr)=>{
                 if(usr==null){
                     reject(new Error("No User with this token-->Invalid token!"));   
                 }
-                usr.password = "password-hidden";
+                //usr.password = "password-hidden";
                 resolve( [true, usr]);
             });
         } catch (error) {

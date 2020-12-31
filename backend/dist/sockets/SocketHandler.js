@@ -173,7 +173,7 @@ exports.default = (function (io) {
                         //? all of the dirty work of putting in correct list per user will be done in frontend
                         //? Extra efficient on server and balances the workload to clientSide!
                         //@ts-nocheck
-                        chat_helper_1.default.getMessage(userId).then(function (privateChatsResult) {
+                        chat_helper_1.default.getChatHistory(userId).then(function (privateChatsResult) {
                             //We have the messages on success, we will send this messages to the client
                             client_socket.emit("private_chat_history", privateChatsResult);
                             resolve(true);

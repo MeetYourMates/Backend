@@ -68,7 +68,7 @@ function saveMessage(payload, isRecipientOnline) {
                             users: { $all: [payload.senderId, payload.recipientId] }
                         };
                         //const filter = { "users": [payload.senderId, payload.recipientId] };
-                        privateChat_1.default.findOne(filter).then(function (privateChatResult) {
+                        privateChat_1.default.findOne(filter).lean().then(function (privateChatResult) {
                             if (!privateChatResult) {
                                 //If it doesn't exist -->Create a new Private Chat
                                 var privatechat = new privateChat_1.default({
@@ -80,7 +80,7 @@ function saveMessage(payload, isRecipientOnline) {
                                     console.debug("Chat doesn't exists,created: ", resultPrivateChat);
                                     // and add the reference to both sender and recipient
                                     var queryUpdate = { _id: { "$in": [payload.senderId, payload.recipientId] } };
-                                    user_1.default.updateMany(queryUpdate, { "$push": { privatechats: resultPrivateChat._id } }).then(function (updateRes) {
+                                    user_1.default.updateMany(queryUpdate, { "$push": { privatechats: resultPrivateChat._id } }).lean().then(function (updateRes) {
                                         console.debug("Chat added to user:  ", updateRes);
                                         resolve(true);
                                     }).catch(function (err) {
@@ -96,7 +96,7 @@ function saveMessage(payload, isRecipientOnline) {
                                 console.debug("Private chat already exists: ", privateChatResult);
                                 //just add the reference "_id" of the message to Private Chat
                                 var queryUpdate = { _id: privateChatResult._id };
-                                privateChat_1.default.updateOne(queryUpdate, { $push: { messages: resultMessage._id } }).then(function (updateRes) {
+                                privateChat_1.default.updateOne(queryUpdate, { $push: { messages: resultMessage._id } }).lean().then(function (updateRes) {
                                     console.debug("Message appended to user:  ", updateRes);
                                     resolve(true);
                                 });
@@ -126,18 +126,33 @@ function saveMessage(payload, isRecipientOnline) {
  * *    3. If the Chat exists and users exist which are references than just add the message!
  * *   Uses promise to do work asynchronously!
  *====================================================================================================================**/
-function getMessage(userId) {
+function getChatHistory(userId) {
     return new Promise(function (resolve, reject) {
         try {
             //Step 0. Check if recipientExists
             var query = { "_id": userId };
-            user_1.default.findOne(query).then(function (resUser) {
+            user_1.default.findOne(query).select('privatechats').populate({
+                path: 'privatechats',
+                model: 'PrivateChat',
+                populate: [{
+                        path: 'messages',
+                        model: 'Message'
+                    },
+                    {
+                        path: 'users',
+                        model: 'User',
+                        select: 'picture name email _id lastActiveAt'
+                    }]
+            }).lean().then(function (resUser) {
                 if (resUser == null) {
                     console.debug("Private Chat history doesn't exist");
                     reject(new Error("Private Chat History doesn't exist"));
                 }
                 else {
-                    //results Exists
+                    console.debug(typeof (resUser));
+                    // Return the private Chats List with user and messages populated
+                    console.debug(resUser.privatechats);
+                    resolve(resUser.privatechats);
                 }
             });
         }
@@ -150,6 +165,6 @@ function getMessage(userId) {
 exports.default = {
     setLastActiveAsNow: setLastActiveAsNow,
     saveMessage: saveMessage,
-    getMessage: getMessage
+    getChatHistory: getChatHistory
 };
 //# sourceMappingURL=chat_helper.js.map

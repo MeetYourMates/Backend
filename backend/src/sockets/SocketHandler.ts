@@ -144,7 +144,7 @@ export default (io: Server) => {
                 //? all of the dirty work of putting in correct list per user will be done in frontend
                 //? Extra efficient on server and balances the workload to clientSide!
               //@ts-nocheck
-              chat_helper.getMessage( userId ).then( (privateChatsResult) =>
+              chat_helper.getChatHistory( userId ).then( (privateChatsResult) =>
               {
                 //We have the messages on success, we will send this messages to the client
                 client_socket.emit("private_chat_history",privateChatsResult);

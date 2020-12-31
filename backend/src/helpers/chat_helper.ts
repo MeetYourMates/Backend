@@ -64,9 +64,9 @@ function saveMessage(payload:IMessage, isRecipientOnline:boolean){
                             users: { $all: [payload.senderId, payload.recipientId] }
                         };
                         //const filter = { "users": [payload.senderId, payload.recipientId] };
-                        PrivateChat.findOne(filter).then((privateChatResult) => {
+                        PrivateChat.findOne(filter).lean().then((privateChatResult) => {
                             if ( !privateChatResult )
-                            {
+                            {   
                                 //If it doesn't exist -->Create a new Private Chat
                                 let privatechat = new PrivateChat( {
                                     "users": [payload.senderId, payload.recipientId],
@@ -78,7 +78,7 @@ function saveMessage(payload:IMessage, isRecipientOnline:boolean){
                                     console.debug( "Chat doesn't exists,created: ", resultPrivateChat );
                                    // and add the reference to both sender and recipient
                                     const queryUpdate = { _id: { "$in": [payload.senderId, payload.recipientId] } };
-                                    User.updateMany( queryUpdate, { "$push": { privatechats: resultPrivateChat._id } } ).then( (updateRes)=> {
+                                    User.updateMany( queryUpdate, { "$push": { privatechats: resultPrivateChat._id } } ).lean().then( (updateRes)=> {
                                         console.debug( "Chat added to user:  ", updateRes );
                                         resolve( true );
                                     } ).catch( ( err ) =>
@@ -95,7 +95,7 @@ function saveMessage(payload:IMessage, isRecipientOnline:boolean){
                                 console.debug( "Private chat already exists: ", privateChatResult );
                                 //just add the reference "_id" of the message to Private Chat
                                 const queryUpdate = { _id: privateChatResult._id};
-                                PrivateChat.updateOne( queryUpdate, { $push: { messages: resultMessage._id } } ).then( (updateRes)=> {
+                                PrivateChat.updateOne( queryUpdate, { $push: { messages: resultMessage._id } } ).lean().then( (updateRes)=> {
                                     console.debug( "Message appended to user:  ", updateRes );
                                     resolve( true );
                                 });
@@ -127,21 +127,36 @@ function saveMessage(payload:IMessage, isRecipientOnline:boolean){
  * *    3. If the Chat exists and users exist which are references than just add the message!
  * *   Uses promise to do work asynchronously!
  *====================================================================================================================**/
-function getMessage(userId:String): Promise<any>{
+function getChatHistory(userId:String): Promise<any>{
     return new Promise((resolve,reject )=>{
         try {
             //Step 0. Check if recipientExists
             var query = { "_id": userId };
-            User.findOne(query).then((resUser)=>{
-                if ( resUser == null )
+            User.findOne(query).select('privatechats').populate({
+                path: 'privatechats', 
+                model: 'PrivateChat',
+                populate: [{
+                    path: 'messages',
+                    model: 'Message'
+                },
                 {
+                    path: 'users',
+                    model: 'User',
+                    select: 'picture name email _id lastActiveAt'
+                }]
+            }).lean().then( ( resUser ) =>
+            {
+                if ( resUser == null )
+                {   
                     console.debug( "Private Chat history doesn't exist" );
                     reject(new Error("Private Chat History doesn't exist"));
                 }
                 else
-                {
-                    //results Exists
-                    
+                {   
+                    console.debug( typeof ( resUser ) );
+                    // Return the private Chats List with user and messages populated
+                    console.debug( resUser.privatechats );
+                    resolve( resUser.privatechats );
                 }
 
             })
@@ -154,5 +169,5 @@ function getMessage(userId:String): Promise<any>{
 export default {
     setLastActiveAsNow,
     saveMessage,
-    getMessage
+    getChatHistory
 }
