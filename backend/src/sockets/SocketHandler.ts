@@ -56,22 +56,23 @@ export default (io: Server) => {
             //! BASED ON THAT WE SHOULD ALLOW HIM TO CONNECT OR NOT
             //! RIGHTNOW SAME USER CAN CONNECT MULTIPLE TIMES FROM SAME DEVICE
             //! VULNERIBILITY--> SEVERE POSSIBILITY OF SERVER SOCKET.IO OVERLOAD!
-            /* let i = -1;
+            let i = -1;
             userData.users.forEach( ( user, index ) =>{
               if ( user._id.equals(data[1]._id) ){ i = index;}
             } );
             console.log( "i: ", i );
             if (i == -1)
-            { */
+            {
               console.debug( "New User Authenticated..." );
               userData.users.push(data[1]);
               userData.userSockets.push( client_socket );
+              client_socket.emit( 'authenticated', '{"message":"Authenticated Succesfully"}' );
               return callback(null, true);
-            /* } else
+            } else
             {
               console.debug( "User Already Authenticated..." );
               return callback( { message: 'Single Socket Authentication' },false);
-            }; */
+            };
             
           }
         }).catch((err)=>{
