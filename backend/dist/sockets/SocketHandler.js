@@ -47,7 +47,9 @@ var timeOut = 10000;
 //!All Users On SocketServer Data Array
 var userData = {
     users: [],
-    userSockets: []
+    userSockets: [],
+    userMatesIds: [],
+    onlineUserMates: []
 };
 /**================================================================================================
  **                                         SOCKET.IO SERVER WITH AUTHENTICATION
@@ -79,15 +81,70 @@ exports.default = (function (io) {
                         userData.users.forEach(function (user, index) {
                             if (user._id.equals(data[1]._id)) {
                                 i_1 = index;
+                                return;
                             }
                         });
-                        console.log("i: ", i_1);
                         if (i_1 == -1) {
-                            console.debug("New User Authenticated...");
-                            userData.users.push(data[1]);
-                            userData.userSockets.push(client_socket);
-                            client_socket.emit('authenticated', '{"message":"Authenticated Succesfully"}');
-                            return callback(null, true);
+                            //TODO: FUTURE --> OPTIMIZE HEAVILY FROM HERE BELOW, TOO INEFICIENT!!
+                            //Get Mates of this user and add it to the userData
+                            chat_helper_1.default.getMates(data[1]._id).then(function (resMates) {
+                                //console.debug( "New User Authenticated..." );
+                                userData.users.push(data[1]);
+                                userData.userSockets.push(client_socket);
+                                userData.userMatesIds.push(resMates);
+                                //console.debug( "My Mates All: ", resMates );
+                                //Need to filter for myself all of the users who are online for me
+                                var filteredMates = [];
+                                resMates.forEach(function (mateId) {
+                                    //Online Users --> Search if My Mate is Online
+                                    userData.users.forEach(function (userElement) {
+                                        if (userElement._id.equals(mateId)) {
+                                            filteredMates.push(mateId);
+                                        }
+                                    });
+                                });
+                                //console.debug( "My Mates Filtered: ", filteredMates );
+                                userData.onlineUserMates.push(filteredMates);
+                                //Notify Myself, who of my mates are online!
+                                client_socket.emit('online_users', filteredMates);
+                                //Have UserModel,UserSocket,UserMatesAll,UserMatesOnline
+                                //? NOTIFY ALL OTHERS, I AM ONLINE AND ADD MYSELF IN THEIR ONLINE FILTERED LIST TOO!
+                                new Promise(function (resolve, reject) {
+                                    try {
+                                        var k_1 = -1;
+                                        userData.userMatesIds.forEach(function (usermates, index) {
+                                            k_1 = -1;
+                                            //console.debug( `User ${ userData.users[index].name } has usermates: ${ usermates } where searching for ${data[1]._id}` );
+                                            usermates.forEach(function (usermate, index) {
+                                                if (data[1]._id.equals(usermate)) {
+                                                    k_1 = index;
+                                                    return;
+                                                }
+                                            });
+                                            //console.debug( "UserMate Index Found,k : ",k );
+                                            if (k_1 != -1) {
+                                                //Found Myself in there mates List
+                                                userData.onlineUserMates[index].push(data[1]._id);
+                                                userData.userSockets[index].emit('online_users', userData.onlineUserMates[index]);
+                                                //console.debug( `User ${ userData.users[index].name } has updated Online usermates: ${ userData.onlineUserMates[index] }` );
+                                            }
+                                        });
+                                        resolve(true);
+                                        return;
+                                    }
+                                    catch (error) {
+                                        reject(new Error(error));
+                                        return;
+                                    }
+                                }).catch(function (err) {
+                                    console.debug(err);
+                                });
+                                client_socket.emit('authenticated', '{"message":"Authenticated Succesfully"}');
+                                return callback(null, true);
+                            }).catch(function (err) {
+                                console.debug(err);
+                                return callback({ message: 'Server error, authentication failed fue to mates search error' }, false);
+                            });
                         }
                         else {
                             console.debug("User Already Authenticated...");
@@ -110,22 +167,20 @@ exports.default = (function (io) {
          **               Post Authentication Events
          *=============================================**/
         postAuthenticate: function (client_socket) {
-            console.debug("Socket " + client_socket.id + " authenticated.");
-            //TODO: USERS ONLINE LIST -- Completed
+            //console.debug( `Socket ${ client_socket.id } authenticated.` );
+            var myIndex = userData.userSockets.indexOf(client_socket);
             // Just Showing the Data
             console.debug("---------------------------------------------");
             console.debug("user Connected: ", userData.users);
             console.debug("---------------------------------------------");
             // SEND THE LIST OF CONNECTED USERS TO EVERYBODY AS CHANGES!
             //Group of Online Users
-            client_socket.join('online_users');
-            //Everybody recieves a new emit, as new user connects
-            io.to('online_users').emit('online_users', userData.users);
+            client_socket.join('connected_users');
             //Serve Users Connected List to User
             client_socket.on('online_users', function () { return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    //User Asking for UsersList
-                    client_socket.emit('online_users', userData.users);
+                    //User Asking for UsersOnlineMatesList
+                    client_socket.emit('online_users', userData.onlineUserMates[myIndex]);
                     return [2 /*return*/];
                 });
             }); });
@@ -189,6 +244,7 @@ exports.default = (function (io) {
              *=============================================**/
             //Payload must contain the 
             function getChatHistory() {
+                //console.trace( "getChatHistory Executed!" );
                 return new Promise(function (resolve, reject) {
                     try {
                         var userId = userData.users[userData.userSockets.indexOf(client_socket)]._id;
@@ -214,10 +270,10 @@ exports.default = (function (io) {
             }
             ;
             /**==============================================
-             * ?  Private chat messages event handler
-             * *   using sendMessage as a Promise to do
-             * *   work asynchronously!
-             *=============================================**/
+            * ?  Private chat messages event handler
+            * *   using sendMessage as a Promise to do
+            * *   work asynchronously!
+            *=============================================**/
             client_socket.on('chat_message', function (payload) { return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     sendMessage(payload).catch(function (err) {
@@ -278,23 +334,59 @@ exports.default = (function (io) {
             console.debug("Socket " + client_socket.id + " disconnected.");
             client_socket.leave('online_users');
             var i = userData.userSockets.indexOf(client_socket);
-            if (i === -1)
+            if (i === -1) {
+                console.debug("------------------------------------------------------");
+                console.debug('Got disconnection due to Timeout,no authentication!');
+                console.debug("------------------------------------------------------");
                 return; //If User isn't in our list!
+            }
             //First we save the current Disconnection Time as LastActive
             //Date.now() TimeStamp in miliseconds
             chat_helper_1.default.setLastActiveAsNow(userData.users[i]._id).finally(function () {
+                //All Users who have me as there mate, need to tell them I am Offline
+                new Promise(function (resolve, reject) {
+                    try {
+                        var k_2 = -1;
+                        userData.onlineUserMates.forEach(function (onlineUserMates, index) {
+                            //
+                            //i = onlineUserMates.indexOf( userData.users[i]._id );
+                            k_2 = -1;
+                            onlineUserMates.forEach(function (onlineUsermate, index2) {
+                                if (userData.users[i]._id.equals(onlineUsermate)) {
+                                    k_2 = index2;
+                                    return;
+                                }
+                            });
+                            if (k_2 != -1) {
+                                //Found Myself in there mates List
+                                userData.onlineUserMates[index].splice(k_2, 1);
+                                userData.userSockets[index].emit('online_users', userData.onlineUserMates[index]);
+                            }
+                        });
+                        resolve(true);
+                        return;
+                    }
+                    catch (error) {
+                        reject(new Error(error));
+                        return;
+                    }
+                }).catch(function (err) {
+                    console.debug(err);
+                });
                 //Delete the User from OnlineUsers List and Notify Other Users!
                 userData.userSockets.splice(i, 1);
                 userData.users.splice(i, 1);
-                io.to('online_users').emit('online_users', userData.users);
+                userData.onlineUserMates.splice(i, 1);
+                userData.userMatesIds.splice(i, 1);
+                //io.to( 'online_users' ).emit( 'online_users', userData.users );
                 console.debug("---------------------------------------------");
-                console.debug('Got disconnect!');
+                console.debug('Got disconnection From User!');
                 console.debug("---------------------------------------------");
             });
         },
     });
 });
-//! DON'T DELETE FROM HERE BELOW ! 
+//! DON'T DELETE FROM HERE BELOW !
 /*
   // Chatroom
   io.on('connection', function (client_socket) {

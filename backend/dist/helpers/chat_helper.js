@@ -131,7 +131,6 @@ function saveMessage(payload) {
         }
     });
 }
-/// TODO: GET THE MESSAGE OF A USER PRIVATE CHAT
 /**====================================================================================================================
  * ?  This function will return the message references in the Private Chat for this User
  * *    1. If the Chat doesn't exist but user does. Add the reference of the chat to user.
@@ -179,9 +178,47 @@ function getChatHistory(userId) {
         }
     });
 }
+/**====================================================================================================================
+ * ?  This function will return the mates, this user has opened chat with before
+ * *    1. If the user has no mates, returns empty list.
+ * *    2. If the user has mates, returns list with users ids
+ *====================================================================================================================**/
+function getMates(userId) {
+    return new Promise(function (resolve, reject) {
+        try {
+            //Step 0. Check if recipientExists
+            var query = {
+                users: { $in: [userId] }
+            };
+            privateChat_1.default.find(query).select('users').lean().then(function (resPrivChat) {
+                if (resPrivChat == null) {
+                    //console.debug( "Private Chat history doesn't exist" );
+                    reject(new Error("Private Chat History doesn't exist, No mates"));
+                    return;
+                }
+                else {
+                    //List of PrivateChats --> Just to List of User Ids where it is different than myself!
+                    var myMates_1 = [];
+                    resPrivChat.forEach(function (element) {
+                        myMates_1.push(element.users[0].equals(userId) ? element.users[1] : element.users[0]);
+                    });
+                    console.debug(myMates_1);
+                    resolve(myMates_1);
+                    return;
+                }
+            });
+        }
+        catch (error) {
+            //console.debug("Some error while setting LastActive on User", error);
+            reject(new Error(error));
+            return;
+        }
+    });
+}
 exports.default = {
     setLastActiveAsNow: setLastActiveAsNow,
     saveMessage: saveMessage,
-    getChatHistory: getChatHistory
+    getChatHistory: getChatHistory,
+    getMates: getMates
 };
 //# sourceMappingURL=chat_helper.js.map

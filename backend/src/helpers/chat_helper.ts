@@ -1,5 +1,5 @@
 import Message, { IMessage } from "../models/message";
-import PrivateChat from "../models/privateChat";
+import PrivateChat, { IPrivateChat } from "../models/privateChat";
 import User from "../models/user";
 
 /// Finished: setLastActiveAsNow on a User
@@ -132,7 +132,6 @@ function saveMessage(payload:IMessage){
         }
     });
 }
-/// TODO: GET THE MESSAGE OF A USER PRIVATE CHAT
 /**====================================================================================================================
  * ?  This function will return the message references in the Private Chat for this User
  * *    1. If the Chat doesn't exist but user does. Add the reference of the chat to user.
@@ -183,8 +182,50 @@ function getChatHistory(userId:String): Promise<any>{
         }
     });
 }
+/**====================================================================================================================
+ * ?  This function will return the mates, this user has opened chat with before
+ * *    1. If the user has no mates, returns empty list.
+ * *    2. If the user has mates, returns list with users ids
+ *====================================================================================================================**/
+function getMates(userId:String): Promise<Array<String>>{
+    return new Promise((resolve,reject )=>{
+        try {
+            //Step 0. Check if recipientExists
+            const query = {
+                users: { $in: [userId] }
+            };
+            PrivateChat.find(query).select('users').lean().then( ( resPrivChat:Array<IPrivateChat> ) =>
+            {   //console.debug(resPrivChat);
+                if ( resPrivChat == null )
+                {   
+                    //console.debug( "Private Chat history doesn't exist" );
+                    reject( new Error( "Private Chat History doesn't exist, No mates" ) );
+                    return;
+                }
+                else
+                {   
+                    //List of PrivateChats --> Just to List of User Ids where it is different than myself!
+                    let myMates: String[] = [];
+                    resPrivChat.forEach( element =>
+                    {
+                        myMates.push( element.users[0].equals(userId) ? element.users[1]: element.users[0]);
+                    } );
+                    console.debug(myMates);
+                    resolve(myMates );
+                    return;
+                }
+
+            })
+        } catch (error) {
+            //console.debug("Some error while setting LastActive on User", error);
+            reject( new Error( error ) );
+            return;
+        }
+    });
+}
 export default {
     setLastActiveAsNow,
     saveMessage,
-    getChatHistory
+    getChatHistory,
+    getMates
 }
