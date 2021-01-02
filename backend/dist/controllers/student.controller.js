@@ -208,21 +208,14 @@ Estructura del resultado:
 
 */
 var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var results, _i, results_1, course, subject, err_5;
+    var results, _i, results_1, course, subject, students, err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 6, , 7]);
+                _a.trys.push([0, 7, , 8]);
                 return [4 /*yield*/, student_1.default.find({ _id: req.params.id }).select('courses').populate({
                         path: 'courses',
                         select: 'start end students subject',
-                        //popula los users de cada course
-                        populate: {
-                            path: 'students',
-                            model: 'Student',
-                            //selecciona solo los campos interesantes
-                            select: 'picture name'
-                        }
                     }).lean()];
             case 1:
                 results = _a.sent();
@@ -231,7 +224,7 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
                 _i = 0, results_1 = results;
                 _a.label = 2;
             case 2:
-                if (!(_i < results_1.length)) return [3 /*break*/, 5];
+                if (!(_i < results_1.length)) return [3 /*break*/, 6];
                 course = results_1[_i];
                 return [4 /*yield*/, subject_1.default.find({ _id: course['subject'] })];
             case 3:
@@ -239,18 +232,26 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
                 course['subjectName'] = subject[0]['name'];
                 //Limpia los campos que no interesan
                 delete course['subject'];
-                _a.label = 4;
+                return [4 /*yield*/, student_1.default.find({ courses: course['_id'] }).select('user degree university').populate({
+                        path: 'user',
+                        model: 'User',
+                        select: 'picture name'
+                    })];
             case 4:
+                students = _a.sent();
+                course['students'] = students;
+                _a.label = 5;
+            case 5:
                 _i++;
                 return [3 /*break*/, 2];
-            case 5:
+            case 6:
                 console.log(results);
                 return [2 /*return*/, res.status(200).json(results)];
-            case 6:
+            case 7:
                 err_5 = _a.sent();
                 console.log(err_5);
                 return [2 /*return*/, res.status(404).json(err_5)];
-            case 7: return [2 /*return*/];
+            case 8: return [2 /*return*/];
         }
     });
 }); };

@@ -141,13 +141,6 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
         var results = await Student.find({_id:req.params.id}).select('courses').populate({
             path: 'courses',
             select:'start end students subject',
-            //popula los users de cada course
-            populate: {
-                path: 'students',
-                model: 'Student',
-                //selecciona solo los campos interesantes
-                select: 'picture name'
-            }
         }).lean();
         //"Limpia" la encapsulación del json
         results = results[0]['courses'];
@@ -157,6 +150,13 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
             course['subjectName'] = subject[0]['name'];
             //Limpia los campos que no interesan
             delete course['subject'];
+
+            var students = await Student.find({courses:course['_id']}).select('user degree university').populate({
+                path: 'user',
+                model: 'User',
+                select: 'picture name'
+            });
+            course['students'] = students;
           }
         console.log(results);
         return res.status(200).json(results);
