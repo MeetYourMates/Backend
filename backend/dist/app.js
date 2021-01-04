@@ -18,6 +18,7 @@ var project_routes_1 = __importDefault(require("./routes/project.routes"));
 var student_routes_1 = __importDefault(require("./routes/student.routes"));
 var trophies_routes_1 = __importDefault(require("./routes/trophies.routes"));
 var university_routes_1 = __importDefault(require("./routes/university.routes"));
+var subject_routes_1 = __importDefault(require("./routes/subject.routes"));
 var path = require('path');
 var cors = require('cors');
 var cookieParser = require('cookie-parser');
@@ -49,6 +50,7 @@ passport_1.default.use(passport_2.default);
 //*******************************KRUNAL**************************************/
 //API Routes
 app.use('/auth', auth_routes_1.default);
+app.use('/subject', subject_routes_1.default);
 app.use('/student', student_routes_1.default);
 app.use('/university', university_routes_1.default);
 app.use('/faculty', faculty_routes_1.default);

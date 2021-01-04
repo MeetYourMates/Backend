@@ -78,31 +78,45 @@ var getStudent = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 var getSubjectsProjects = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var results, err_3;
+    var results, result, _i, result_1, course, subject, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, student_1.default.find({ "user": { "email": req.params.email } })
-                        .populate({
+                _a.trys.push([0, 6, , 7]);
+                return [4 /*yield*/, student_1.default.find({ _id: req.params.id }).select('courses').populate({
                         path: 'courses',
-                        model: 'Course',
-                        populate: [{
-                                path: 'subjects',
-                                model: 'Subject'
-                            },
-                            {
-                                path: 'projects',
-                                model: 'Project'
-                            }]
-                    }).exec()];
+                        select: 'subject projects',
+                        populate: {
+                            path: 'projects',
+                            model: 'Project'
+                        }
+                    }).lean()];
             case 1:
                 results = _a.sent();
-                return [2 /*return*/, res.status(200).json(results)];
+                result = results[0]['courses'];
+                _i = 0, result_1 = result;
+                _a.label = 2;
             case 2:
+                if (!(_i < result_1.length)) return [3 /*break*/, 5];
+                course = result_1[_i];
+                return [4 /*yield*/, subject_1.default.find({ _id: course['subject'] })];
+            case 3:
+                subject = _a.sent();
+                course['subjectName'] = subject[0]['name'];
+                //Limpia los campos que no interesan
+                delete course['subject'];
+                _a.label = 4;
+            case 4:
+                _i++;
+                return [3 /*break*/, 2];
+            case 5:
+                console.log(results);
+                return [2 /*return*/, res.status(200).json(results)];
+            case 6:
                 err_3 = _a.sent();
+                console.log(err_3);
                 return [2 /*return*/, res.status(404).json(err_3)];
-            case 3: return [2 /*return*/];
+            case 7: return [2 /*return*/];
         }
     });
 }); };

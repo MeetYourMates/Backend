@@ -23,27 +23,36 @@ const getStudent = async (req: Request, res: Response) => {
         return res.status(404).json(err);
     }
 }
+/******************************MAITE***************************************/
 const getSubjectsProjects = async (req: Request, res: Response) => {
     try{
-        const results = await Student.find({"user":{"email":req.params.email}})
-    .populate({
-        path: 'courses', 
-        model: 'Course',
-        populate: [{
-            path: 'subjects',
-            model: 'Subject'
-        }, 
-        {
-            path: 'projects',
-            model: 'Project'
-        }]}).exec();
-
+        //Busca los cursos del Student por su id
+        //El metodo lean() nos permite modificar el objecto en el próximo bucle, para poder enviar info extra.
+        let results = await Student.find({_id:req.params.id}).select('courses').populate({
+            path: 'courses',
+            select:'subject projects',
+            populate: {
+                path: 'projects',
+                model: 'Project'
+            }
+        }).lean();
+        let result = results[0]['courses'];
+        //"Limpia" la encapsulación del json
+        for (var course of result) {
+            let subject = await Subject.find({_id:course['subject']});
+            course['subjectName'] = subject[0]['name'];
+            //Limpia los campos que no interesan
+            delete course['subject'];
+        }
+        console.log(results);
         return res.status(200).json(results);
     } catch (err) {
+        console.log(err);
         return res.status(404).json(err);
     }
     
 }
+/***************************************************************************/
 const addStudent = async (req: Request, res: Response) => {
     const student = new Student({
         "name": req.body.name,

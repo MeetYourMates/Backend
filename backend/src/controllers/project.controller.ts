@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Course from '../models/course';
 import Project from '../models/project';
-//! Not getting Uploaded 
+/******************************MAITE***************************************/
 const addProject = async(req: Request, res: Response) =>{
 
     //Display request
@@ -9,19 +9,15 @@ const addProject = async(req: Request, res: Response) =>{
     if(req.body==null){
         res.status(400).send({message: 'Bad Request'});
     }
-    if(req.body.subjectId==null|| req.body.ProjectId==null){
+    if(req.body.subjectId==null){
         res.status(400).send({message: 'Bad Request'});
     }
     //Set variables for the data found in the request body
     let subjectId:string = req.body.subjectId; 
     const project = new Project({
-        "name": req.body.name,
-        "teamNames": req.body.teamNames,
-        "numberStudents": req.body.numberStudents,
-        "hashtags": req.body.hashtags,
-        "teams": req.body.teams
+        "name": req.body.name
     });
-    await project.save().then((data) => { 
+    project.save().then((data) => {
         //Add Project to subject
         Course.findOne({subject: [subjectId]}).sort({start: -1}).then(course => { 
         //No error and we got a result
@@ -49,5 +45,23 @@ const addProject = async(req: Request, res: Response) =>{
     });
     
 }
-//! Not getting Uploaded 
-export default {addProject};
+const getProjectsFromCourse = async (req: Request, res: Response) => {
+    //El await hace que la siguiente linea no se ejecute
+    //hasta que el resultado no se haya obtenido
+    try{
+        let results = await Course.find({_id:req.params.id}).select('projects').populate({
+            path: 'projects',
+            select:'_id name',
+        }).lean();
+        //"Limpia" la encapsulación del json
+        results = results[0]['projects'];
+        console.log(results);
+        return res.status(200).json(results);
+
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+
+}
+/*********************************************************************/
+export default {addProject,getProjectsFromCourse};

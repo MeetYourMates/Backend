@@ -45,57 +45,71 @@ var project_1 = __importDefault(require("../models/project"));
 var addProject = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var subjectId, project;
     return __generator(this, function (_a) {
+        //Display request
+        console.log(req.body);
+        if (req.body == null) {
+            res.status(400).send({ message: 'Bad Request' });
+        }
+        if (req.body.subjectId == null) {
+            res.status(400).send({ message: 'Bad Request' });
+        }
+        subjectId = req.body.subjectId;
+        project = new project_1.default({
+            "name": req.body.name
+        });
+        project.save().then(function (data) {
+            //Add Project to subject
+            course_1.default.findOne({ subject: [subjectId] }).sort({ start: -1 }).then(function (course) {
+                //No error and we got a result
+                console.log("Adding Course to Project: ");
+                console.log([course]);
+                if (course != null) {
+                    //We got the course now we search if the Project has this course 
+                    //@ts-ignore
+                    course_1.default.updateOne({ "_id": course === null || course === void 0 ? void 0 : course._id }, { $addToSet: { projects: data._id } }).then(function (result) {
+                        if (result.nModified > 0) {
+                            res.status(201).send({ message: 'Project Enrolled succesfully!' });
+                        }
+                        else {
+                            res.status(409).send({ message: 'Project was already Enrolled!' });
+                        }
+                    });
+                }
+                else {
+                    //No Course Found
+                    res.status(400).send({ message: 'No Subject in Database' });
+                }
+            }).catch(function (err) {
+                console.log("error ", err);
+                res.status(500).json({ message: 'Server Error!' });
+            });
+        });
+        return [2 /*return*/];
+    });
+}); };
+var getProjectsFromCourse = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var results, err_1;
+    return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                //Display request
-                console.log(req.body);
-                if (req.body == null) {
-                    res.status(400).send({ message: 'Bad Request' });
-                }
-                if (req.body.subjectId == null || req.body.ProjectId == null) {
-                    res.status(400).send({ message: 'Bad Request' });
-                }
-                subjectId = req.body.subjectId;
-                project = new project_1.default({
-                    "name": req.body.name,
-                    "teamNames": req.body.teamNames,
-                    "numberStudents": req.body.numberStudents,
-                    "hashtags": req.body.hashtags,
-                    "teams": req.body.teams
-                });
-                return [4 /*yield*/, project.save().then(function (data) {
-                        //Add Project to subject
-                        course_1.default.findOne({ subject: [subjectId] }).sort({ start: -1 }).then(function (course) {
-                            //No error and we got a result
-                            console.log("Adding Course to Project: ");
-                            console.log([course]);
-                            if (course != null) {
-                                //We got the course now we search if the Project has this course 
-                                //@ts-ignore
-                                course_1.default.updateOne({ "_id": course === null || course === void 0 ? void 0 : course._id }, { $addToSet: { projects: data._id } }).then(function (result) {
-                                    if (result.nModified > 0) {
-                                        res.status(201).send({ message: 'Project Enrolled succesfully!' });
-                                    }
-                                    else {
-                                        res.status(409).send({ message: 'Project was already Enrolled!' });
-                                    }
-                                });
-                            }
-                            else {
-                                //No Course Found
-                                res.status(400).send({ message: 'No Subject in Database' });
-                            }
-                        }).catch(function (err) {
-                            console.log("error ", err);
-                            res.status(500).json({ message: 'Server Error!' });
-                        });
-                    })];
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, course_1.default.find({ _id: req.params.id }).select('projects').populate({
+                        path: 'projects',
+                        select: '_id name',
+                    }).lean()];
             case 1:
-                _a.sent();
-                return [2 /*return*/];
+                results = _a.sent();
+                //"Limpia" la encapsulación del json
+                results = results[0]['projects'];
+                console.log(results);
+                return [2 /*return*/, res.status(200).json(results)];
+            case 2:
+                err_1 = _a.sent();
+                return [2 /*return*/, res.status(404).json(err_1)];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 //! Not getting Uploaded 
-exports.default = { addProject: addProject };
+exports.default = { addProject: addProject, getProjectsFromCourse: getProjectsFromCourse };
 //# sourceMappingURL=project.controller.js.map

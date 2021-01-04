@@ -7,5 +7,6 @@ var express_1 = require("express");
 var project_controller_1 = __importDefault(require("../controllers/project.controller"));
 var router = express_1.Router();
 router.post('/add', project_controller_1.default.addProject);
+router.get('/course/:id', project_controller_1.default.getProjectsFromCourse);
 exports.default = router;
 //# sourceMappingURL=project.routes.js.map

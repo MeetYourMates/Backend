@@ -45,5 +45,5 @@ var projectSchema = new mongoose_1.Schema({
     },
 });
 //Exportamos modelo para poder usarlo
-exports.default = mongoose_1.default.model('Project', projectSchema, 'project');
+exports.default = mongoose_1.default.model('Project', projectSchema, 'projects');
 //# sourceMappingURL=project.js.map
