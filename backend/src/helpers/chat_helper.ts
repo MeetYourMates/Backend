@@ -1,6 +1,6 @@
 import Message, { IMessage } from "../models/message";
 import PrivateChat, { IPrivateChat } from "../models/privateChat";
-import User from "../models/user";
+import User, {IUserModel} from "../models/user";
 
 /// Finished: setLastActiveAsNow on a User
 /**===========================================================
@@ -20,6 +20,33 @@ function setLastActiveAsNow(idUser:string){
                 }
                resolve( true );
                return;
+            });
+        } catch (error) {
+            ////console.debug("Some error while setting LastActive on User", error);
+            reject( new Error( error ) );
+            return;
+        }
+    });
+}
+/**===========================================================
+ * ?  setLastActiveAsNow function stamps the
+ * *   the given user with Current Time on the
+ * *   field lastActive. As a Promise to do
+ * *   work asynchronously!
+ *============================================================**/
+function getUser(idUser:string):Promise<IUserModel>{
+    return new Promise((resolve,reject )=>{
+        try {
+            var query = { "_id": idUser };
+            User.findOne(query).select('name email picture').lean().then((res)=>{
+                if(res==null){
+                    reject( new Error( "No User Found func[getUser(isUser)] with this id: " + idUser ) );
+                    return;
+                }else{
+                    res._id = res._id.toString();
+                resolve( res );
+                return;
+                }
             });
         } catch (error) {
             ////console.debug("Some error while setting LastActive on User", error);
@@ -72,12 +99,12 @@ function saveMessage(payload:IMessage){
                             if ( !privateChatResult )
                             {   
                                 //If it doesn't exist -->Create a new Private Chat
-                                let privatechat = new PrivateChat( {
+                                let privateChat = new PrivateChat( {
                                     "users": [payload.senderId, payload.recipientId],
                                     "messages":[resultMessage._id]
                                 } );
                                 //Save the privatechat 
-                                privatechat.save().then(function(resultPrivateChat)
+                                privateChat.save().then(function(resultPrivateChat)
                                 {
                                     //console.debug( "Chat doesn't exists,created: ", resultPrivateChat );
                                    // and add the reference to both sender and recipient
@@ -169,7 +196,7 @@ function getChatHistory(userId:String): Promise<any>{
                 {   
                     //console.debug( typeof ( resUser ) );
                     // Return the private Chats List with user and messages populated
-                    //console.debug( resUser.privatechats );
+                    //console.debug( resUser.privateChats );
                     resolve( resUser.privatechats );
                     return;
                 }
@@ -194,9 +221,9 @@ function getMates(userId:String): Promise<Array<String>>{
             const query = {
                 users: { $in: [userId] }
             };
-            PrivateChat.find(query).select('users').lean().then( ( resPrivChat:Array<IPrivateChat> ) =>
+            PrivateChat.find(query).select('users').lean().then( ( privateChats:Array<IPrivateChat> ) =>
             {   //console.debug(resPrivChat);
-                if ( resPrivChat == null )
+                if ( privateChats == null )
                 {   
                     //console.debug( "Private Chat history doesn't exist" );
                     reject( new Error( "Private Chat History doesn't exist, No mates" ) );
@@ -206,9 +233,9 @@ function getMates(userId:String): Promise<Array<String>>{
                 {   
                     //List of PrivateChats --> Just to List of User Ids where it is different than myself!
                     let myMates: String[] = [];
-                    resPrivChat.forEach( element =>
+                    privateChats.forEach( element =>
                     {
-                        myMates.push( element.users[0].equals(userId) ? element.users[1]: element.users[0]);
+                        myMates.push( element.users[0].equals(userId) ? element.users[1].toString(): element.users[0].toString());
                     } );
                     console.debug(myMates);
                     resolve(myMates );
@@ -227,5 +254,6 @@ export default {
     setLastActiveAsNow,
     saveMessage,
     getChatHistory,
-    getMates
+    getMates,
+    getUser
 }

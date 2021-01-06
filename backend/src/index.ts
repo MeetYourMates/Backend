@@ -53,7 +53,7 @@ const options= {
   }
 };
 //Socket IO --> socket.io handlers
-var io 		= require('socket.io')(server,options);
+let io 		= require('socket.io')(server,options);
 //,'transports': ['websocket']
 //var io 		= require('socket.io')(server);
 // Socket.io all Events

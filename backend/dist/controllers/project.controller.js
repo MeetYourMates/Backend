@@ -41,7 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var course_1 = __importDefault(require("../models/course"));
 var project_1 = __importDefault(require("../models/project"));
-//! Not getting Uploaded 
+/******************************MAITE***************************************/
 var addProject = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var subjectId, project;
     return __generator(this, function (_a) {
@@ -110,6 +110,6 @@ var getProjectsFromCourse = function (req, res) { return __awaiter(void 0, void 
         }
     });
 }); };
-//! Not getting Uploaded 
+/*********************************************************************/
 exports.default = { addProject: addProject, getProjectsFromCourse: getProjectsFromCourse };
 //# sourceMappingURL=project.controller.js.map

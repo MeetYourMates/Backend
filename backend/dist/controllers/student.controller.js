@@ -77,6 +77,7 @@ var getStudent = function (req, res) { return __awaiter(void 0, void 0, void 0, 
         }
     });
 }); };
+/******************************MAITE***************************************/
 var getSubjectsProjects = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var results, result, _i, result_1, course, subject, err_3;
     return __generator(this, function (_a) {
@@ -120,6 +121,7 @@ var getSubjectsProjects = function (req, res) { return __awaiter(void 0, void 0,
         }
     });
 }); };
+/***************************************************************************/
 var addStudent = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var student;
     return __generator(this, function (_a) {

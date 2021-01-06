@@ -16,12 +16,12 @@ function CheckJWT(token) {
     return new Promise(function (resolve, reject) {
         try {
             var _a = jwt.verify(token, config_1.default.jwtSecret), id = _a.id, email = _a.email;
-            user_1.default.findOne({ "_id": id }).select('picture name email _id lastActiveAt').then(function (usr) {
+            user_1.default.findOne({ "_id": id }).select('_id').lean().then(function (usr) {
                 if (usr == null) {
                     reject(new Error("No User with this token-->Invalid token!"));
                 }
                 //usr.password = "password-hidden";
-                resolve([true, usr]);
+                resolve([true, usr['_id'].toString()]);
             });
         }
         catch (error) {

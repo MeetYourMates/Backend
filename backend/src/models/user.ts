@@ -41,6 +41,15 @@ export interface IUser extends Document {
     privatechats: IPrivateChat['_id'];
     groupchats: IGroupChat['_id'];
 }
+//Interface for User without mongoose document
+export interface IUserModel {
+    _id:string;
+    name: string;
+    email: string;
+    password: string;
+    picture: string;
+    validated: boolean;
+}
 
 //Exportamos modelo para poder usarlo 
 //Mongoose#model(name, [schema], [collectionName], [skipInit])

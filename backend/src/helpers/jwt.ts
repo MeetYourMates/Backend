@@ -8,16 +8,16 @@ function createToken(user: IUser) {
         expiresIn: '365d'
     });
 }
-function CheckJWT(token:string){
+function CheckJWT(token:string): Promise<[boolean,string]>{
     return new Promise((resolve,reject )=>{
         try {
             const { id, email } = jwt.verify(token, config.jwtSecret);
-           User.findOne({ "_id": id }).select('picture name email _id lastActiveAt').then((usr)=>{
+           User.findOne({ "_id": id }).select('_id').lean().then((usr)=>{
                 if(usr==null){
                     reject(new Error("No User with this token-->Invalid token!"));   
                 }
                 //usr.password = "password-hidden";
-                resolve( [true, usr]);
+                resolve( [true, usr['_id'].toString()]);
             });
         } catch (error) {
             //console.log("JWT Helper--> CheckJWT: ", error);

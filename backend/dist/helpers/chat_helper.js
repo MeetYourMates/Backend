@@ -33,6 +33,35 @@ function setLastActiveAsNow(idUser) {
         }
     });
 }
+/**===========================================================
+ * ?  setLastActiveAsNow function stamps the
+ * *   the given user with Current Time on the
+ * *   field lastActive. As a Promise to do
+ * *   work asynchronously!
+ *============================================================**/
+function getUser(idUser) {
+    return new Promise(function (resolve, reject) {
+        try {
+            var query = { "_id": idUser };
+            user_1.default.findOne(query).select('name email picture').lean().then(function (res) {
+                if (res == null) {
+                    reject(new Error("No User Found func[getUser(isUser)] with this id: " + idUser));
+                    return;
+                }
+                else {
+                    res._id = res._id.toString();
+                    resolve(res);
+                    return;
+                }
+            });
+        }
+        catch (error) {
+            ////console.debug("Some error while setting LastActive on User", error);
+            reject(new Error(error));
+            return;
+        }
+    });
+}
 /// Finished: SAVE THE MESSAGE IN PRIVATE CHAT
 /**====================================================================================================================
  * ?  This function will save the message in privateChat referencing both recipient and Sender
@@ -75,12 +104,12 @@ function saveMessage(payload) {
                         privateChat_1.default.findOne(filter).lean().exec().then(function (privateChatResult) {
                             if (!privateChatResult) {
                                 //If it doesn't exist -->Create a new Private Chat
-                                var privatechat = new privateChat_1.default({
+                                var privateChat = new privateChat_1.default({
                                     "users": [payload.senderId, payload.recipientId],
                                     "messages": [resultMessage._id]
                                 });
                                 //Save the privatechat 
-                                privatechat.save().then(function (resultPrivateChat) {
+                                privateChat.save().then(function (resultPrivateChat) {
                                     //console.debug( "Chat doesn't exists,created: ", resultPrivateChat );
                                     // and add the reference to both sender and recipient
                                     var queryUpdate = { _id: { "$in": [payload.senderId, payload.recipientId] } };
@@ -165,7 +194,7 @@ function getChatHistory(userId) {
                 else {
                     //console.debug( typeof ( resUser ) );
                     // Return the private Chats List with user and messages populated
-                    //console.debug( resUser.privatechats );
+                    //console.debug( resUser.privateChats );
                     resolve(resUser.privatechats);
                     return;
                 }
@@ -190,8 +219,8 @@ function getMates(userId) {
             var query = {
                 users: { $in: [userId] }
             };
-            privateChat_1.default.find(query).select('users').lean().then(function (resPrivChat) {
-                if (resPrivChat == null) {
+            privateChat_1.default.find(query).select('users').lean().then(function (privateChats) {
+                if (privateChats == null) {
                     //console.debug( "Private Chat history doesn't exist" );
                     reject(new Error("Private Chat History doesn't exist, No mates"));
                     return;
@@ -199,8 +228,8 @@ function getMates(userId) {
                 else {
                     //List of PrivateChats --> Just to List of User Ids where it is different than myself!
                     var myMates_1 = [];
-                    resPrivChat.forEach(function (element) {
-                        myMates_1.push(element.users[0].equals(userId) ? element.users[1] : element.users[0]);
+                    privateChats.forEach(function (element) {
+                        myMates_1.push(element.users[0].equals(userId) ? element.users[1].toString() : element.users[0].toString());
                     });
                     console.debug(myMates_1);
                     resolve(myMates_1);
@@ -219,6 +248,7 @@ exports.default = {
     setLastActiveAsNow: setLastActiveAsNow,
     saveMessage: saveMessage,
     getChatHistory: getChatHistory,
-    getMates: getMates
+    getMates: getMates,
+    getUser: getUser
 };
 //# sourceMappingURL=chat_helper.js.map

@@ -46,7 +46,7 @@ var socketAuth = require('socketio-auth');
 var timeOut = 10000;
 //!All Users On SocketServer Data Array
 var userData = {
-    users: [],
+    usersId: [],
     userSockets: [],
     userMatesIds: [],
     onlineUserMates: []
@@ -73,59 +73,41 @@ exports.default = (function (io) {
                     }
                     else {
                         //Authenticated --> Only add if the socket is not already added!
-                        //TODO: FUTURE CHECK IF USER IS CONNECTED FROM DIFFERENT DEVICE OR SAME
-                        //! BASED ON THAT WE SHOULD ALLOW HIM TO CONNECT OR NOT
-                        //! RIGHTNOW SAME USER CAN CONNECT MULTIPLE TIMES FROM SAME DEVICE
-                        //! VULNERIBILITY--> SEVERE POSSIBILITY OF SERVER SOCKET.IO OVERLOAD!
-                        var i_1 = -1;
-                        userData.users.forEach(function (user, index) {
-                            if (user._id.equals(data[1]._id)) {
-                                i_1 = index;
-                                return;
-                            }
-                        });
-                        if (i_1 == -1) {
-                            //TODO: FUTURE --> OPTIMIZE HEAVILY FROM HERE BELOW, TOO INEFICIENT!!
+                        //TODO: IN FUTURE CHECK IF USER IS CONNECTED FROM DIFFERENT DEVICE OR SAME
+                        var i = userData.usersId.indexOf(data[1]);
+                        if (i == -1) {
                             //Get Mates of this user and add it to the userData
-                            chat_helper_1.default.getMates(data[1]._id).then(function (resMates) {
+                            chat_helper_1.default.getMates(data[1]).then(function (resMates) {
                                 //console.debug( "New User Authenticated..." );
-                                userData.users.push(data[1]);
+                                userData.usersId.push(data[1]);
                                 userData.userSockets.push(client_socket);
                                 userData.userMatesIds.push(resMates);
                                 //console.debug( "My Mates All: ", resMates );
                                 //Need to filter for myself all of the users who are online for me
                                 var filteredMates = [];
                                 resMates.forEach(function (mateId) {
-                                    //Online Users --> Search if My Mate is Online
-                                    userData.users.forEach(function (userElement) {
-                                        if (userElement._id.equals(mateId)) {
-                                            filteredMates.push(mateId);
-                                        }
-                                    });
+                                    //Online Users --> Search if any of My Mates are Online
+                                    var tempIndex = userData.usersId.indexOf(mateId.toString());
+                                    if (tempIndex != -1) {
+                                        filteredMates.push(mateId);
+                                    }
                                 });
                                 //console.debug( "My Mates Filtered: ", filteredMates );
                                 userData.onlineUserMates.push(filteredMates);
                                 //Notify Myself, who of my mates are online!
-                                client_socket.emit('online_users', filteredMates);
+                                client_socket.emit('mates_status', filteredMates);
                                 //Have UserModel,UserSocket,UserMatesAll,UserMatesOnline
                                 //? NOTIFY ALL OTHERS, I AM ONLINE AND ADD MYSELF IN THEIR ONLINE FILTERED LIST TOO!
                                 new Promise(function (resolve, reject) {
                                     try {
                                         var k_1 = -1;
-                                        userData.userMatesIds.forEach(function (usermates, index) {
-                                            k_1 = -1;
-                                            //console.debug( `User ${ userData.users[index].name } has usermates: ${ usermates } where searching for ${data[1]._id}` );
-                                            usermates.forEach(function (usermate, index) {
-                                                if (data[1]._id.equals(usermate)) {
-                                                    k_1 = index;
-                                                    return;
-                                                }
-                                            });
-                                            //console.debug( "UserMate Index Found,k : ",k );
+                                        userData.userMatesIds.forEach(function (matesArray, index) {
+                                            k_1 = matesArray.indexOf(data[1]);
+                                            //If me, who just connected is someones elses mates, and he/she connected --> Notify!
                                             if (k_1 != -1) {
                                                 //Found Myself in there mates List
-                                                userData.onlineUserMates[index].push(data[1]._id);
-                                                userData.userSockets[index].emit('online_users', userData.onlineUserMates[index]);
+                                                userData.onlineUserMates[index].push(data[1]);
+                                                userData.userSockets[index].emit('mates_status', userData.onlineUserMates[index]);
                                                 //console.debug( `User ${ userData.users[index].name } has updated Online usermates: ${ userData.onlineUserMates[index] }` );
                                             }
                                         });
@@ -139,7 +121,7 @@ exports.default = (function (io) {
                                 }).catch(function (err) {
                                     console.debug(err);
                                 });
-                                client_socket.emit('authenticated', '{"message":"Authenticated Succesfully"}');
+                                client_socket.emit('authentication', "{'message':'Authenticated Successfully'}");
                                 return callback(null, true);
                             }).catch(function (err) {
                                 console.debug(err);
@@ -150,7 +132,6 @@ exports.default = (function (io) {
                             console.debug("User Already Authenticated...");
                             return callback({ message: 'Single Socket Authentication' }, false);
                         }
-                        ;
                     }
                 }).catch(function (err) {
                     console.debug("---------------------------------------------");
@@ -168,19 +149,18 @@ exports.default = (function (io) {
          *=============================================**/
         postAuthenticate: function (client_socket) {
             //console.debug( `Socket ${ client_socket.id } authenticated.` );
-            var myIndex = userData.userSockets.indexOf(client_socket);
             // Just Showing the Data
             console.debug("---------------------------------------------");
-            console.debug("user Connected: ", userData.users);
+            console.debug("user Connected: ", userData.usersId);
             console.debug("---------------------------------------------");
             // SEND THE LIST OF CONNECTED USERS TO EVERYBODY AS CHANGES!
             //Group of Online Users
             client_socket.join('connected_users');
             //Serve Users Connected List to User
-            client_socket.on('online_users', function () { return __awaiter(void 0, void 0, void 0, function () {
+            client_socket.on('mates_status', function () { return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     //User Asking for UsersOnlineMatesList
-                    client_socket.emit('online_users', userData.onlineUserMates[myIndex]);
+                    client_socket.emit('mates_status', userData.onlineUserMates[userData.userSockets.indexOf(client_socket)]);
                     return [2 /*return*/];
                 });
             }); });
@@ -193,6 +173,7 @@ exports.default = (function (io) {
             function sendMessage(payload) {
                 return new Promise(function (resolve, reject) {
                     try {
+                        var myIndex_1 = userData.userSockets.indexOf(client_socket);
                         //console.debug("Message: ",payload);
                         //Possible Validations that the payload is not null, or its field are non null. No server error but won't do anything
                         if (payload == null) {
@@ -208,20 +189,49 @@ exports.default = (function (io) {
                             return;
                         }
                         //We cannot allow users to send message as senderId other than themself!
-                        if (userData.users[userData.userSockets.indexOf(client_socket)]._id != payload.senderId) {
+                        if (userData.usersId[myIndex_1] != payload.senderId) {
                             reject(new Error("senderId different than client, invalid"));
                             return;
                         }
-                        ;
-                        // If validations Okay, than we search for the user, If the Recipiend is found than we send the message
-                        userData.users.forEach(function (user, indexCurrent) {
-                            if (user._id == payload.recipientId) {
-                                //Client is this -->SEND MESSAGE TO HIM
-                                userData.userSockets[indexCurrent].emit("chat_message", payload);
+                        // If validations Okay, than we search for the user, If the Recipient is found than we send the message
+                        var recipientIndex_1 = userData.usersId.indexOf(payload.recipientId);
+                        //Check if Recipient Online & send the message...
+                        if (recipientIndex_1 != -1) {
+                            //Check if sender is already his mate?
+                            var senderIndexInRecipient = userData.userMatesIds[recipientIndex_1].indexOf(payload.senderId);
+                            if (senderIndexInRecipient != -1) {
+                                //Sender already a mate of recipient
+                                userData.userSockets[recipientIndex_1].emit("private_chat_message", payload);
                             }
-                        });
-                        //If the recipiend Id is not found, but it may exist in the database we need to save the message from this user
-                        //So that when the recipient reconnects he can see the messages sent to him while offline
+                            else {
+                                //Sender is not mate of recipient
+                                // send him a request to add him as a new mate + message
+                                /*{
+                                    "user":"UserObject",
+                                    "message":["messageObject"]
+                                  }*/
+                                chat_helper_1.default.getUser(payload.senderId).then(function (resUser) {
+                                    //Now they are mates
+                                    //Add mate to recipient
+                                    userData.userMatesIds[recipientIndex_1].push(resUser._id);
+                                    userData.onlineUserMates[recipientIndex_1].push(resUser._id);
+                                    //Add recipient as mate to Sender
+                                    userData.userMatesIds[myIndex_1].push(payload.recipientId);
+                                    //Recipient is Online!!
+                                    userData.onlineUserMates[myIndex_1].push(payload.recipientId);
+                                    //Send message + mate(User) to recipient
+                                    var newMate = {
+                                        'user': resUser,
+                                        'message': payload
+                                    };
+                                    userData.userSockets[recipientIndex_1].emit("new_mate", newMate);
+                                }).catch(function (err) {
+                                    reject(err);
+                                    return;
+                                });
+                            }
+                        }
+                        //Save the message in Database for both Sender & Recipient
                         chat_helper_1.default.saveMessage(payload).catch(function (err) {
                             reject(err);
                             return;
@@ -235,7 +245,23 @@ exports.default = (function (io) {
                     }
                 });
             }
-            ;
+            /**==============================================
+             * ?  Private chat messages event handler
+             * *   using sendMessage as a Promise to do
+             * *   work asynchronously!
+             *=============================================**/
+            client_socket.on('private_chat_message', function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    sendMessage(payload).catch(function (err) {
+                        console.debug("---------------------------------------------");
+                        console.debug('sendMessage Promise: ', err.message);
+                        console.debug("---------------------------------------------");
+                        console.debug("Socket " + client_socket.id + " badMessage Request.");
+                        console.debug("---------------------------------------------");
+                    });
+                    return [2 /*return*/];
+                });
+            }); });
             /**==============================================
              * ?  getChatHistory function handler
              * *  does work asynchronously off the main thread
@@ -247,11 +273,10 @@ exports.default = (function (io) {
                 //console.trace( "getChatHistory Executed!" );
                 return new Promise(function (resolve, reject) {
                     try {
-                        var userId = userData.users[userData.userSockets.indexOf(client_socket)]._id;
+                        var userId = userData.usersId[userData.userSockets.indexOf(client_socket)];
                         //? Gets all of the Private Chats, that this user has talked with.
                         //? all of the dirty work of putting in correct list per user will be done in frontend
                         //? Extra efficient on server and balances the workload to clientSide!
-                        //@ts-nocheck
                         chat_helper_1.default.getChatHistory(userId).then(function (privateChatsResult) {
                             //We have the messages on success, we will send this messages to the client
                             client_socket.emit("private_chat_history", privateChatsResult);
@@ -268,37 +293,76 @@ exports.default = (function (io) {
                     }
                 });
             }
-            ;
             /**==============================================
-            * ?  Private chat messages event handler
-            * *   using sendMessage as a Promise to do
-            * *   work asynchronously!
-            *=============================================**/
-            client_socket.on('chat_message', function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-                return __generator(this, function (_a) {
-                    sendMessage(payload).catch(function (err) {
-                        console.debug("---------------------------------------------");
-                        console.debug('sendMessage Promise: ', err.message);
-                        console.debug("---------------------------------------------");
-                        console.debug("Socket " + client_socket.id + " badMessage Request.");
-                        console.debug("---------------------------------------------");
-                    });
-                    return [2 /*return*/];
-                });
-            }); });
-            /**==============================================
-               * ?  User historial private messages event handler
-               * *  using sendChatHistory as a Promise to do
-               * *  work asynchronously! When finished should
-               * *  send user his chat history
-               *=============================================**/
+             * ?  User historical private messages event handler
+             * *  using sendChatHistory as a Promise to do
+             * *  work asynchronously! When finished should
+             * *  send user his chat history
+             *=============================================**/
             client_socket.on('private_chat_history', function () { return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     getChatHistory().catch(function (err) {
                         console.debug("---------------------------------------------");
                         console.debug('getChatHistory returned Promise: ', err.message);
                         console.debug("---------------------------------------------");
-                        console.debug("Socket " + client_socket.id + " get private_chat_history, something bad occured...");
+                        console.debug("Socket " + client_socket.id + " get private_chat_history, something bad occurred...");
+                        console.debug("---------------------------------------------");
+                    });
+                    return [2 /*return*/];
+                });
+            }); });
+            /**==============================================
+             * ?  check Mate Status function handler
+             * *  does work asynchronously, so can attend
+             * *  messages from the same user in parallel
+             *=============================================**/
+            //Payload must contain the
+            function checkMateStatus(_a) {
+                var payload = _a.payload;
+                //console.trace( "getChatHistory Executed!" );
+                return new Promise(function (resolve, reject) {
+                    try {
+                        //Check if id is non null and string
+                        if (payload._id == null) {
+                            reject(new Error("checkMateStatus: payload must contain _id "));
+                            return;
+                        }
+                        var mateStatus = {
+                            '_id': payload._id,
+                            'status': true
+                        };
+                        if (userData.usersId.indexOf(payload._id) != -1) {
+                            //User is Online
+                            //We have the messages on success, we will send this messages to the client
+                            client_socket.emit("check_mate_status", mateStatus);
+                        }
+                        else {
+                            //User is Offline
+                            mateStatus.status = false;
+                            client_socket.emit("check_mate_status", mateStatus);
+                        }
+                        resolve(true);
+                        return;
+                    }
+                    catch (error) {
+                        reject(new Error(error));
+                        return;
+                    }
+                });
+            }
+            /**==============================================
+             * ?  check mate status event handler
+             * *  using checkMateStatus as a Promise to do
+             * *  work asynchronously! When finished should
+             * *  send user, mates the status he asked for
+             *=============================================**/
+            client_socket.on('check_mate_status', function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    checkMateStatus(payload).catch(function (err) {
+                        console.debug("---------------------------------------------");
+                        console.debug('checkMateStatus returned Promise: ', err.message);
+                        console.debug("---------------------------------------------");
+                        console.debug("Socket " + client_socket.id + " get checkMateStatus, something bad occurred...");
                         console.debug("---------------------------------------------");
                     });
                     return [2 /*return*/];
@@ -322,6 +386,7 @@ exports.default = (function (io) {
                     return [2 /*return*/];
                 });
             }); });
+            /*------------------POST AUTHENTICATION FINISHES HERE........................................*/
         },
         /**============================================
          *               TimeOut Authentication
@@ -341,26 +406,19 @@ exports.default = (function (io) {
                 return; //If User isn't in our list!
             }
             //First we save the current Disconnection Time as LastActive
-            //Date.now() TimeStamp in miliseconds
-            chat_helper_1.default.setLastActiveAsNow(userData.users[i]._id).finally(function () {
+            //Date.now() TimeStamp in milliseconds
+            chat_helper_1.default.setLastActiveAsNow(userData.usersId[i]).finally(function () {
                 //All Users who have me as there mate, need to tell them I am Offline
                 new Promise(function (resolve, reject) {
                     try {
                         var k_2 = -1;
                         userData.onlineUserMates.forEach(function (onlineUserMates, index) {
-                            //
-                            //i = onlineUserMates.indexOf( userData.users[i]._id );
+                            //Search myself in the list of Online UserMates and splice
                             k_2 = -1;
-                            onlineUserMates.forEach(function (onlineUsermate, index2) {
-                                if (userData.users[i]._id.equals(onlineUsermate)) {
-                                    k_2 = index2;
-                                    return;
-                                }
-                            });
+                            k_2 = onlineUserMates.indexOf(userData.usersId[i]);
                             if (k_2 != -1) {
-                                //Found Myself in there mates List
+                                //Splice and move on
                                 userData.onlineUserMates[index].splice(k_2, 1);
-                                userData.userSockets[index].emit('online_users', userData.onlineUserMates[index]);
                             }
                         });
                         resolve(true);
@@ -375,7 +433,7 @@ exports.default = (function (io) {
                 });
                 //Delete the User from OnlineUsers List and Notify Other Users!
                 userData.userSockets.splice(i, 1);
-                userData.users.splice(i, 1);
+                userData.usersId.splice(i, 1);
                 userData.onlineUserMates.splice(i, 1);
                 userData.userMatesIds.splice(i, 1);
                 //io.to( 'online_users' ).emit( 'online_users', userData.users );
@@ -406,7 +464,7 @@ exports.default = (function (io) {
         // SEND THE LIST OF CONNECTED USERS TO EVERYBODY AS CHANGES!
           //Group of Online Users
           client_socket.join('online_users');
-        //Everybody recieves a new emit, as new user connects
+        //Everybody receives a new emit, as new user connects
           io.to('online_users').emit('online_users',userData.users);
         //Serve Users Connected List to User
           client_socket.on('chat_message', async() => {
