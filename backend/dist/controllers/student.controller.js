@@ -112,7 +112,7 @@ var getSubjectsProjects = function (req, res) { return __awaiter(void 0, void 0,
                 return [3 /*break*/, 2];
             case 5:
                 console.log(results);
-                return [2 /*return*/, res.status(200).json(results)];
+                return [2 /*return*/, res.status(200).json(result)];
             case 6:
                 err_3 = _a.sent();
                 console.log(err_3);

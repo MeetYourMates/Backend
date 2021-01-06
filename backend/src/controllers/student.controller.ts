@@ -45,7 +45,7 @@ const getSubjectsProjects = async (req: Request, res: Response) => {
             delete course['subject'];
         }
         console.log(results);
-        return res.status(200).json(results);
+        return res.status(200).json(result);
     } catch (err) {
         console.log(err);
         return res.status(404).json(err);
