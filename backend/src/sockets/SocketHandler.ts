@@ -420,6 +420,7 @@ export default ( io: Server ) =>
               if(k!=-1){
                 //Splice and move on
                 userData.onlineUserMates[index].splice(k,1);
+                userData.userSockets[index].emit('mates_status',userData.onlineUserMates[index]);
               }
             } );
             resolve( true ); return;

@@ -419,6 +419,7 @@ exports.default = (function (io) {
                             if (k_2 != -1) {
                                 //Splice and move on
                                 userData.onlineUserMates[index].splice(k_2, 1);
+                                userData.userSockets[index].emit('mates_status', userData.onlineUserMates[index]);
                             }
                         });
                         resolve(true);
