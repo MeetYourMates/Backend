@@ -32,7 +32,7 @@ interface Token
 }
 
 interface MateStatus {
-  payload: { _id: string };
+  _id: string
 }
 
 /**================================================================================================
@@ -312,7 +312,7 @@ export default ( io: Server ) =>
        * *  messages from the same user in parallel
        *=============================================**/
       //Payload must contain the
-      function checkMateStatus ({payload}: MateStatus): Promise<any>
+      function checkMateStatus (payload: MateStatus): Promise<any>
       {
         //console.trace( "getChatHistory Executed!" );
         return new Promise( ( resolve, reject ) =>

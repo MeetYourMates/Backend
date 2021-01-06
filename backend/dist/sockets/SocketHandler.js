@@ -317,8 +317,7 @@ exports.default = (function (io) {
              * *  messages from the same user in parallel
              *=============================================**/
             //Payload must contain the
-            function checkMateStatus(_a) {
-                var payload = _a.payload;
+            function checkMateStatus(payload) {
                 //console.trace( "getChatHistory Executed!" );
                 return new Promise(function (resolve, reject) {
                     try {

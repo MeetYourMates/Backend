@@ -224,19 +224,24 @@ Estructura del resultado:
 
 */
 var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var results, _i, results_1, course, subject, students, err_5;
+    var result, myId, results, _i, results_1, course, subject, filter, students, err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 7, , 8]);
-                return [4 /*yield*/, student_1.default.find({ _id: req.params.id }).select('courses').populate({
+                //Busca los cursos del Student por su id
+                //El metodo lean() nos permite modificar el objecto en el próximo bucle, para poder enviar info extra.
+                if (req.params.id == null) {
+                    return [2 /*return*/, res.status(400).json("{'error':'Bad Request'}")];
+                }
+                return [4 /*yield*/, student_1.default.findOne({ _id: req.params.id }).select('courses user').populate({
                         path: 'courses',
                         select: 'start end students subject',
                     }).lean()];
             case 1:
-                results = _a.sent();
-                //"Limpia" la encapsulación del json
-                results = results[0]['courses'];
+                result = _a.sent();
+                myId = result['user'].toString();
+                results = result['courses'];
                 _i = 0, results_1 = results;
                 _a.label = 2;
             case 2:
@@ -248,10 +253,11 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
                 course['subjectName'] = subject[0]['name'];
                 //Limpia los campos que no interesan
                 delete course['subject'];
-                return [4 /*yield*/, student_1.default.find({ courses: course['_id'] }).select('user degree university').populate({
+                filter = { $and: [{ courses: course['_id'] }, { "user": { $ne: myId } }] };
+                return [4 /*yield*/, student_1.default.find(filter).select('user degree university').populate({
                         path: 'user',
                         model: 'User',
-                        select: 'picture name'
+                        select: 'picture name email'
                     })];
             case 4:
                 students = _a.sent();
