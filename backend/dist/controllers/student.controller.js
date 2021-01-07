@@ -40,8 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var student_1 = __importDefault(require("../models/student"));
-var user_1 = __importDefault(require("../models/user"));
 var subject_1 = __importDefault(require("../models/subject"));
+var user_1 = __importDefault(require("../models/user"));
 var getStudents = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var results, err_1;
     return __generator(this, function (_a) {
@@ -267,7 +267,7 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
                 _i++;
                 return [3 /*break*/, 2];
             case 6:
-                console.log(results);
+                console.debug(results);
                 return [2 /*return*/, res.status(200).json(results)];
             case 7:
                 err_5 = _a.sent();

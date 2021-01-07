@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import Student from '../models/student';
-import Course from '../models/course';
-import User from '../models/user';
 import Subject from '../models/subject';
+import User from '../models/user';
 
 
 
@@ -170,7 +169,7 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
             });
             course['students'] = students;
           }
-        console.log(results);
+        //console.debug(results);
         return res.status(200).json(results);
     } catch (err) {
         console.log(err);
