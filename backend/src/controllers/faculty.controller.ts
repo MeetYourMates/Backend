@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import Degree from '../models/degree';
 import Faculty from '../models/faculty';
 
@@ -35,6 +35,7 @@ const addDegree = async(req: Request, res: Response) =>{
         });
     }
     //Add student to subject
+    //@ts-ignore
     await Faculty.updateOne({"_id": faculty}, {$addToSet: {degrees: degreedata?._id}}).then(result => { 
         if (result.nModified == 1) { 
             console.log("Degree added successfully"); 

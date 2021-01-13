@@ -1,11 +1,10 @@
-import mongoose, { Schema, Document} from 'mongoose';
-import User, { IUser } from './user';
-import Trophy, {ITrophy} from './trophy';
-import Insignia, {IInsignia} from './insignia';
-import Chat, {IChat} from './chat';
+import mongoose, { Document, Schema } from 'mongoose';
+import Course, { ICourse } from './course';
+import Insignia, { IInsignia } from './insignia';
 import Rating, { IRating } from './rating';
-import  {ICourse} from './course';
-const Course = require('./course');
+import Trophy, { ITrophy } from './trophy';
+import User, { IUser } from './user';
+
 
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
@@ -24,9 +23,6 @@ const studentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: User
     },
-    picture: {
-        type: String
-    },
     ratings: [{
         type: Schema.Types.ObjectId,
         ref: Rating
@@ -42,10 +38,6 @@ const studentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Insignia
     }],
-    chats: [{
-        type: Schema.Types.ObjectId,
-        ref: Chat
-    }],
     courses:[{
         type: Schema.Types.ObjectId,
         ref: Course
@@ -58,12 +50,10 @@ export interface IStudent extends Document {
     university: string;
     degree: string;
     user: IUser['_id']; //Relacion con la coleccion students
-    picture: string;
     rating: number;
     ratings: IRating['_id'];
     trophies: ITrophy['_id'];
     insignias: IInsignia['_id'];
-    chats: IChat['_id'];
     courses: ICourse['_id'];
 }
 

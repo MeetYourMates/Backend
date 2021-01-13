@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a33c5882-bd49-4ce6-803a-1958264fe7c2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/auth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/validation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/validation.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +37,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -53,40 +54,11 @@
       <workItem from="1606323088681" duration="288000" />
       <workItem from="1606323849329" duration="494000" />
       <workItem from="1606326367603" duration="560000" />
+      <workItem from="1608136778417" duration="211000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="577" y="275" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1606241616763">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state x="577" y="275" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1606241616763" />
-    <state width="1657" height="294" key="GridCell.Tab.0.bottom" timestamp="1606218394051">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1657" height="294" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1606218394051" />
-    <state width="1657" height="294" key="GridCell.Tab.0.center" timestamp="1606218394051">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1657" height="294" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1606218394051" />
-    <state width="1657" height="294" key="GridCell.Tab.0.left" timestamp="1606218394050">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1657" height="294" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1606218394050" />
-    <state width="1657" height="294" key="GridCell.Tab.0.right" timestamp="1606218394051">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1657" height="294" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1606218394051" />
-    <state x="563" y="148" key="RollbackChangesDialog" timestamp="1606241436690">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state x="563" y="148" key="RollbackChangesDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1606241436690" />
-    <state x="503" y="231" width="672" height="678" key="search.everywhere.popup" timestamp="1606243246573">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state x="503" y="231" width="672" height="678" key="search.everywhere.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1606243246573" />
   </component>
 </project>

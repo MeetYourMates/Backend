@@ -1,6 +1,6 @@
-import {Request, Response} from 'express';
-import University from '../models/university';
+import { Request, Response } from 'express';
 import Faculty from '../models/faculty';
+import University from '../models/university';
 
 const getUniversities = async (req: Request, res: Response) => {
     //El await hace que la siguiente linea no se ejecute
@@ -46,8 +46,8 @@ const addFaculty = async(req: Request, res: Response) =>{
         "name": req.body.name
      }); 
 
-    //Look for the student in the database
-    let facultydata =await Faculty.findOne({name: faculty.name})
+    //Look for the Faculty in the database
+    let facultydata = await Faculty.findOne({name: faculty.name})
 
     //If the student is not in the database then save it
     if (!facultydata) { 
@@ -56,6 +56,7 @@ const addFaculty = async(req: Request, res: Response) =>{
         });
     }
     //Add student to subject
+    //@ts-ignore
     await University.updateOne({"name": university}, {$addToSet: {faculties: facultydata?._id}}).then(result => { 
         if (result.nModified == 1) { 
             console.log("Faculty added successfully"); 

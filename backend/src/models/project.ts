@@ -31,4 +31,4 @@ export interface IProject extends Document {
 }
 
 //Exportamos modelo para poder usarlo
-export default mongoose.model<IProject>('Project', projectSchema,'project');
+export default mongoose.model<IProject>('Project', projectSchema,'projects');

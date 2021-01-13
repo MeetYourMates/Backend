@@ -1,5 +1,5 @@
-import {Router} from 'express';
-import subjectController from "../controllers/course.controller"
+import { Router } from 'express';
+import subjectController from "../controllers/course.controller";
 
 const router = Router();
 router.post('/get', subjectController.getCourse);

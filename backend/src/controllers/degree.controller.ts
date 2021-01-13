@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import Degree from '../models/degree';
 import Subject from '../models/subject';
 
@@ -29,6 +29,7 @@ const addDegree = async (req: Request, res: Response) => {
         return res.status(500).json(err);
     })
 }
+//Adds a subject to a degree
 const addSubject = async(req: Request, res: Response) =>{
 
     //Display request
@@ -54,6 +55,7 @@ const addSubject = async(req: Request, res: Response) =>{
         });
     }
     //Add student to subject
+    //@ts-ignore
     await Degree.updateOne({"_id": degree}, {$addToSet: {subjects: subjectdata?._id}}).then(result => { 
         if (result.nModified == 1) { 
             console.log("Subject added successfully"); 

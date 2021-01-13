@@ -7,18 +7,12 @@ const subjectSchema = new Schema({
     name: {
         type: String,
         index:true
-    },
-    courses: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: Course
-    }]
-   
+    }
 });
 
 //Interfaz para tratar respuesta como documento
 export interface ISubject extends Document {
     name: string;
-    courses: ICourse['_id'];
 }
 
 //Exportamos modelo para poder usarlo
