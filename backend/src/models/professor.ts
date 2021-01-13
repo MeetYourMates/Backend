@@ -31,6 +31,8 @@ const professorSchema = new Schema({
 //Interfaz para tratar respuesta como documento
 export interface IProfessor extends Document {
     name: string;
+    university: string;
+    degree: string;
     user: IUser['_id']; //Relacion con la coleccion students
     picture: string;
     courses: ICourse['_id'];
