@@ -108,7 +108,7 @@ const accessUser = async (req: Request, res: Response) => {
             if(Bcrypt.compareSync(req.body.password, resultUser.password)){
                 resultUser.password = "password-hidden";
                 //Check if Student Email
-                if (!resultUser.email.contains('estudiantat')) {
+                if (!resultUser.email.includes('estudiantat')) {
                     //Its actually a user of professor
                     Professor.findOne({"user": resultUser._id}).then((resProfessor) => {
                         //Professor
