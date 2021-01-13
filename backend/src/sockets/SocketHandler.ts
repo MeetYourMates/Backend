@@ -2,7 +2,7 @@ import SocketIO, { Server } from 'socket.io';
 import { default as chatHelper } from '../helpers/chat_helper';
 import jwtHelper from '../helpers/jwt';
 import { IMessage } from '../models/message';
-import {IUserModel} from "../models/user";
+import { IUserModel } from "../models/user";
 const socketAuth = require( 'socketio-auth' );
 
 //Client No Auth TimeOut (ms)
