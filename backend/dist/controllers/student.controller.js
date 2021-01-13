@@ -266,9 +266,9 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
             case 5:
                 _i++;
                 return [3 /*break*/, 2];
-            case 6:
-                console.debug(results);
-                return [2 /*return*/, res.status(200).json(results)];
+            case 6: 
+            //console.debug(results);
+            return [2 /*return*/, res.status(200).json(results)];
             case 7:
                 err_5 = _a.sent();
                 console.log(err_5);

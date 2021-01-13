@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document} from 'mongoose';
-import User, { IUser } from './user';
+import mongoose, { Document, Schema } from 'mongoose';
 import { ICourse } from './course';
+import User, { IUser } from './user';
 const Course = require('./course');
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
@@ -8,6 +8,12 @@ const professorSchema = new Schema({
     name: {
         type: String,
         index: true
+    },
+    university: {
+        type: String,
+    },
+    degree: {
+        type: String,
     },
     user: {
         type: Schema.Types.ObjectId,
