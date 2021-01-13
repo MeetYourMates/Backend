@@ -31,6 +31,12 @@ var professorSchema = new mongoose_1.Schema({
         type: String,
         index: true
     },
+    university: {
+        type: String,
+    },
+    degree: {
+        type: String,
+    },
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: user_1.default

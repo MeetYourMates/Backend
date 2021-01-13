@@ -45,6 +45,7 @@ var custom_models_helper_1 = __importDefault(require("../helpers/custom_models_h
 var jwt_1 = __importDefault(require("../helpers/jwt"));
 var recovery_1 = __importDefault(require("../models/recovery"));
 var student_1 = __importDefault(require("../models/student"));
+var professor_1 = __importDefault(require("../models/professor"));
 var user_1 = __importDefault(require("../models/user"));
 var validation_1 = __importDefault(require("../models/validation"));
 var path = require('path');
@@ -155,63 +156,128 @@ var accessUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                         console.log("email: " + resultUser.email);
                         if (Bcrypt.compareSync(req.body.password, resultUser.password)) {
                             resultUser.password = "password-hidden";
-                            student_1.default.findOne({ "user": resultUser._id }).then(function (resStudent) {
-                                if (resStudent == null) {
-                                    //* NOT VALIDATED 
-                                    var userWithoutToken = new user_1.default({
-                                        "_id": resultUser._id,
-                                        "password": "password-hidden",
-                                        "email": resultUser.email,
-                                        "name": resultUser.name,
-                                        "picture": resultUser.picture,
-                                        "validated": false,
-                                        "token": "Not-Authorized"
-                                    });
-                                    var studentNotValidated = { "user": userWithoutToken };
-                                    console.log("Line87:Login--> student hasn't Validated: " + studentNotValidated);
-                                    return res.status(203).json(studentNotValidated);
-                                }
-                                else {
-                                    //* Validated
-                                    student_1.default.findOne({ 'user': resultUser._id }).populate('user').populate('ratings').populate('trophies').populate('insignias').then(function (result) {
-                                        /**==============================================
-                                         **      Validated & Completed Lets Get Started
-                                         *===============================================**/
-                                        if (result.courses.length > 0) {
-                                            var userWithToken = {
-                                                "_id": result.user._id,
-                                                "password": "password-hidden",
-                                                "email": result.user.email,
-                                                "name": result.user.name,
-                                                "picture": result.user.picture,
-                                                "validated": true,
-                                                "token": jwt_1.default.createToken(result.user)
-                                            };
-                                            var result2 = custom_models_helper_1.default.getCustomStudent(result, userWithToken);
-                                            //Validated and Has courses than student can login!
-                                            console.log("Login--> student Validated Result: " + result2);
-                                            return res.status(200).json(result2);
-                                        }
-                                        else {
-                                            //Student --> user --> token
-                                            //token: createToken(user)
-                                            var userWithToken = {
-                                                "_id": result.user._id,
-                                                "password": "password-hidden",
-                                                "email": result.user.email,
-                                                "name": result.user.name,
-                                                "picture": result.user.picture,
-                                                "validated": true,
-                                                "token": jwt_1.default.createToken(result.user)
-                                            };
-                                            //Newly custom created user has now token in the json!
-                                            var result2 = custom_models_helper_1.default.getCustomStudent(result, userWithToken);
-                                            console.log("Login--> student Not Enrolled Result: " + result2);
-                                            return res.status(206).json(result2);
-                                        }
-                                    });
-                                }
-                            });
+                            //Check if Student Email
+                            if (!resultUser.email.contains('estudiantat')) {
+                                //Its actually a user of professor
+                                professor_1.default.findOne({ "user": resultUser._id }).then(function (resProfessor) {
+                                    //Professor
+                                    if (resProfessor == null) {
+                                        //* NOT VALIDATED
+                                        var userWithoutToken = new user_1.default({
+                                            "_id": resultUser._id,
+                                            "password": "password-hidden",
+                                            "email": resultUser.email,
+                                            "name": resultUser.name,
+                                            "picture": resultUser.picture,
+                                            "validated": false,
+                                            "token": "Not-Authorized"
+                                        });
+                                        var professorNotValidated = { "user": userWithoutToken };
+                                        console.log("Line87:Login--> student hasn't Validated: " + professorNotValidated);
+                                        return res.status(203).json(professorNotValidated);
+                                    }
+                                    else {
+                                        //* Validated
+                                        professor_1.default.findOne({ 'user': resultUser._id }).populate('user').lean().then(function (result) {
+                                            /**==============================================
+                                             **      Validated & Completed Lets Get Started
+                                             *===============================================**/
+                                            if (result.courses.length > 0) {
+                                                var userWithToken = {
+                                                    "_id": result.user._id,
+                                                    "password": "password-hidden",
+                                                    "email": result.user.email,
+                                                    "name": result.user.name,
+                                                    "picture": result.user.picture,
+                                                    "validated": true,
+                                                    "token": jwt_1.default.createToken(result.user)
+                                                };
+                                                //const result2 = customHelper.getCustomProfessor(result, userWithToken);
+                                                result['user'] = userWithToken;
+                                                //Validated and Has courses than student can login!
+                                                console.log("Login--> Professor Validated Result: " + result);
+                                                return res.status(200).json(result);
+                                            }
+                                            else {
+                                                //Student --> user --> token
+                                                //token: createToken(user)
+                                                var userWithToken = {
+                                                    "_id": result.user._id,
+                                                    "password": "password-hidden",
+                                                    "email": result.user.email,
+                                                    "name": result.user.name,
+                                                    "picture": result.user.picture,
+                                                    "validated": true,
+                                                    "token": jwt_1.default.createToken(result.user)
+                                                };
+                                                //Newly custom created user has now token in the json!
+                                                result['user'] = userWithToken;
+                                                console.log("Login--> professor Not Enrolled Result: " + result);
+                                                return res.status(206).json(result);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                            else {
+                                student_1.default.findOne({ "user": resultUser._id }).then(function (resStudent) {
+                                    if (resStudent == null) {
+                                        //* NOT VALIDATED
+                                        var userWithoutToken = new user_1.default({
+                                            "_id": resultUser._id,
+                                            "password": "password-hidden",
+                                            "email": resultUser.email,
+                                            "name": resultUser.name,
+                                            "picture": resultUser.picture,
+                                            "validated": false,
+                                            "token": "Not-Authorized"
+                                        });
+                                        var studentNotValidated = { "user": userWithoutToken };
+                                        console.log("Line87:Login--> student hasn't Validated: " + studentNotValidated);
+                                        return res.status(203).json(studentNotValidated);
+                                    }
+                                    else {
+                                        //* Validated
+                                        student_1.default.findOne({ 'user': resultUser._id }).populate('user').populate('ratings').populate('trophies').populate('insignias').then(function (result) {
+                                            /**==============================================
+                                             **      Validated & Completed Lets Get Started
+                                             *===============================================**/
+                                            if (result.courses.length > 0) {
+                                                var userWithToken = {
+                                                    "_id": result.user._id,
+                                                    "password": "password-hidden",
+                                                    "email": result.user.email,
+                                                    "name": result.user.name,
+                                                    "picture": result.user.picture,
+                                                    "validated": true,
+                                                    "token": jwt_1.default.createToken(result.user)
+                                                };
+                                                var result2 = custom_models_helper_1.default.getCustomStudent(result, userWithToken);
+                                                //Validated and Has courses than student can login!
+                                                console.log("Login--> student Validated Result: " + result2);
+                                                return res.status(200).json(result2);
+                                            }
+                                            else {
+                                                //Student --> user --> token
+                                                //token: createToken(user)
+                                                var userWithToken = {
+                                                    "_id": result.user._id,
+                                                    "password": "password-hidden",
+                                                    "email": result.user.email,
+                                                    "name": result.user.name,
+                                                    "picture": result.user.picture,
+                                                    "validated": true,
+                                                    "token": jwt_1.default.createToken(result.user)
+                                                };
+                                                //Newly custom created user has now token in the json!
+                                                var result2 = custom_models_helper_1.default.getCustomStudent(result, userWithToken);
+                                                console.log("Login--> student Not Enrolled Result: " + result2);
+                                                return res.status(206).json(result2);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
                         }
                         else {
                             return [2 /*return*/, res.status(404).json({ 'error': 'User Password Incorrect!' })];

@@ -6,6 +6,7 @@ import customHelper from "../helpers/custom_models_helper";
 import jwtHelper from "../helpers/jwt";
 import Recovery from "../models/recovery";
 import Student from "../models/student";
+import Professor from "../models/professor";
 import User, { IUser } from "../models/user";
 import Validation from "../models/validation";
 var path = require('path');
@@ -106,62 +107,125 @@ const accessUser = async (req: Request, res: Response) => {
             console.log("email: "+ resultUser.email);
             if(Bcrypt.compareSync(req.body.password, resultUser.password)){
                 resultUser.password = "password-hidden";
-                Student.findOne({"user":resultUser._id}).then((resStudent)=>{
-                if(resStudent==null){
-                    //* NOT VALIDATED 
-                    let userWithoutToken = new User({
-                        "_id":resultUser._id,
-                        "password": "password-hidden",
-                        "email": resultUser.email,
-                        "name": resultUser.name,
-                        "picture": resultUser.picture,
-                        "validated": false,
-                        "token":"Not-Authorized"
-                    });
-                    const studentNotValidated:{"user":IUser} = {"user":userWithoutToken};
-                    console.log("Line87:Login--> student hasn't Validated: " + studentNotValidated);
-                    return res.status(203).json(studentNotValidated);
-                }else{
-                    //* Validated
-                    Student.findOne({'user': resultUser._id}).populate('user').populate('ratings').populate('trophies').populate('insignias').then((result)=>{
-                        /**==============================================
-                         **      Validated & Completed Lets Get Started
-                         *===============================================**/
-                        if(result.courses.length>0){
-                            let userWithToken:any = {
-                                "_id":result.user._id,
+                //Check if Student Email
+                if (!resultUser.email.contains('estudiantat')) {
+                    //Its actually a user of professor
+                    Professor.findOne({"user": resultUser._id}).then((resProfessor) => {
+                        //Professor
+                        if (resProfessor == null) {
+                            //* NOT VALIDATED
+                            let userWithoutToken = new User({
+                                "_id": resultUser._id,
                                 "password": "password-hidden",
-                                "email": result.user.email,
-                                "name": result.user.name,
-                                "picture": result.user.picture,
-                                "validated": true,
-                                "token":jwtHelper.createToken(result.user)
-                            };
-                            const result2 =customHelper.getCustomStudent(result,userWithToken);
-                            //Validated and Has courses than student can login!
-                            console.log("Login--> student Validated Result: " + result2);
-                            return res.status(200).json(result2);
-                        } else{
-                            //Student --> user --> token
-                            //token: createToken(user)
-                            let userWithToken:any = {
-                                "_id":result.user._id,
-                                "password": "password-hidden",
-                                "email": result.user.email,
-                                "name": result.user.name,
-                                "picture": result.user.picture,
-                                "validated": true,
-                                "token":jwtHelper.createToken(result.user)
-                            };
-                            //Newly custom created user has now token in the json!
-                            const result2 = customHelper.getCustomStudent(result,userWithToken);
-                            console.log("Login--> student Not Enrolled Result: " + result2);
-                            return res.status(206).json(result2);
+                                "email": resultUser.email,
+                                "name": resultUser.name,
+                                "picture": resultUser.picture,
+                                "validated": false,
+                                "token": "Not-Authorized"
+                            });
+                            const professorNotValidated: { "user": IUser } = {"user": userWithoutToken};
+                            console.log("Line87:Login--> student hasn't Validated: " + professorNotValidated);
+                            return res.status(203).json(professorNotValidated);
+                        } else {
+                            //* Validated
+                            Professor.findOne({'user': resultUser._id}).populate('user').lean().then((result) => {
+                                /**==============================================
+                                 **      Validated & Completed Lets Get Started
+                                 *===============================================**/
+                                if (result.courses.length > 0) {
+                                    let userWithToken: any = {
+                                        "_id": result.user._id,
+                                        "password": "password-hidden",
+                                        "email": result.user.email,
+                                        "name": result.user.name,
+                                        "picture": result.user.picture,
+                                        "validated": true,
+                                        "token": jwtHelper.createToken(result.user)
+                                    };
+                                    //const result2 = customHelper.getCustomProfessor(result, userWithToken);
+                                    result['user'] = userWithToken;
+                                    //Validated and Has courses than student can login!
+                                    console.log("Login--> Professor Validated Result: " + result);
+                                    return res.status(200).json(result);
+                                } else {
+                                    //Student --> user --> token
+                                    //token: createToken(user)
+                                    let userWithToken: any = {
+                                        "_id": result.user._id,
+                                        "password": "password-hidden",
+                                        "email": result.user.email,
+                                        "name": result.user.name,
+                                        "picture": result.user.picture,
+                                        "validated": true,
+                                        "token": jwtHelper.createToken(result.user)
+                                    };
+                                    //Newly custom created user has now token in the json!
+                                    result['user'] = userWithToken;
+                                    console.log("Login--> professor Not Enrolled Result: " + result);
+                                    return res.status(206).json(result);
+                                }
+                            });
                         }
+
+                    });
+                } else {
+                    Student.findOne({"user": resultUser._id}).then((resStudent) => {
+                        if (resStudent == null) {
+                            //* NOT VALIDATED
+                            let userWithoutToken = new User({
+                                "_id": resultUser._id,
+                                "password": "password-hidden",
+                                "email": resultUser.email,
+                                "name": resultUser.name,
+                                "picture": resultUser.picture,
+                                "validated": false,
+                                "token": "Not-Authorized"
+                            });
+                            const studentNotValidated: { "user": IUser } = {"user": userWithoutToken};
+                            console.log("Line87:Login--> student hasn't Validated: " + studentNotValidated);
+                            return res.status(203).json(studentNotValidated);
+                        } else {
+                            //* Validated
+                            Student.findOne({'user': resultUser._id}).populate('user').populate('ratings').populate('trophies').populate('insignias').then((result) => {
+                                /**==============================================
+                                 **      Validated & Completed Lets Get Started
+                                 *===============================================**/
+                                if (result.courses.length > 0) {
+                                    let userWithToken: any = {
+                                        "_id": result.user._id,
+                                        "password": "password-hidden",
+                                        "email": result.user.email,
+                                        "name": result.user.name,
+                                        "picture": result.user.picture,
+                                        "validated": true,
+                                        "token": jwtHelper.createToken(result.user)
+                                    };
+                                    const result2 = customHelper.getCustomStudent(result, userWithToken);
+                                    //Validated and Has courses than student can login!
+                                    console.log("Login--> student Validated Result: " + result2);
+                                    return res.status(200).json(result2);
+                                } else {
+                                    //Student --> user --> token
+                                    //token: createToken(user)
+                                    let userWithToken: any = {
+                                        "_id": result.user._id,
+                                        "password": "password-hidden",
+                                        "email": result.user.email,
+                                        "name": result.user.name,
+                                        "picture": result.user.picture,
+                                        "validated": true,
+                                        "token": jwtHelper.createToken(result.user)
+                                    };
+                                    //Newly custom created user has now token in the json!
+                                    const result2 = customHelper.getCustomStudent(result, userWithToken);
+                                    console.log("Login--> student Not Enrolled Result: " + result2);
+                                    return res.status(206).json(result2);
+                                }
+                            });
+                        }
+
                     });
                 }
-
-                });
             }else{
                 return res.status(404).json({'error':'User Password Incorrect!'});
             }
