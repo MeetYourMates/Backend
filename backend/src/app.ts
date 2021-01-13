@@ -9,11 +9,12 @@ import courseRoutes from './routes/course.routes';
 import degreeRoutes from './routes/degree.routes';
 import facultyRoutes from './routes/faculty.routes';
 import insigniasRoutes from './routes/insignias.routes';
+import professorRoutes from './routes/professor.routes';
 import projectRoutes from './routes/project.routes';
 import studentRoutes from './routes/student.routes';
+import subjectRoutes from './routes/subject.routes';
 import trophiesRoutes from './routes/trophies.routes';
 import universityRoutes from './routes/university.routes';
-import subjectRoutes from './routes/subject.routes';
 
 var path = require('path');
 const cors = require('cors');
@@ -47,7 +48,8 @@ passport.use(passportMiddleware);
 //API Routes
 app.use('/auth', authRoutes);
 app.use('/subject', subjectRoutes);
-app.use('/student', studentRoutes);
+app.use( '/student', studentRoutes );
+app.use('/professor', professorRoutes);
 app.use('/university',universityRoutes);
 app.use('/faculty',facultyRoutes);
 app.use('/degree',degreeRoutes);
