@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Student from '../models/student';
+import Professor from '../models/professor';
 import Subject from '../models/subject';
 
 
@@ -36,7 +37,7 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
         //Busca los cursos del Student por su id
         //El metodo lean() nos permite modificar el objecto en el próximo bucle, para poder enviar info extra.
         if(req.params.id==null){return res.status(400).json("{'error':'Bad Request'}"); }
-        let result = await Student.findOne({_id:req.params.id}).select('courses user').populate({
+        let result = await Professor.findOne({_id:req.params.id}).select('courses user').populate({
             path: 'courses',
             select:'start end students subject',
         }).lean();
