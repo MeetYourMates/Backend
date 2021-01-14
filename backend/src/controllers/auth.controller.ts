@@ -7,7 +7,7 @@ import jwtHelper from "../helpers/jwt";
 import Professor from "../models/professor";
 import Recovery from "../models/recovery";
 import Student from "../models/student";
-import User, { IUser } from "../models/user";
+import User from "../models/user";
 import Validation from "../models/validation";
 var path = require('path');
 const Bcrypt = require("bcryptjs");
@@ -124,7 +124,7 @@ const accessUser = async (req: Request, res: Response) => {
                                 "token": "Not-Authorized"
                             });
                             //const professorNotValidated: { "user": IUser } = {"user": userWithoutToken};
-                            console.log("Line87:Login--> student hasn't Validated: " + userWithoutToken);
+                            console.log("Line87:Login--> Professor hasn't Validated: " + userWithoutToken);
                             return res.status(203).json(userWithoutToken);
                         } else {
                             //* Validated
@@ -181,9 +181,9 @@ const accessUser = async (req: Request, res: Response) => {
                                 "validated": false,
                                 "token": "Not-Authorized"
                             });
-                            const studentNotValidated: { "user": IUser } = {"user": userWithoutToken};
-                            console.log("Line87:Login--> student hasn't Validated: " + studentNotValidated);
-                            return res.status(203).json(studentNotValidated);
+                            //const studentNotValidated: { "user": IUser } = {"user": userWithoutToken};
+                            console.log("Line87:Login--> student hasn't Validated: " + userWithoutToken);
+                            return res.status(203).json(userWithoutToken);
                         } else {
                             //* Validated
                             Student.findOne({'user': resultUser._id}).populate('user').populate('ratings').populate('trophies').populate('insignias').then((result) => {
