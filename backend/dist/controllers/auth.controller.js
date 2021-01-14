@@ -48,6 +48,7 @@ var recovery_1 = __importDefault(require("../models/recovery"));
 var student_1 = __importDefault(require("../models/student"));
 var user_1 = __importDefault(require("../models/user"));
 var validation_1 = __importDefault(require("../models/validation"));
+var config_1 = __importDefault(require("../config/config"));
 var path = require('path');
 var Bcrypt = require("bcryptjs");
 var _a = require('express-validator'), body = _a.body, validationResult = _a.validationResult;
@@ -100,6 +101,7 @@ var registerUser = function (req, res) { return __awaiter(void 0, void 0, void 0
                     var validation_2 = new validation_1.default({
                         "code": randomstring_1.generate(7),
                         "user": newUser_1,
+                        "date": Date.now(),
                     });
                     validation_2.save().then(function () {
                         sendEmail(newUser_1.email, validation_2.code);
@@ -112,15 +114,16 @@ var registerUser = function (req, res) { return __awaiter(void 0, void 0, void 0
                     user_1.default.deleteOne({ "email": newUser_1.email }).then(function () {
                         newUser_1.save().then(function (data) {
                             newUser_1 = data;
-                        });
-                        var validation = new validation_1.default({
-                            "code": randomstring_1.generate(7),
-                            "user": newUser_1,
-                        });
-                        validation.save().then(function () {
-                            sendEmail(newUser_1.email, validation.code);
-                            return res.status(201).json({ "message": "User registered",
-                                "code": validation.code });
+                            var validation = new validation_1.default({
+                                "code": randomstring_1.generate(7),
+                                "user": newUser_1,
+                                "date": Date.now(),
+                            });
+                            validation.save().then(function () {
+                                sendEmail(newUser_1.email, validation.code);
+                                return res.status(201).json({ "message": "User registered",
+                                    "code": validation.code });
+                            });
                         });
                     });
                 }
@@ -184,13 +187,13 @@ var accessUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                                              *===============================================**/
                                             if (result.courses.length > 0) {
                                                 var userWithToken = {
-                                                    "_id": result.user._id,
+                                                    "_id": result.user._id.toString(),
                                                     "password": "password-hidden",
                                                     "email": result.user.email,
                                                     "name": result.user.name,
                                                     "picture": result.user.picture,
                                                     "validated": true,
-                                                    "token": jwt_1.default.createToken(result.user)
+                                                    "token": jwt_1.default.createToken(resultUser)
                                                 };
                                                 //const result2 = customHelper.getCustomProfessor(result, userWithToken);
                                                 result['user'] = userWithToken;
@@ -398,7 +401,7 @@ var changePassword = function (req, res) { return __awaiter(void 0, void 0, void
 }); };
 //Validates User
 var validateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var code, s, user_2;
+    var code, s, dateCode, timeElapsed, user_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -409,6 +412,11 @@ var validateUser = function (req, res) { return __awaiter(void 0, void 0, void 0
                 s = _a.sent();
                 console.log("Validation Mongodb user found: ", s);
                 if (!(s != null)) return [3 /*break*/, 6];
+                dateCode = Date.parse(s.date.toString());
+                timeElapsed = (Date.now() - dateCode) / (1000 * 60 * 60);
+                if (timeElapsed > config_1.default.expirationTime) {
+                    return [2 /*return*/, res.status(405).json({ "message": "Code Expired" })];
+                }
                 return [4 /*yield*/, user_1.default.findOne({ "_id": s.user._id })];
             case 2:
                 user_2 = _a.sent();

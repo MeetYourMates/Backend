@@ -14,6 +14,9 @@ const validationSchema = new Schema({
     },
     surname: {
         type: String
+    },
+    date:{
+        type:Date
     }
 })
 
@@ -22,6 +25,7 @@ export interface IValidation extends Document {
     code: string;
     name: string;
     surname: string;
+    date: Date;
 }
 
 export default mongoose.model<IValidation>('Validation', validationSchema,'validations');

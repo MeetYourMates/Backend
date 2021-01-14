@@ -9,8 +9,10 @@ import Recovery from "../models/recovery";
 import Student from "../models/student";
 import User from "../models/user";
 import Validation from "../models/validation";
+import config from "../config/config";
 import * as fs from "fs";
-var path = require('path');
+
+const path = require('path');
 const Bcrypt = require("bcryptjs");
 const { body, validationResult } = require('express-validator');
 const sendEmail: any = async (receiver: string, code: string) =>  {
@@ -59,6 +61,7 @@ const registerUser: any = async (req: Request, res: Response) => {
             let validation = new Validation({
                 "code": generate(7),
                 "user": newUser,
+                "date":Date.now(),
             })
             validation.save().then(() => {
                 sendEmail(newUser.email,validation.code);
@@ -70,15 +73,16 @@ const registerUser: any = async (req: Request, res: Response) => {
             User.deleteOne({"email": newUser.email}).then(()=>{
                 newUser.save().then((data) => {
                     newUser = data;
-                })
-                let validation = new Validation({
-                    "code": generate(7),
-                    "user": newUser,
-                })
-                validation.save().then(() => {
-                    sendEmail(newUser.email,validation.code);
-                    return res.status(201).json({"message": "User registered",
-                    "code": validation.code});
+                    let validation = new Validation({
+                        "code": generate(7),
+                        "user": newUser,
+                        "date":Date.now(),
+                    })
+                    validation.save().then(() => {
+                        sendEmail(newUser.email,validation.code);
+                        return res.status(201).json({"message": "User registered",
+                            "code": validation.code});
+                    });
                 });
             });
         }else{
@@ -321,6 +325,14 @@ const validateUser = async (req: Request, res: Response) => {
     let s = await Validation.findOne({"code": code});
     console.log("Validation Mongodb user found: ",s);
     if (s != null) {
+        //Check if Code is Valid!
+        //else return not validated
+        let dateCode = Date.parse(s.date.toString());
+        let timeElapsed = (Date.now() -dateCode) / (1000*60*60);
+        if(timeElapsed > config.expirationTime){
+            return res.status(405).json({"message": "Code Expired"});
+        }
+        //If it is then
         let user = await User.findOne({"_id": s.user._id})
         if (user != null) {
             await User.updateOne({"_id": user._id}, {"validated": true}).then(() => {
