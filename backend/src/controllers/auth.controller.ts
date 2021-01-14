@@ -4,9 +4,9 @@ import { MailOptions } from "nodemailer/lib/smtp-pool";
 import { generate } from "randomstring";
 import customHelper from "../helpers/custom_models_helper";
 import jwtHelper from "../helpers/jwt";
+import Professor from "../models/professor";
 import Recovery from "../models/recovery";
 import Student from "../models/student";
-import Professor from "../models/professor";
 import User, { IUser } from "../models/user";
 import Validation from "../models/validation";
 var path = require('path');
@@ -123,9 +123,9 @@ const accessUser = async (req: Request, res: Response) => {
                                 "validated": false,
                                 "token": "Not-Authorized"
                             });
-                            const professorNotValidated: { "user": IUser } = {"user": userWithoutToken};
-                            console.log("Line87:Login--> student hasn't Validated: " + professorNotValidated);
-                            return res.status(203).json(professorNotValidated);
+                            //const professorNotValidated: { "user": IUser } = {"user": userWithoutToken};
+                            console.log("Line87:Login--> student hasn't Validated: " + userWithoutToken);
+                            return res.status(203).json(userWithoutToken);
                         } else {
                             //* Validated
                             Professor.findOne({'user': resultUser._id}).populate('user').lean().then((result) => {
