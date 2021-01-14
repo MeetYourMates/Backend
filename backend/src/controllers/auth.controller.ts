@@ -136,13 +136,13 @@ const accessUser = async (req: Request, res: Response) => {
                                  *===============================================**/
                                 if (result.courses.length > 0) {
                                     let userWithToken: any = {
-                                        "_id": result.user._id,
+                                        "_id": result.user._id.toString(),
                                         "password": "password-hidden",
                                         "email": result.user.email,
                                         "name": result.user.name,
                                         "picture": result.user.picture,
                                         "validated": true,
-                                        "token": jwtHelper.createToken(result.user)
+                                        "token": jwtHelper.createToken(resultUser)
                                     };
                                     //const result2 = customHelper.getCustomProfessor(result, userWithToken);
                                     result['user'] = userWithToken;
