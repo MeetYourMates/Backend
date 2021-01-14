@@ -21,3 +21,7 @@ backend/dist/index.js
 backend/dist/index.js.map
 backend/node_modules
 backend/dist/helpers
+backend/dist/controllers/auth.controller.js
+backend/dist/controllers/auth.controller.js.map
+backend/dist/controllers/student.controller.js
+backend/dist/controllers/student.controller.js.map
