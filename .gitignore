@@ -20,3 +20,4 @@ backend/dist/database.js.map
 backend/dist/index.js
 backend/dist/index.js.map
 backend/node_modules
+backend/dist/helpers

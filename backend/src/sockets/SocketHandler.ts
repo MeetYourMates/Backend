@@ -83,7 +83,7 @@ export default ( io: Server ) =>
                 }
                 } );
 
-              //console.debug( "My Mates Filtered: ", filteredMates );
+              //console.debug( "My Mates Filtered: ", filteredMates ); testiunggggg
               userData.onlineUserMates.push( filteredMates );
               //Notify Myself, who of my mates are online!
               client_socket.emit( 'mates_status', filteredMates );
