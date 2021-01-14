@@ -43,6 +43,7 @@ var custom_models_helper_1 = __importDefault(require("../helpers/custom_models_h
 var jwt_1 = __importDefault(require("../helpers/jwt"));
 var course_1 = __importDefault(require("../models/course"));
 var student_1 = __importDefault(require("../models/student"));
+var professor_1 = __importDefault(require("../models/professor"));
 var getCourse = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var course, results, err_1;
     return __generator(this, function (_a) {
@@ -79,7 +80,7 @@ var addCourse = function (req, res) { return __awaiter(void 0, void 0, void 0, f
         return [2 /*return*/];
     });
 }); };
-//Add a course to a student and viceversa!
+//Add a course to a student and vice versa!
 var addStudent = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var subjectId, studentId;
     return __generator(this, function (_a) {
@@ -134,6 +135,52 @@ var addStudent = function (req, res) { return __awaiter(void 0, void 0, void 0, 
         }
     });
 }); };
+var addProfessor = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var subjectId, professorId, course, course1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                //Display request
+                console.log(req.body);
+                subjectId = req.body.subjectId;
+                professorId = req.body.professorId;
+                return [4 /*yield*/, course_1.default.findOne({ subject: [subjectId] }).sort({ start: -1 })];
+            case 1:
+                course = _a.sent();
+                console.log(course);
+                return [4 /*yield*/, course_1.default.find({ subject: [subjectId] })];
+            case 2:
+                course1 = _a.sent();
+                console.log(course1);
+                return [4 /*yield*/, course_1.default.updateOne({ _id: course === null || course === void 0 ? void 0 : course._id }, { $addToSet: { professors: professorId } }).then(function (result) {
+                        if (result.nModified == 1) {
+                            console.log("Professor added successfully");
+                            //Course added means we have a course and a student, now we must do the same inversely
+                            //Add a course to student
+                            //We got the course now we search if the student has this course
+                            //@ts-ignore
+                            professor_1.default.updateOne({ _id: professorId }, { $addToSet: { courses: course.id } }).then(function (result) {
+                                if (result.nModified == 1) {
+                                    res.status(201).send({ message: 'Professor added successfully' });
+                                }
+                                else {
+                                    res.status(409).send({ message: 'Course was already added in professor' });
+                                }
+                            });
+                        }
+                        else {
+                            res.status(409).json('Professor was already added!');
+                        }
+                    }).catch(function (err) {
+                        console.log("error ", err);
+                        res.status(500).json(err);
+                    })];
+            case 3:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };
 var getCourseStudents = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var course, results, err_2;
     return __generator(this, function (_a) {
@@ -156,5 +203,5 @@ var getCourseStudents = function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); };
-exports.default = { getCourse: getCourse, addCourse: addCourse, addStudent: addStudent, getCourseStudents: getCourseStudents };
+exports.default = { getCourse: getCourse, addCourse: addCourse, addStudent: addStudent, getCourseStudents: getCourseStudents, addProfessor: addProfessor };
 //# sourceMappingURL=course.controller.js.map

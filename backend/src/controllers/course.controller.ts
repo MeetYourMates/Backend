@@ -3,6 +3,7 @@ import customHelper from "../helpers/custom_models_helper";
 import jwtHelper from "../helpers/jwt";
 import Course from '../models/course';
 import Student from '../models/student';
+import Professor from '../models/professor';
 const getCourse = async (req: Request, res: Response) => {
     let course = req.params.subject
     try{
@@ -26,7 +27,7 @@ const addCourse = async (req: Request, res: Response) => {
     })
 }
 
-//Add a course to a student and viceversa!
+//Add a course to a student and vice versa!
 const addStudent = async(req: Request, res: Response) =>{
 
     //Display request
@@ -73,8 +74,44 @@ const addStudent = async(req: Request, res: Response) =>{
         }
     });
 }
+const addProfessor = async(req: Request, res: Response) =>{
 
-const getCourseStudents = async (req: Request, res: Response) => { 
+    //Display request
+    console.log(req.body);
+
+    //Set variables for the data found in the request body
+    let subjectId = req.body.subjectId;
+    let professorId = req.body.professorId;
+
+    //Add student to subject
+    let course= await Course.findOne({subject: [subjectId]}).sort({start: -1});
+    console.log(course);
+    let course1= await Course.find({subject: [subjectId]});
+    console.log(course1);
+    await Course.updateOne({_id:course?._id}, {$addToSet: {professors: professorId}}).then(result => {
+        if (result.nModified == 1) {
+            console.log("Professor added successfully");
+            //Course added means we have a course and a student, now we must do the same inversely
+            //Add a course to student
+            //We got the course now we search if the student has this course
+            //@ts-ignore
+            Professor.updateOne({_id:professorId}, {$addToSet: {courses: course!.id}}).then(result => {
+                if (result.nModified == 1) {
+                    res.status(201).send({message: 'Professor added successfully'});
+                }else{
+                    res.status(409).send({message: 'Course was already added in professor'});
+                }
+            });
+
+        } else {
+            res.status(409).json('Professor was already added!')
+        } }).catch((err) => {
+        console.log("error ", err);
+        res.status(500).json(err);
+    });
+}
+
+const getCourseStudents = async (req: Request, res: Response) => { //
     let course = req.params.course
     console.log(course);
     try{
@@ -87,4 +124,4 @@ const getCourseStudents = async (req: Request, res: Response) => {
     }
 }
 
-export default {getCourse,addCourse,addStudent,getCourseStudents};
+export default {getCourse,addCourse,addStudent,getCourseStudents,addProfessor};

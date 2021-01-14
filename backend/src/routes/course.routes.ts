@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import subjectController from "../controllers/course.controller";
+import courseController from "../controllers/course.controller";
 
 const router = Router();
-router.post('/get', subjectController.getCourse);
-router.post('/add', subjectController.addCourse);
-router.post('/addStudent', subjectController.addStudent);
-router.get('/getStudents/:course', subjectController.getCourseStudents);
 
+router.post('/get', courseController.getCourse);
+router.post('/add', courseController.addCourse);
+router.post('/addStudent', courseController.addStudent);
+router.post('/addProfessor', courseController.addProfessor);
+router.get('/getStudents/:course', courseController.getCourseStudents);
 export default router;

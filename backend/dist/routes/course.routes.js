@@ -9,6 +9,7 @@ var router = express_1.Router();
 router.post('/get', course_controller_1.default.getCourse);
 router.post('/add', course_controller_1.default.addCourse);
 router.post('/addStudent', course_controller_1.default.addStudent);
+router.post('/addProfessor', course_controller_1.default.addProfessor);
 router.get('/getStudents/:course', course_controller_1.default.getCourseStudents);
 exports.default = router;
 //# sourceMappingURL=course.routes.js.map
