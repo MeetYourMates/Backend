@@ -9,6 +9,7 @@ import Recovery from "../models/recovery";
 import Student from "../models/student";
 import User from "../models/user";
 import Validation from "../models/validation";
+import * as fs from "fs";
 var path = require('path');
 const Bcrypt = require("bcryptjs");
 const { body, validationResult } = require('express-validator');
@@ -23,6 +24,7 @@ const sendEmail: any = async (receiver: string, code: string) =>  {
             pass: 'hztmdbzaopsgtnal'
         }
     });
+    //var email = fs.createReadStream("../../dist/public/views/404.html");
     var message = "<h1>Welcome to Meet your Mates!</h1><p>To activate your account, use the next link: <a href='http://localhost:3000/auth/validate/"+code+"'>Activate</a> Or introduce the next code in the app: </p><h3>"+ code +"</h3>";
     let mailOptions: MailOptions = {
         from: 'meetyourmatesprueba@gmail.com',
