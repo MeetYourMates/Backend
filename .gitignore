@@ -1,16 +1,12 @@
 node_modules
 build
 npm-debug.log
-
-dist
 .idea
 .env
 .DS_Store
 node_modules/
 .idea
 .vscode
-backend/dist/controllers/
-
 backend/dist/config
 backend/dist/controllers
 backend/dist/middlewares
