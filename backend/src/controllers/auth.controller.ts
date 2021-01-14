@@ -325,12 +325,26 @@ const validateUser = async (req: Request, res: Response) => {
                 // @ts-ignore
                 s.deleteOne();
                 //Create New Student
-                const student = new Student({
-                    "user": user?._id
-                });
-                student.save();
-                //return res.status(201).json("User validated");
-                return res.status(201).sendFile(path.join(__dirname, "../public",'/views', '/confirmed.html'));
+                var extension = user.email.split("@");
+
+                    if(extension[1] == "estudiantat.upc.edu")
+                    {
+                        const student = new Student({
+                            "user": user?._id
+                        });
+                        student.save();
+                        return res.status(201).sendFile(path.join(__dirname, "../public",'/views', '/confirmed.html'));
+                    }
+                    else if(extension[1] == "upc.edu" || extension[1] == "entel.upc.edu")
+                    {
+                        const professor = new Professor({
+                            "user": user?._id
+                        });
+                        professor.save();
+                        return res.status(201).sendFile(path.join(__dirname, "../public",'/views', '/confirmed.html'));
+                    }
+                    else
+                    {return res.status(405).json({"message": "Invalid email form"});}
                 }
             );
         }
@@ -347,7 +361,7 @@ const registerUserbyGoogle: any = async (req: Request, res: Response) => {
         "password": Bcrypt.hashSync(req.body.user.password,saltRounds),
         "email": req.body.user.email.toLowerCase(),
         "name": req.body.name,
-        "picture":req.body.picture,
+        "picture":req.body.user.picture,
         "validated": true
     });
     let newStudent = new Student({

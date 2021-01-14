@@ -417,12 +417,24 @@ var validateUser = function (req, res) { return __awaiter(void 0, void 0, void 0
                         // @ts-ignore
                         s.deleteOne();
                         //Create New Student
-                        var student = new student_1.default({
-                            "user": user_2 === null || user_2 === void 0 ? void 0 : user_2._id
-                        });
-                        student.save();
-                        //return res.status(201).json("User validated");
-                        return res.status(201).sendFile(path.join(__dirname, "../public", '/views', '/confirmed.html'));
+                        var extension = user_2.email.split("@");
+                        if (extension[1] == "estudiantat.upc.edu") {
+                            var student = new student_1.default({
+                                "user": user_2 === null || user_2 === void 0 ? void 0 : user_2._id
+                            });
+                            student.save();
+                            return res.status(201).sendFile(path.join(__dirname, "../public", '/views', '/confirmed.html'));
+                        }
+                        else if (extension[1] == "upc.edu" || extension[1] == "entel.upc.edu") {
+                            var professor = new professor_1.default({
+                                "user": user_2 === null || user_2 === void 0 ? void 0 : user_2._id
+                            });
+                            professor.save();
+                            return res.status(201).sendFile(path.join(__dirname, "../public", '/views', '/confirmed.html'));
+                        }
+                        else {
+                            return res.status(405).json({ "message": "Invalid email form" });
+                        }
                     })];
             case 3:
                 _a.sent();
@@ -444,7 +456,7 @@ var registerUserbyGoogle = function (req, res) { return __awaiter(void 0, void 0
                     "password": Bcrypt.hashSync(req.body.user.password, saltRounds),
                     "email": req.body.user.email.toLowerCase(),
                     "name": req.body.name,
-                    "picture": req.body.picture,
+                    "picture": req.body.user.picture,
                     "validated": true
                 });
                 newStudent = new student_1.default({
