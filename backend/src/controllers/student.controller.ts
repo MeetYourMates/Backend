@@ -162,7 +162,7 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
             delete course['subject'];
             //Myself shoudlnt be send to myself! Bad Practice that's why this below!!
             let filter = {$and: [ {courses:course['_id']},{"user": { $ne:myId}}]};
-            var students = await Student.find(filter).select('user degree university').populate({
+            var students = await Student.find(filter).select('user degree university').populate('ratings').populate('trophies').populate('insignias').populate({
                 path: 'user',
                 model: 'User',
                 select: 'picture name email'
