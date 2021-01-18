@@ -14,6 +14,7 @@ import projectRoutes from './routes/project.routes';
 import studentRoutes from './routes/student.routes';
 import subjectRoutes from './routes/subject.routes';
 import trophiesRoutes from './routes/trophies.routes';
+import meetingRoutes from './routes/meetings.routes';
 import universityRoutes from './routes/university.routes';
 
 var path = require('path');
@@ -57,7 +58,7 @@ app.use('/trophy', trophiesRoutes);
 app.use('/insignia', insigniasRoutes);
 app.use('/course',courseRoutes);
 app.use('/project',projectRoutes);
-
+app.use('/meeting',meetingRoutes);
 // Middleware to catch 404 errors
 app.use(function(req, res, next) {
   res.status(404).sendFile(path.join(__dirname,"../dist/public",'/views', '/404.html'));

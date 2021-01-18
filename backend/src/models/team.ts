@@ -28,7 +28,7 @@ const teamSchema = new Schema({
 export interface ITeam extends Document {
     name: String;
     availability: Number;
-    chat: IGroupChat['_id'];
+    groupchat: IGroupChat['_id'];
     tasks: ITask['_id'];
     meetings: IMeeting['_id'];
 }

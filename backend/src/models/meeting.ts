@@ -11,7 +11,7 @@ const meetingSchema = new Schema({
         type: Date
     },
     location: [{
-        type: String
+        type: Number
     }]
 });
 
@@ -20,7 +20,7 @@ export interface IMeeting extends Document {
     name: string;
     description: string;
     date: Date;
-    location: string;
+    location: Number;
 }
 
 //Exportamos modelo para poder usarlo
