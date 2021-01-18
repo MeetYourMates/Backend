@@ -66,4 +66,54 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
 /************************************************************************/
 
 
-export default {getStudentsAndCourses};
+/*************** PEP *************/
+/*
+Estructura del resultado:
+
+[
+    {
+        "_id",
+        "start",
+        "end",
+        "projects": [
+            {
+                "name"
+            }
+        ],
+        "subjectName":"
+    }
+]
+*/
+//Return the projects of the courses of the professor
+const getCourseProjects = async (req: Request, res: Response) => {
+    try{
+        //Busca los cursos del Professor por su id
+        //El metodo lean() nos permite modificar el objecto en el próximo bucle, para poder enviar info extra.
+        if(req.params.id==null){return res.status(400).json("{'error':'Bad Request'}"); }
+        let result = await Professor.findOne({_id:req.params.id}).select('courses').populate({
+            //add info about the course
+            path: 'courses',
+            select:'start end subject projects',
+            populate:{
+                //add info about the project
+                path: 'projects',
+                select: 'name'
+            }
+        }).lean();
+        //clean json format
+        let results = result['courses'];
+        for (var course of results) {
+            //Add subject name
+            var subject = await Subject.find({_id:course['subject']});
+            course['subjectName'] = subject[0]['name'];
+            //Limpia los campos que no interesan
+            delete course['subject'];
+          }
+        return res.status(200).json(results);
+    } catch (err) {
+        console.log(err);
+        return res.status(404).json(err);
+    }
+}
+
+export default {getStudentsAndCourses,getCourseProjects};
