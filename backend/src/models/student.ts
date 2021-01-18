@@ -9,10 +9,7 @@ import User, { IUser } from './user';
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const studentSchema = new Schema({
-    name: {
-        type: String,
-        index: true
-    },
+
     university: {
         type: String,
     },
@@ -46,7 +43,6 @@ const studentSchema = new Schema({
 
 //Interfaz para tratar respuesta como documento
 export interface IStudent extends Document {
-    name: string;
     university: string;
     degree: string;
     user: IUser['_id']; //Relacion con la coleccion students

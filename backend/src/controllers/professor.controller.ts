@@ -1,9 +1,7 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import Student from '../models/student';
 import Professor from '../models/professor';
 import Subject from '../models/subject';
-
-
 
 
 /*
@@ -52,12 +50,11 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
             delete course['subject'];
             //Myself shoudlnt be send to myself! Bad Practice that's why this below!!
             let filter = {$and: [ {courses:course['_id']},{"user": { $ne:myId}}]};
-            var students = await Student.find(filter).select('user degree university').populate({
+            course['students'] = await Student.find(filter).select('user degree university').populate({
                 path: 'user',
                 model: 'User',
                 select: 'picture name email'
             });
-            course['students'] = students;
           }
         //console.debug(results);
         return res.status(200).json(results);
