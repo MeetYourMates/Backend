@@ -1,5 +1,6 @@
 import config from "../config/config";
-import User, { IUser } from "../models/user";
+import User, {IUser} from "../models/user";
+
 const jwt = require('jsonwebtoken');
 
 interface IUserJson
@@ -10,11 +11,10 @@ interface IUserJson
 
 //Token created with 1 week expiration = 604800, 1 Year expiration =  
 function createToken(user:IUser) {
-    const payload:IUserJson={ id: user.id.toString(), email: user.email };
-    const token = jwt.sign(payload, config.jwtSecret, {
+    const payload:IUserJson={ id: user._id.toString(), email: user.email };
+    return jwt.sign(payload, config.jwtSecret, {
         expiresIn: '365d'
     });
-    return token;
 }
 function CheckJWT(token:string): Promise<[boolean,string]>{
     return new Promise((resolve,reject )=>{
