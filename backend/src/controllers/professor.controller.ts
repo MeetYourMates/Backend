@@ -93,7 +93,7 @@ const getCourseProjects = async (req: Request, res: Response) => {
         let result = await Professor.findOne({_id:req.params.id}).select('courses').populate({
             //add info about the course
             path: 'courses',
-            select:'start end subject projects',
+            select:'subject projects',
             populate:{
                 //add info about the project
                 path: 'projects',
