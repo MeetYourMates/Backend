@@ -16,6 +16,8 @@ const getMeetings = async (req: Request, res: Response) => {
 }
 const newMeeting = async (req: Request, res: Response) => {
     //required params teamId, Meeting params(Not nested object!)--> name,description,date, location
+    //Validate: //this._latitude, this._longitude
+    //             //-90.0,90.0,_latitude && -180.0,180.0,_longitude Limits
     let meeting = new Meeting({
         "name": req.body.name,
         "description": req.body.description,
@@ -27,17 +29,16 @@ const newMeeting = async (req: Request, res: Response) => {
         if(resultMeeting != null){
         const queryUpdate = { _id: req.body.teamId };
         // @ts-ignore
-        Team.updateOne( queryUpdate, { "$push": { meetings: [meeting._id] } } ).lean().then( function(){
+        Team.updateOne( queryUpdate, { "$push": { meetings: [meeting._id] } } ).lean().then( (val)=>{
         //console.debug( "Chat added to user:  ", updateRes );
-        return res.status(201).json(resultMeeting);
+            return res.status(201).json(resultMeeting);
         } ).catch( ( err ) =>
         {
             return res.status(500).json('{"message":"Unable to add reunion in team"}');
         });
-        }else{
-           return res.status(500).json('{"message":"Unable to create reunion"}');
+        }else {
+            return res.status(500).json('{"message":"Unable to create reunion"}');
         }
-        return res.status(201).json(resultMeeting);
     }).catch((err) => {
         return res.status(500).json(err);
     })
