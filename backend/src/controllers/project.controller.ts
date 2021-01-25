@@ -9,34 +9,35 @@ const addProject = async(req: Request, res: Response) =>{
     if(req.body==null){
         res.status(400).send({message: 'Bad Request'});
     }
-    if(req.body.subjectId==null){
+    if(req.body.id==null){
         res.status(400).send({message: 'Bad Request'});
     }
     //Set variables for the data found in the request body
-    let subjectId:string = req.body.subjectId; 
+    let courseId:string = req.body.id; 
     const project = new Project({
-        "name": req.body.name
+        "name": req.body.name,
+        "numberStudents": req.body.numberStudents,
     });
     project.save().then((data) => {
         //Add Project to subject
-        Course.findOne({subject: [subjectId]}).sort({start: -1}).then(course => { 
-        //No error and we got a result
-        console.log("Adding Course to Project: ");
-        console.log([course]);
-        if(course!=null){
-            //We got the course now we search if the Project has this course 
-            //@ts-ignore
-            Course.updateOne({"_id":course?._id}, {$addToSet: {projects: data!._id}}).then(result => {
-                if (result.nModified> 0) {
-                    res.status(201).send({message: 'Project Enrolled succesfully!'}); 
-                }else{
-                    res.status(409).send({message: 'Project was already Enrolled!'}); 
-                }
-            });
-        }else{
-            //No Course Found
-            res.status(400).send({message: 'No Subject in Database'});
-        }
+        Course.findOne({"_id": [courseId]}).then(course => { 
+            //No error and we got a result
+            console.log("Adding Course to Project: ");
+            console.log([course]);
+            if(course!=null){
+                //We got the course now we search if the Project has this course 
+                //@ts-ignore
+                Course.updateOne({"_id":course?._id}, {$addToSet: {projects: data!._id}}).then(result => {
+                    if (result.nModified> 0) {
+                        res.status(201).send({message: 'Project Enrolled succesfully!'}); 
+                    }else{
+                        res.status(409).send({message: 'Project was already Enrolled!'}); 
+                    }
+                });
+            }else{
+                //No Course Found
+                res.status(400).send({message: 'No Subject in Database'});
+            }
 
     }).catch((err) => { 
         console.log("error ", err); 

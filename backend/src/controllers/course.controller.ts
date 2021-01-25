@@ -138,6 +138,13 @@ const getCourseStudents = async (req: Request, res: Response) => { //
 
 /*************** PEP *************/
 //Add a new project to the course
+
+//
+//          D E P R E C A T E D
+//
+//        use project/add instead
+//      keeping just as a reference
+//
 const addProject = async (req: Request, res: Response) => {
     const project = new Project({
         "name": req.body.name,
@@ -151,4 +158,4 @@ const addProject = async (req: Request, res: Response) => {
 }
 /************************************************************************/
 
-export default {getCourse,addCourse,addStudent,getCourseStudents,addProfessor,addProject};
+export default {getCourse,addCourse,addStudent,getCourseStudents,addProfessor};
