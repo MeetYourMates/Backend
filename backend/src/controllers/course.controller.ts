@@ -4,6 +4,7 @@ import jwtHelper from "../helpers/jwt";
 import Course from '../models/course';
 import Professor from '../models/professor';
 import Student from '../models/student';
+import Project from '../models/project';
 const getCourse = async (req: Request, res: Response) => {
     let course = req.params.subject
     try{
@@ -135,4 +136,19 @@ const getCourseStudents = async (req: Request, res: Response) => { //
     }
 }
 
-export default {getCourse,addCourse,addStudent,getCourseStudents,addProfessor};
+/*************** PEP *************/
+//Add a new project to the course
+const addProject = async (req: Request, res: Response) => {
+    const project = new Project({
+        "name": req.body.name,
+        "numberStudents": req.body.numberStudents,
+    });
+    project.save().then((data) => {
+        return res.status(201).json(data);
+    }).catch((err) => {
+        return res.status(500).json(err);
+    })
+}
+/************************************************************************/
+
+export default {getCourse,addCourse,addStudent,getCourseStudents,addProfessor,addProject};
