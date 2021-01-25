@@ -37,7 +37,7 @@ const getSubjectsProjects = async (req: Request, res: Response) => {
         }).lean();
         let result = results[0]['courses'];
         //"Limpia" la encapsulación del json
-        for (var course of result) {
+        for (let course of result) {
             let subject = await Subject.find({_id:course['subject']});
             course['subjectName'] = subject[0]['name'];
             //Limpia los campos que no interesan

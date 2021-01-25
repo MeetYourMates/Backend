@@ -16,7 +16,7 @@ import subjectRoutes from './routes/subject.routes';
 import trophiesRoutes from './routes/trophies.routes';
 import meetingRoutes from './routes/meetings.routes';
 import universityRoutes from './routes/university.routes';
-
+import teamRoutes from './routes/team.routes';
 var path = require('path');
 const cors = require('cors');
 var cookieParser = require('cookie-parser')
@@ -58,6 +58,7 @@ app.use('/trophy', trophiesRoutes);
 app.use('/insignia', insigniasRoutes);
 app.use('/course',courseRoutes);
 app.use('/project',projectRoutes);
+app.use('/team',teamRoutes);
 app.use('/meeting',meetingRoutes);
 // Middleware to catch 404 errors
 app.use(function(req, res, next) {

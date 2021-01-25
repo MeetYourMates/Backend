@@ -7,16 +7,16 @@ const addProject = async(req: Request, res: Response) =>{
     //Display request
     console.log(req.body);
     if(req.body==null){
-        res.status(400).send({message: 'Bad Request'});
+        return res.status(400).send({message: 'Bad Request no Body'});
     }
     if(req.body.id==null){
-        res.status(400).send({message: 'Bad Request'});
+        return res.status(400).send({message: 'Bad Request no Course Id'});
     }
     //Set variables for the data found in the request body
-    let courseId:string = req.body.id; 
+    let courseId:string = req.body.id;
     const project = new Project({
         "name": req.body.name,
-        "numberStudents": req.body.numberStudents,
+        "hashtags":req.body.hashtags
     });
     project.save().then((data) => {
         //Add Project to subject
@@ -29,20 +29,20 @@ const addProject = async(req: Request, res: Response) =>{
                 //@ts-ignore
                 Course.updateOne({"_id":course?._id}, {$addToSet: {projects: data!._id}}).then(result => {
                     if (result.nModified> 0) {
-                        res.status(201).send({message: 'Project Enrolled succesfully!'}); 
+                     return res.status(201).send({message: 'Project Enrolled successfully!'});
                     }else{
-                        res.status(409).send({message: 'Project was already Enrolled!'}); 
+                        return res.status(409).send({message: 'Project was already Enrolled!'});
                     }
                 });
             }else{
                 //No Course Found
-                res.status(400).send({message: 'No Subject in Database'});
+                return res.status(400).send({message: 'No Subject in Database'});
             }
 
-    }).catch((err) => { 
-        console.log("error ", err); 
-        res.status(500).json({message: 'Server Error!'}); 
-    });
+        }).catch((err) => {
+            console.log("error ", err);
+            return res.status(500).json({message: 'Server Error!'});
+        });
     });
     
 }
