@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import Project from '../models/project';
 import Team from '../models/team';
+import Student from "../models/student";
+import {Schema, Types} from "mongoose";
+import Invitation from "../models/invitation";
+import mongoose from "mongoose";
+import invitation from "../models/invitation";
+import user from "../models/user";
 /******************************KRUNAL***************************************/
 const addTeam = async(req: Request, res: Response) =>{
 
@@ -64,5 +70,92 @@ const getTeams = async (req: Request, res: Response) => {
     }
 
 }
+
+const joinTeam = async (req: Request, res: Response) => {
+
+    let teamId = req.params.id;
+    let studentId = req.body.studentId;
+    let searchedTeam = null;
+    try {searchedTeam =  await Team.findOne({"_id": teamId});}
+    catch (e) {res.status(409).send({message: 'Not finding the team'});}
+    if (searchedTeam != null) {
+        let searchStudent = await Student.findOne({"teams": {$in: teamId} })
+        if (searchStudent != null) {
+            res.status(409).send({message: 'There is already a person in the team'});
+        }
+        else {
+            console.log(searchedTeam._id);
+            // @ts-ignore
+            Student.updateOne({"_id": studentId}, {$addToSet: {teams: searchedTeam._id}}).then(results => {
+                console.log(results.nModified);
+                res.status(201).send({message: 'Joined the team'});
+            });
+        }
+    }
+}
+
+const inviteStudent = async (req: Request, res: Response) => {
+    let teamId = req.body.teamId;
+    let senderId = req.body.senderId;
+    let receiverId = req.body.receiverId;
+    let searchedTeam = null;
+    try {searchedTeam =  await Team.findOne({"_id": teamId});}
+    catch (e) {res.status(409).send({message: 'Not finding the team'});}
+    if (searchedTeam != null) {
+        let studentsInTeam = await Student.find({"teams": {$in: teamId} });
+        if (studentsInTeam.length < searchedTeam.numberStudents) {
+            let newInv = new Invitation({
+                sender: mongoose.Types.ObjectId(senderId),
+                receiver: mongoose.Types.ObjectId(receiverId),
+                team: mongoose.Types.ObjectId(teamId)
+            });
+            newInv.save().then((result) => {
+                console.log(result);
+                res.status(201).send({message: 'Invitation sent'});
+            });
+        }
+        else {
+            res.status(400).send({message: 'Cant invite more people to the team'});
+        }
+    }
+}
+
+const getInvitations = async (req: Request, res: Response) => {
+    let receiverId = req.params.id;
+    console.log(receiverId);
+    try {
+        let invited = await Invitation.find({receiver: receiverId}).populate([{path: "sender", select:"user", populate:{path: "user", select: "name"}},
+            {path: "receiver", select:"user"},
+            {path: "team", select:"name"}]);
+        console.log(invited);
+        return res.status(200).json(invited);
+    }
+    catch (e) {
+        return res.status(400);
+        console.log("disaster");
+    }
+}
+
+const invitationAction = async (req: Request, res: Response) => {
+    let invId = req.params.id;
+    let action = req.params.action;
+    let invit = await Invitation.findOne({_id: invId});
+    if (action == "accept") {
+        // @ts-ignore
+        Student.updateOne({"_id": invit.receiver}, {$addToSet: {teams: invit.team}}).then(results => {
+            console.log(results.nModified);
+            Invitation.deleteMany({"_id": invit.receiver}).then(() => {
+                res.status(201).send({message: 'Joined the team'});
+            })
+
+        });
+    }
+    if (action == "reject") {
+        invit.deleteOne().then((results) => {
+            res.status(201).send({message: 'Rejected Invitation'});
+        });
+
+    }
+}
 /*********************************************************************/
-export default {addTeam,getTeams};
+export default {addTeam,getTeams, joinTeam, inviteStudent, getInvitations, invitationAction};
