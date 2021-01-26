@@ -5,6 +5,8 @@ import Subject from '../models/subject';
 import User from '../models/user';
 import Professor from "../models/professor";
 import Rating from '../models/rating';
+import student from '../models/student';
+import team from '../models/team';
 
 
 
@@ -212,7 +214,7 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
 /************************************************************************/
 
   /// ================================================================================================
-  ///!                                 Verify if the user has voted
+  ///!                                 Verify if the user has rated one mate and if not, rate it
   ///================================================================================================**/
   const verifyRating = async(req: Request, res: Response) =>{
     console.log(req.params);
@@ -238,5 +240,21 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
         })
     }
 
-
+    /// ================================================================================================
+    ///!                                 Saber si un student está en tu team
+    ///================================================================================================**/
+    /*const getStudentTeam = async(req: Request, res: Response) =>{
+        const data = await student.find({_id:req.params.id}).populate('teams');     
+        console.log(data);  
+        if(data.length>0)
+        {
+           const pet = await student.find({_id:req.params.id2}).populate('teams');
+           if(pet.length>0){
+               pet.forEach(element => {
+                   if(element.)
+               });
+           }
+        }
+        else res.status(509).json(req.body);
+    }*/
 export default {getStudents, getCourseProjects,getStudent,addStudent,getSubjectsProjects,updateStudentProfile,getStudentCourses,getStudentsAndCourses,verifyRating,rateMate};

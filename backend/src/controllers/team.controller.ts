@@ -77,7 +77,7 @@ const getTeamsStudent = async (req: Request, res: Response) => {
     //El await hace que la siguiente linea no se ejecute
     //hasta que el resultado no se haya obtenido
     try{
-        let results = await Project.findOne({_id:req.params.id}).select('teams').populate({
+        let results = await Student.findOne({_id:req.params.id}).select('teams').populate({
             path: 'teams',
             select:'_id name numberStudents',
         }).lean();
@@ -89,6 +89,23 @@ const getTeamsStudent = async (req: Request, res: Response) => {
     } catch (err) {
         return res.status(404).json(err);
     }
+}
+    const getTeamsOfStudent = async (req: Request, res: Response) => {
+        //El await hace que la siguiente linea no se ejecute
+        //hasta que el resultado no se haya obtenido
+        try{
+            let results = await Student.findOne({_id:req.params.id}).select('teams').populate({
+                path: 'teams',
+                select:'_id name numberStudents',
+            }).lean();
+            //"Limpia" la encapsulación del json
+            results = results['teams'];
+            console.log(results);
+            return res.status(200).json(results);
+    
+        } catch (err) {
+            return res.status(404).json(err);
+        }
 
 }
 const joinTeam = async (req: Request, res: Response) => {
@@ -193,4 +210,4 @@ const updateTeam = async (req: Request, res: Response) => {
 /************************************************************************/
 
 
-export default {addTeam,getTeams,getTeamsStudent, joinTeam, inviteStudent, getInvitations, invitationAction, updateTeam};
+export default {addTeam,getTeams,getTeamsStudent, joinTeam, inviteStudent, getInvitations, invitationAction, updateTeam,getTeamsOfStudent};

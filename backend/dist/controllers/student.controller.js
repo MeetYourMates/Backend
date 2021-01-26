@@ -330,7 +330,7 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
 }); };
 /************************************************************************/
 /// ================================================================================================
-///!                                 Verify if the user has voted
+///!                                 Verify if the user has rated one mate and if not, rate it
 ///================================================================================================**/
 var verifyRating = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var data;
@@ -364,5 +364,22 @@ function rateMate(req, res) {
         return res.status(500).json(err);
     });
 }
+/// ================================================================================================
+///!                                 Saber si un student está en tu team
+///================================================================================================**/
+/*const getStudentTeam = async(req: Request, res: Response) =>{
+    const data = await student.find({_id:req.params.id}).populate('teams');
+    console.log(data);
+    if(data.length>0)
+    {
+       const pet = await student.find({_id:req.params.id2}).populate('teams');
+       if(pet.length>0){
+           pet.forEach(element => {
+               if(element.)
+           });
+       }
+    }
+    else res.status(509).json(req.body);
+}*/
 exports.default = { getStudents: getStudents, getCourseProjects: getCourseProjects, getStudent: getStudent, addStudent: addStudent, getSubjectsProjects: getSubjectsProjects, updateStudentProfile: updateStudentProfile, getStudentCourses: getStudentCourses, getStudentsAndCourses: getStudentsAndCourses, verifyRating: verifyRating, rateMate: rateMate };
 //# sourceMappingURL=student.controller.js.map
