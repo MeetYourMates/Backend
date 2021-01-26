@@ -181,4 +181,20 @@ const invitationAction = async (req: Request, res: Response) => {
     }
 }
 /*********************************************************************/
-export default {addTeam,getTeams,getTeamsStudent, joinTeam, inviteStudent, getInvitations, invitationAction};
+
+/*************** PEP *************/
+//Updates team
+const updateTeam = async (req: Request, res: Response) => {
+    console.log(req.body);
+    //Only Updates Name and  Picture
+    Team.findByIdAndUpdate({"_id": req.body._id}, {$set: {"name": req.body.name,"numberStudents":req.body.numberStudents}}).then((data) => {
+        if(data==null) return res.status(400).json(req.body);
+        res.status(200).json(req.body);
+    }).catch((err) => {
+        res.status(500).json(err);
+    })
+}
+/************************************************************************/
+
+
+export default {addTeam,getTeams,getTeamsStudent, joinTeam, inviteStudent, getInvitations, invitationAction, updateTeam};
