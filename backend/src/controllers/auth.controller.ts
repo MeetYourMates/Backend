@@ -272,11 +272,17 @@ const forgotPassword = async (req: Request, res: Response) => {
     if(req.params.email==null){
         return res.status(400).json({"message":"Bad Request, data requiered"});
     }
+    
     let email = req.params.email;
     //let s = await Validation.findOne({"code": code});
     console.log({email})
     let s = await User.findOne({"email": email});
     if (s) {
+        let dateCode = Date.parse(s.lastActiveAt.toString());
+        let timeElapsed = (Date.now() -dateCode) / (1000*60*60);
+        if(timeElapsed > config.expirationTime){
+            return res.status(405).json({"message": "Code Expired"});
+        }
         //User Found
         let recovery = new Recovery({
             "code": generate(7),

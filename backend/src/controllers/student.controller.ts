@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
+import rating from '../models/rating';
 import Student from '../models/student';
 import Subject from '../models/subject';
 import User from '../models/user';
 import Professor from "../models/professor";
+import Rating from '../models/rating';
 
 
 
@@ -187,6 +189,7 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
         //Ahora añadimos en el resultado el nombre del subject de cada course, para facilitarle la vida al frontend
         for (var course of results) {
             var subject = await Subject.find({_id:course['subject']});
+            console.log(subject);
             course['subjectName'] = subject[0]['name'];
             //Limpia los campos que no interesan
             delete course['subject'];
@@ -208,5 +211,32 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
 }
 /************************************************************************/
 
+  /// ================================================================================================
+  ///!                                 Verify if the user has voted
+  ///================================================================================================**/
+  const verifyRating = async(req: Request, res: Response) =>{
+    console.log(req.params);
+    const data = await rating.find({ratedBy:req.params.id})     
+    console.log(data);  
+        if(data.length==1)
+        {
+            return res.status(200).json(data[0]);
+        }
+        else res.status(509).json(req.body);
+    }
+    function rateMate (req: Request, res:Response){
+        const rating = new Rating({
+            "stars": req.body.stars,
+            "ratedBy": req.body.ratedBy,
+            "date": req.body.date
+        });
+        console.log(rating);
+        rating.save().then((data) => {
+            return res.status(201).json(rating.stars);
+        }).catch((err) => {
+            return res.status(500).json(err);
+        })
+    }
 
-export default {getStudents, getCourseProjects,getStudent,addStudent,getSubjectsProjects,updateStudentProfile,getStudentCourses,getStudentsAndCourses};
+
+export default {getStudents, getCourseProjects,getStudent,addStudent,getSubjectsProjects,updateStudentProfile,getStudentCourses,getStudentsAndCourses,verifyRating,rateMate};

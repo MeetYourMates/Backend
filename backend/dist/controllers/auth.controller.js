@@ -330,7 +330,7 @@ var sendEmailRecovery = function (receiver, code) { return __awaiter(void 0, voi
     });
 }); };
 var forgotPassword = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, s, recovery_2;
+    var email, s, dateCode, timeElapsed, recovery_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -344,6 +344,11 @@ var forgotPassword = function (req, res) { return __awaiter(void 0, void 0, void
             case 1:
                 s = _a.sent();
                 if (s) {
+                    dateCode = Date.parse(s.lastActiveAt.toString());
+                    timeElapsed = (Date.now() - dateCode) / (1000 * 60 * 60);
+                    if (timeElapsed > config_1.default.expirationTime) {
+                        return [2 /*return*/, res.status(405).json({ "message": "Code Expired" })];
+                    }
                     recovery_2 = new recovery_1.default({
                         "code": randomstring_1.generate(7),
                         "email": email
