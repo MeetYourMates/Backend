@@ -19,7 +19,7 @@ import meetingRoutes from './routes/meetings.routes';
 import universityRoutes from './routes/university.routes';
 import teamRoutes from './routes/task.routes';
 import taskRoutes from './routes/task.routes';
-import teamRoutes from'./routes/team.routes';
+
 var path = require('path');
 const cors = require('cors');
 var cookieParser = require('cookie-parser')
