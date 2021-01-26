@@ -1,11 +1,14 @@
 import mongoose, { Schema, Document} from 'mongoose';
+import Student, { IStudent } from './student';
+import user, { IUser } from './user';
 //Modelo de objeto que se guarda en la BBDD de MongoDB
 const ratingSchema = new Schema({
     stars:{
         type: Number
     },
     ratedBy: {
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: user
     },
     date: {
         type: Date
@@ -15,7 +18,7 @@ const ratingSchema = new Schema({
 //Interfaz para tratar respuesta como documento
 export interface IRating extends Document {
     stars: number;
-    ratedBy: string;
+    ratedBy: IUser['_id'];
     date: Date;
 }
 

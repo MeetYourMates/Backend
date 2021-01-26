@@ -11,6 +11,9 @@ router.get('/getStudentCourses/:id', studentController.getStudentCourses);
 router.get('/getStudentsAndCourses/:id', studentController.getStudentsAndCourses);
 router.get('/getStudentProjects/:id', studentController.getSubjectsProjects);
 router.get('/getCourseProjects/:id', studentController.getCourseProjects);
+router.get('/verifyRating/:id', studentController.verifyRating);
+router.post('/rateMate', studentController.rateMate);
+
 //router.post('/edit', modelController.editModel);
 
 export default router;

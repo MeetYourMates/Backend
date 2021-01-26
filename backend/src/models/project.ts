@@ -7,20 +7,31 @@ const projectSchema = new Schema({
         type: String,
         index: true
     },
-    hashtags: {
+    teamNames: [{
         type: String
+    }],
+    numberStudents: {
+        type: Number
     },
-    teams: [{
+    hashtags: [{
+        type: String
+    }],
+    teams: {
         type: Schema.Types.ObjectId,
         ref: Team
-    }],
+    },
+    closed: {
+        type: Boolean,
+    }
 });
 
 //Interfaz para tratar respuesta como documento
 export interface IProject extends Document {
     name: string;
-    hashtags: string;
+    teamNames: string;
+    numberStudents: number;
     teams: ITeam['_id']; //Relacion con la coleccion students
+    closed: boolean;
 }
 
 //Exportamos modelo para poder usarlo

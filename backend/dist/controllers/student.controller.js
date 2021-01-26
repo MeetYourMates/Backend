@@ -39,9 +39,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var rating_1 = __importDefault(require("../models/rating"));
 var student_1 = __importDefault(require("../models/student"));
 var subject_1 = __importDefault(require("../models/subject"));
 var user_1 = __importDefault(require("../models/user"));
+var rating_2 = __importDefault(require("../models/rating"));
 var getStudents = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var results, err_1;
     return __generator(this, function (_a) {
@@ -298,6 +300,7 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
                 return [4 /*yield*/, subject_1.default.find({ _id: course['subject'] })];
             case 3:
                 subject = _a.sent();
+                console.log(subject);
                 course['subjectName'] = subject[0]['name'];
                 //Limpia los campos que no interesan
                 delete course['subject'];
@@ -326,5 +329,40 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
     });
 }); };
 /************************************************************************/
-exports.default = { getStudents: getStudents, getCourseProjects: getCourseProjects, getStudent: getStudent, addStudent: addStudent, getSubjectsProjects: getSubjectsProjects, updateStudentProfile: updateStudentProfile, getStudentCourses: getStudentCourses, getStudentsAndCourses: getStudentsAndCourses };
+/// ================================================================================================
+///!                                 Verify if the user has voted
+///================================================================================================**/
+var verifyRating = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log(req.params);
+                return [4 /*yield*/, rating_1.default.find({ ratedBy: req.params.id })];
+            case 1:
+                data = _a.sent();
+                console.log(data);
+                if (data.length == 1) {
+                    return [2 /*return*/, res.status(200).json(data[0])];
+                }
+                else
+                    res.status(509).json(req.body);
+                return [2 /*return*/];
+        }
+    });
+}); };
+function rateMate(req, res) {
+    var rating = new rating_2.default({
+        "stars": req.body.stars,
+        "ratedBy": req.body.ratedBy,
+        "date": req.body.date
+    });
+    console.log(rating);
+    rating.save().then(function (data) {
+        return res.status(201).json(rating.stars);
+    }).catch(function (err) {
+        return res.status(500).json(err);
+    });
+}
+exports.default = { getStudents: getStudents, getCourseProjects: getCourseProjects, getStudent: getStudent, addStudent: addStudent, getSubjectsProjects: getSubjectsProjects, updateStudentProfile: updateStudentProfile, getStudentCourses: getStudentCourses, getStudentsAndCourses: getStudentsAndCourses, verifyRating: verifyRating, rateMate: rateMate };
 //# sourceMappingURL=student.controller.js.map
