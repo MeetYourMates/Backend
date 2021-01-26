@@ -17,7 +17,7 @@ import subjectRoutes from './routes/subject.routes';
 import trophiesRoutes from './routes/trophies.routes';
 import meetingRoutes from './routes/meetings.routes';
 import universityRoutes from './routes/university.routes';
-import teamRoutes from './routes/task.routes';
+import teamRoutes from './routes/team.routes';
 import taskRoutes from './routes/task.routes';
 
 var path = require('path');
