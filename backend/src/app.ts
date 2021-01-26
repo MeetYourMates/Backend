@@ -17,6 +17,7 @@ import subjectRoutes from './routes/subject.routes';
 import trophiesRoutes from './routes/trophies.routes';
 import meetingRoutes from './routes/meetings.routes';
 import universityRoutes from './routes/university.routes';
+import teamRoutes from './routes/task.routes';
 import taskRoutes from './routes/task.routes';
 
 var path = require('path');
@@ -62,7 +63,7 @@ app.use('/trophy', trophiesRoutes);
 app.use('/insignia', insigniasRoutes);
 app.use('/course',courseRoutes);
 app.use('/project',projectRoutes);
-app.use('/team',teamRoutes);
+app.use('/team', teamRoutes);
 app.use('/meeting',meetingRoutes);
 app.use('/task',taskRoutes);
 
