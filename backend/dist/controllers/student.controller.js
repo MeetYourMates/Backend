@@ -195,6 +195,54 @@ var getStudentCourses = function (req, res) { return __awaiter(void 0, void 0, v
     });
 }); };
 /************************************************************************/
+var getCourseProjects = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, results, _i, results_1, course, subject, err_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 6, , 7]);
+                //Busca los cursos del Professor por su id
+                //El metodo lean() nos permite modificar el objecto en el próximo bucle, para poder enviar info extra.
+                if (req.params.id == null) {
+                    return [2 /*return*/, res.status(400).json("{'error':'Bad Request'}")];
+                }
+                return [4 /*yield*/, student_1.default.findOne({ _id: req.params.id }).select('courses').populate({
+                        //add info about the course
+                        path: 'courses',
+                        select: 'subject projects',
+                        populate: {
+                            //add info about the project
+                            path: 'projects',
+                            select: 'name'
+                        }
+                    }).lean()];
+            case 1:
+                result = _a.sent();
+                results = result['courses'];
+                _i = 0, results_1 = results;
+                _a.label = 2;
+            case 2:
+                if (!(_i < results_1.length)) return [3 /*break*/, 5];
+                course = results_1[_i];
+                return [4 /*yield*/, subject_1.default.find({ _id: course['subject'] })];
+            case 3:
+                subject = _a.sent();
+                course['subjectName'] = subject[0]['name'];
+                //Limpia los campos que no interesan
+                delete course['subject'];
+                _a.label = 4;
+            case 4:
+                _i++;
+                return [3 /*break*/, 2];
+            case 5: return [2 /*return*/, res.status(200).json(results)];
+            case 6:
+                err_5 = _a.sent();
+                console.log(err_5);
+                return [2 /*return*/, res.status(404).json(err_5)];
+            case 7: return [2 /*return*/];
+        }
+    });
+}); };
 /******************************PEP***************************************/
 /*
 
@@ -224,7 +272,7 @@ Estructura del resultado:
 
 */
 var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, myId, results, _i, results_1, course, subject, filter, students, err_5;
+    var result, myId, results, _i, results_2, course, subject, filter, students, err_6;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -242,11 +290,11 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
                 result = _a.sent();
                 myId = result['user'].toString();
                 results = result['courses'];
-                _i = 0, results_1 = results;
+                _i = 0, results_2 = results;
                 _a.label = 2;
             case 2:
-                if (!(_i < results_1.length)) return [3 /*break*/, 6];
-                course = results_1[_i];
+                if (!(_i < results_2.length)) return [3 /*break*/, 6];
+                course = results_2[_i];
                 return [4 /*yield*/, subject_1.default.find({ _id: course['subject'] })];
             case 3:
                 subject = _a.sent();
@@ -270,13 +318,13 @@ var getStudentsAndCourses = function (req, res) { return __awaiter(void 0, void 
             //console.debug(results);
             return [2 /*return*/, res.status(200).json(results)];
             case 7:
-                err_5 = _a.sent();
-                console.log(err_5);
-                return [2 /*return*/, res.status(404).json(err_5)];
+                err_6 = _a.sent();
+                console.log(err_6);
+                return [2 /*return*/, res.status(404).json(err_6)];
             case 8: return [2 /*return*/];
         }
     });
 }); };
 /************************************************************************/
-exports.default = { getStudents: getStudents, getStudent: getStudent, addStudent: addStudent, getSubjectsProjects: getSubjectsProjects, updateStudentProfile: updateStudentProfile, getStudentCourses: getStudentCourses, getStudentsAndCourses: getStudentsAndCourses };
+exports.default = { getStudents: getStudents, getCourseProjects: getCourseProjects, getStudent: getStudent, addStudent: addStudent, getSubjectsProjects: getSubjectsProjects, updateStudentProfile: updateStudentProfile, getStudentCourses: getStudentCourses, getStudentsAndCourses: getStudentsAndCourses };
 //# sourceMappingURL=student.controller.js.map

@@ -4,7 +4,7 @@ import Insignia, { IInsignia } from './insignia';
 import Rating, { IRating } from './rating';
 import Trophy, { ITrophy } from './trophy';
 import User, { IUser } from './user';
-
+import Team, {ITeam} from "./team";
 
 
 //Modelo de objeto que se guarda en la BBDD de MongoDB
@@ -38,6 +38,10 @@ const studentSchema = new Schema({
     courses:[{
         type: Schema.Types.ObjectId,
         ref: Course
+    }],
+    teams:[{
+        type: Schema.Types.ObjectId,
+        ref: Team
     }]
 });
 
@@ -51,6 +55,7 @@ export interface IStudent extends Document {
     trophies: ITrophy['_id'];
     insignias: IInsignia['_id'];
     courses: ICourse['_id'];
+    teams: ITeam['_id'];
 }
 
 //Exportamos modelo para poder usarlo

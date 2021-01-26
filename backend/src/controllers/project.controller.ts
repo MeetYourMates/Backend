@@ -7,41 +7,42 @@ const addProject = async(req: Request, res: Response) =>{
     //Display request
     console.log(req.body);
     if(req.body==null){
-        res.status(400).send({message: 'Bad Request'});
+        return res.status(400).send({message: 'Bad Request no Body'});
     }
-    if(req.body.subjectId==null){
-        res.status(400).send({message: 'Bad Request'});
+    if(req.body.id==null){
+        return res.status(400).send({message: 'Bad Request no Course Id'});
     }
     //Set variables for the data found in the request body
-    let subjectId:string = req.body.subjectId; 
+    let courseId:string = req.body.id;
     const project = new Project({
-        "name": req.body.name
+        "name": req.body.name,
+        "hashtags":req.body.hashtags
     });
     project.save().then((data) => {
         //Add Project to subject
-        Course.findOne({subject: [subjectId]}).sort({start: -1}).then(course => { 
-        //No error and we got a result
-        console.log("Adding Course to Project: ");
-        console.log([course]);
-        if(course!=null){
-            //We got the course now we search if the Project has this course 
-            //@ts-ignore
-            Course.updateOne({"_id":course?._id}, {$addToSet: {projects: data!._id}}).then(result => {
-                if (result.nModified> 0) {
-                    res.status(201).send({message: 'Project Enrolled succesfully!'}); 
-                }else{
-                    res.status(409).send({message: 'Project was already Enrolled!'}); 
-                }
-            });
-        }else{
-            //No Course Found
-            res.status(400).send({message: 'No Subject in Database'});
-        }
+        Course.findOne({"_id": [courseId]}).then(course => { 
+            //No error and we got a result
+            console.log("Adding Course to Project: ");
+            console.log([course]);
+            if(course!=null){
+                //We got the course now we search if the Project has this course 
+                //@ts-ignore
+                Course.updateOne({"_id":course?._id}, {$addToSet: {projects: data!._id}}).then(result => {
+                    if (result.nModified> 0) {
+                     return res.status(201).send({message: 'Project Enrolled successfully!'});
+                    }else{
+                        return res.status(409).send({message: 'Project was already Enrolled!'});
+                    }
+                });
+            }else{
+                //No Course Found
+                return res.status(400).send({message: 'No Subject in Database'});
+            }
 
-    }).catch((err) => { 
-        console.log("error ", err); 
-        res.status(500).json({message: 'Server Error!'}); 
-    });
+        }).catch((err) => {
+            console.log("error ", err);
+            return res.status(500).json({message: 'Server Error!'});
+        });
     });
     
 }

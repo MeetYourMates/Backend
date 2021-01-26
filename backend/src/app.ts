@@ -62,6 +62,7 @@ app.use('/trophy', trophiesRoutes);
 app.use('/insignia', insigniasRoutes);
 app.use('/course',courseRoutes);
 app.use('/project',projectRoutes);
+app.use('/team',teamRoutes);
 app.use('/meeting',meetingRoutes);
 app.use('/task',taskRoutes);
 

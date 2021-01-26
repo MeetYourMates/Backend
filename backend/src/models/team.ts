@@ -7,7 +7,7 @@ const teamSchema = new Schema({
     name: {
         type: String
     },
-    availability: {
+    numberStudents: {
         type: Number
     },
     groupchat: {
@@ -27,7 +27,7 @@ const teamSchema = new Schema({
 //Interfaz para tratar respuesta como documento
 export interface ITeam extends Document {
     name: String;
-    availability: Number;
+    numberStudents: Number;
     groupchat: IGroupChat['_id'];
     tasks: ITask['_id'];
     meetings: IMeeting['_id'];
