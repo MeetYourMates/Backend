@@ -76,7 +76,24 @@ const getTeams = async (req: Request, res: Response) => {
     }
 
 }
+const getTeamsStudent = async (req: Request, res: Response) => {
+    //El await hace que la siguiente linea no se ejecute
+    //hasta que el resultado no se haya obtenido
+    try{
+        let results = await Project.findOne({_id:req.params.id}).select('teams').populate({
+            path: 'teams',
+            select:'_id name numberStudents',
+        }).lean();
+        //"Limpia" la encapsulación del json
+        results = results['teams'];
+        console.log(results);
+        return res.status(200).json(results);
 
+    } catch (err) {
+        return res.status(404).json(err);
+    }
+
+}
 const joinTeam = async (req: Request, res: Response) => {
 
     let teamId = req.params.id;
@@ -164,4 +181,4 @@ const invitationAction = async (req: Request, res: Response) => {
     }
 }
 /*********************************************************************/
-export default {addTeam,getTeams, joinTeam, inviteStudent, getInvitations, invitationAction};
+export default {addTeam,getTeams,getTeamsStudent, joinTeam, inviteStudent, getInvitations, invitationAction};

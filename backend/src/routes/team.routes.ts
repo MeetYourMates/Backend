@@ -6,6 +6,7 @@ router.post("/invite", teamController.inviteStudent);
 router.get("/invitations/:id/:action", teamController.invitationAction);
 router.get("/invitations/:id", teamController.getInvitations);
 router.get('/:id',teamController.getTeams);
+router.get('/student/:id',teamController.getTeamsStudent);
 router.post("/:id", teamController.joinTeam);
 
 

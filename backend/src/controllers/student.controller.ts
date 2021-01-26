@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Student from '../models/student';
 import Subject from '../models/subject';
 import User from '../models/user';
+import Professor from "../models/professor";
 
 
 
@@ -113,7 +114,36 @@ const getStudentCourses = async (req: Request, res: Response) => {
     }
 }
 /************************************************************************/
-
+const getCourseProjects = async (req: Request, res: Response) => {
+    try{
+        //Busca los cursos del Professor por su id
+        //El metodo lean() nos permite modificar el objecto en el próximo bucle, para poder enviar info extra.
+        if(req.params.id==null){return res.status(400).json("{'error':'Bad Request'}"); }
+        let result = await Student.findOne({_id:req.params.id}).select('courses').populate({
+            //add info about the course
+            path: 'courses',
+            select:'subject projects',
+            populate:{
+                //add info about the project
+                path: 'projects',
+                select: 'name'
+            }
+        }).lean();
+        //clean json format
+        let results = result['courses'];
+        for (var course of results) {
+            //Add subject name
+            var subject = await Subject.find({_id:course['subject']});
+            course['subjectName'] = subject[0]['name'];
+            //Limpia los campos que no interesan
+            delete course['subject'];
+        }
+        return res.status(200).json(results);
+    } catch (err) {
+        console.log(err);
+        return res.status(404).json(err);
+    }
+}
 /******************************PEP***************************************/
 /*
 
@@ -179,4 +209,4 @@ const getStudentsAndCourses = async (req: Request, res: Response) => {
 /************************************************************************/
 
 
-export default {getStudents, getStudent,addStudent,getSubjectsProjects,updateStudentProfile,getStudentCourses,getStudentsAndCourses};
+export default {getStudents, getCourseProjects,getStudent,addStudent,getSubjectsProjects,updateStudentProfile,getStudentCourses,getStudentsAndCourses};
