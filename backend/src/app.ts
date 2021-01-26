@@ -3,6 +3,7 @@ import express from 'express';
 import morgan from 'morgan';
 import passport from 'passport';
 import passportMiddleware from './middlewares/passport';
+
 //Importamos fichero de rutas
 import authRoutes from './routes/auth.routes';
 import courseRoutes from './routes/course.routes';
@@ -16,6 +17,7 @@ import subjectRoutes from './routes/subject.routes';
 import trophiesRoutes from './routes/trophies.routes';
 import meetingRoutes from './routes/meetings.routes';
 import universityRoutes from './routes/university.routes';
+import taskRoutes from './routes/task.routes';
 
 var path = require('path');
 const cors = require('cors');
@@ -30,6 +32,7 @@ app.use(cors());//Allow CORS!
 app.use(express.static('views'));
 //middlewares
 app.use(morgan('dev'));
+
 //*******************************KRUNAL**************************************/
 app.use(cookieParser());
 //For Public Folder such as WebPage and Etc...
@@ -45,11 +48,12 @@ app.use(express.json());
 //Passport JWT
 app.use(passport.initialize());
 passport.use(passportMiddleware);
+
 //*******************************KRUNAL**************************************/
 //API Routes
 app.use('/auth', authRoutes);
 app.use('/subject', subjectRoutes);
-app.use( '/student', studentRoutes );
+app.use('/student', studentRoutes );
 app.use('/professor', professorRoutes);
 app.use('/university',universityRoutes);
 app.use('/faculty',facultyRoutes);
@@ -59,9 +63,12 @@ app.use('/insignia', insigniasRoutes);
 app.use('/course',courseRoutes);
 app.use('/project',projectRoutes);
 app.use('/meeting',meetingRoutes);
+app.use('/task',taskRoutes);
+
 // Middleware to catch 404 errors
 app.use(function(req, res, next) {
   res.status(404).sendFile(path.join(__dirname,"../dist/public",'/views', '/404.html'));
 });
+
 //Exportamos fichero como 'app'
 export default app;
