@@ -1,12 +1,9 @@
 import { Request, Response } from 'express';
+import mongoose from "mongoose";
+import Invitation from "../models/invitation";
 import Project from '../models/project';
 import Student from "../models/student";
-import {Schema, Types} from "mongoose";
-import Invitation from "../models/invitation";
-import mongoose from "mongoose";
-import invitation from "../models/invitation";
-import user from "../models/user";
-import Team, {ITeam} from '../models/team';
+import Team, { ITeam } from '../models/team';
 /******************************KRUNAL***************************************/
 const addTeam = async(req: Request, res: Response) =>{
 
@@ -155,7 +152,6 @@ const getInvitations = async (req: Request, res: Response) => {
     }
     catch (e) {
         return res.status(400);
-        console.log("disaster");
     }
 }
 

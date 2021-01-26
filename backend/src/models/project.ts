@@ -16,10 +16,10 @@ const projectSchema = new Schema({
     hashtags: [{
         type: String
     }],
-    teams: {
+    teams: [{
         type: Schema.Types.ObjectId,
         ref: Team
-    },
+    }],
     closed: {
         type: Boolean,
     }
