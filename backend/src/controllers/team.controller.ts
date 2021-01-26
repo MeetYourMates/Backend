@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import Project from '../models/project';
-import Team from '../models/team';
 import Student from "../models/student";
 import {Schema, Types} from "mongoose";
 import Invitation from "../models/invitation";
 import mongoose from "mongoose";
 import invitation from "../models/invitation";
 import user from "../models/user";
+import Team, {ITeam} from '../models/team';
 /******************************KRUNAL***************************************/
 const addTeam = async(req: Request, res: Response) =>{
 
@@ -15,42 +15,48 @@ const addTeam = async(req: Request, res: Response) =>{
     if(req.body==null){
         res.status(400).send({message: 'Bad Request'});
     }
+
     if(req.body.projectId==null){
         res.status(400).send({message: 'Bad Request'});
     }
     //Set variables for the data found in the request body
     let projectId:string = req.body.projectId;
-    const team = new Team({
-        "name": req.body.name,
-        "numberStudents":req.body.numberStudents,
-    });
-    team.save().then((data) => {
-        //Add Project to subject
-        Project.findOne({_id: projectId}).then(project => {
-        //No error and we got a result
-        console.log("Adding team to Project: ");
-        console.log([project]);
-        if(project!=null){
-            //We got the course now we search if the Project has this course 
-            //@ts-ignore
-            Project.updateOne({"_id":projectId}, {$addToSet: {teams: data!._id}}).then(result => {
-                if (result.nModified> 0) {
-                    res.status(201).send({message: 'Team Enrolled successfully!'});
-                }else{
+    let teams:Array<ITeam> = req.body.teams;
+    let teamsResult=[];
+    Project.findOne({_id: projectId}).then(async project => {
+
+        if (project != null) {
+            console.log("Adding team to Project: ");
+            for (const teamCurr of teams) {
+
+                const team = new Team({
+                    "name": teamCurr.name,
+                    "numberStudents": teamCurr.numberStudents,
+                });
+              let data = await  team.save();
+                //Add Project to subject
+                //@ts-ignore
+                let result = await Project.updateOne({"_id": projectId}, {$addToSet: {teams: data!._id}})/*.then(result => {*/
+                if (result.nModified <= 0) {
                     res.status(409).send({message: 'Team was already Enrolled!'});
+                }else{
+                    teamsResult.push(data);
+                    console.log(teamsResult);
                 }
-            });
-        }else{
-            //No Course Found
+
+               /* });*/
+
+            }
+            res.status(201).json(teamsResult);
+
+        } else {
+            //No Project Found
             res.status(400).send({message: 'No Project in Database'});
         }
-
         }).catch((err) => {
-            console.log("error ", err);
-            res.status(500).json({message: 'Server Error!'});
-        });
+        console.log("error ", err);
+        res.status(500).json({message: 'Server Error!'});
     });
-    
 }
 const getTeams = async (req: Request, res: Response) => {
     //El await hace que la siguiente linea no se ejecute
